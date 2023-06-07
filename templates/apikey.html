@@ -1,0 +1,17 @@
+{% if app.openai_api_key|length == 0 %}
+<div class="row mb-3">
+    <div class="col-12 pe-1 text-center">
+        <form method="post" id="form_apikey" onsubmit="return control.ingresarApikey()">
+            <div class="row">
+                <div class="col alert alert-danger p-2 text-center">
+                    <div class="small">Debes ingresar tu <a href="https://platform.openai.com/account/api-keys" target="_blank" class="text-dark">API KEY de OpenAI</a> para poder utilizar GPT</div>
+                    <div class="input-group">
+                        <input type="text" id="api_key" class="form-control" placeholder="Pega aquí tu API KEY" name="api_key" minlength="51" maxlength="51" required>
+                        <button class="btn btn-danger" type="submit">Listo</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}

@@ -1,0 +1,46 @@
+{% if usuario.roles == 'Admin' %}
+<div class="row mb-3">
+    <div class="col-12 pe-1 text-end">
+        <button type="button" title="Subir archivo" class="btn btn-light btn-sm text-dark border" onclick="control.abrirMenu('subir')"><i class="bi bi-cloud-upload"></i>Subir</button>
+        <button type="button" title="Archivos" class="btn btn-light btn-sm text-dark border" onclick="control.abrirMenu('archivos')"><i class="bi bi-files"></i>Archivos</button>
+    </div>
+</div>
+<h3 class="text-center mb-4"><i class="bi {{menu.icono}}"></i> {{menu.titulo}}</h3>
+
+<form id="form_actualizar" method="post" onsubmit="return control.actualizarIndices()">
+    <div class="row mb-3">
+        <label for="carpeta" class="col-md-4 col-form-label">Carpeta:</label>
+        <div class="col-md-8">
+            <select name="carpeta" id="carpeta" class="form-control w-auto">
+                {% for opcion in opciones_carpetas %}
+                <option value="{{ opcion.carpeta }}">{{ opcion.etiqueta }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="metodo" class="col-md-4 col-form-label">Método:</label>
+        <div class="col-md-8">
+            <select name="metodo" id="metodo" class="form-control w-auto">
+                <option value="crear">Crear índice completo</option>
+            </select>
+        </div>
+    </div>
+    <div class="row mb-3 mt-3">
+        <div class="col-12 text-center">
+            <button type="submit" title="Realizar la actualización" class="btn btn-primary mx-auto">Realizar la actualización</button>
+        </div>
+    </div>
+</form>
+<div id="resultados">
+    <!-- Aquí se mostrarán los resultados -->
+</div>
+<div id="plantilla_respuesta" style="display: none;">
+    <div class="row respuesta my-4 mb-4 caso grisaceo">
+        <div class="col-12 text-center">
+            <p class="text-primary"><strong>((respuesta))</strong></p>
+            <p><a href="javascript:void(0)" onclick="control.volverMostrar('form_actualizar')">Continuar</a></p>
+        </div>
+    </div>
+</div>
+{% endif %}

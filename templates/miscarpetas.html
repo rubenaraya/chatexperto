@@ -1,0 +1,92 @@
+{% if usuario.roles == 'Editor' %}
+<h3 class="text-center mb-4"><i class="bi {{menu.icono}}"></i> {{menu.titulo}}</h3>
+
+{% include 'apikey.html' %}
+
+{% for carpeta in lista_carpetas %}
+<div class="row mb-2 pt-2 pb-1 shadow">
+    <div class="col-10">
+        <div>
+            <a href="javascript:void(0)" class="text-dark text-decoration-none" onclick="control.cambiarCarpeta('{{carpeta.carpeta}}','documentos')">
+                <i class="bi bi-folder"></i> <strong>{{carpeta.carpeta}}</strong><br><span class="text-secondary small"><i>{{carpeta.etiqueta}}</i></span>
+            </a>
+        </div>
+    </div>
+    <div class="col-2 text-end">
+        <button type="button" class="btn btn-light btn-sm border dropdown-toggle" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="javascript:void(0)" onclick="control.exportarMetadatos('{{carpeta.carpeta}}')" title="Exportar metadatos"><i class="bi bi-download"></i> Exportar metadatos</a></li>
+            <li><a class="dropdown-item" href="javascript:void(0)" onclick="control.importarMetadatos('{{carpeta.carpeta}}')" title="Importar metadatos"><i class="bi bi-upload"></i> Importar metadatos</a></li>
+            <li><hr class="dropdown-divider"></hr></li>
+            <li><a class="dropdown-item" href="javascript:void(0)" onclick="control.generarIndice('{{carpeta.carpeta}}')" title="Actualizar índice"><i class="bi bi-server"></i> Actualizar índice</a></li>
+            <!--
+            <li><hr class="dropdown-divider"></hr></li>
+            <li><a class="dropdown-item" href="javascript:void(0)" onclick="control.confirmarAccion('micarpeta','{{carpeta.carpeta}}')" title="Borrar carpeta"><i class="bi bi-trash"></i> Borrar carpeta</a></li>
+            -->
+        </ul>
+    </div>
+</div>
+{% else %}
+<div class="row mb-5 mt-5">
+    <div class="col-12">
+        <div class="alert alert-warning text-primary text-center">No hay Carpetas</div>
+    </div>
+</div>
+{% endfor %}
+<!--
+<div class="row mb-3 mt-5">
+    <div class="col-12 text-center">
+        <button data-bs-toggle="collapse" data-bs-target="#div_crear" type="button" title="Nueva Carpeta" class="btn btn-success btn-sm"><i class="bi bi-folder-plus"></i> Nueva Carpeta</button>
+    </div>
+</div>
+<div class="collapse" id="div_crear">
+    <div class="card mt-2 mb-2">
+        <div class="card-body">
+            <button type="button" class="btn-close float-end" data-bs-toggle="collapse" data-bs-target="#div_crear"></button>
+            <h4><i class="bi bi-folder-plus"></i> Crear nueva Carpeta</h4>
+            <form id="form_carpeta" method="post" onsubmit="return control.crearMicarpeta()">
+                <div class="row mb-3 mt-4">
+                    <label for="carpeta" class="col-md-4 col-form-label">Nombre Carpeta:</label>
+                    <div class="col-md-8">
+                        <input type="text" id="carpeta" name="carpeta" class="form-control" placeholder="Una palabra, en minúsculas sin espacios" required>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="etiqueta" class="col-md-4 col-form-label">Etiqueta:</label>
+                    <div class="col-md-8">
+                        <input type="text" id="etiqueta" name="etiqueta" class="form-control" placeholder="Título de la Carpeta en los menús" required>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4">Tipos de archivo:</div>
+                    <div class="col-md-8">
+                        {% for tipo in diccionario.tipos_archivo %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="op_{{tipo.valor}}" name="tipos_archivo[]" value="{{tipo.valor}}" {% if tipo.marcado == '1' %}checked{% endif %}>
+                            <label for="op_{{tipo.valor}}" class="form-check-label">{{tipo.etiqueta}}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4">Usar en módulos:</div>
+                    <div class="col-md-8">
+                        {% for modulo in diccionario.modulos %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="om_{{modulo.valor}}" name="modulos[]" value="{{modulo.valor}}" {% if modulo.marcado == '1' %}checked{% endif %}>
+                            <label for="om_{{modulo.valor}}" class="form-check-label">{{modulo.etiqueta}}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="row mb-2 mt-2">
+                    <div class="col-12 text-center">
+                        <button type="submit" title="Crear la Carpeta" class="btn btn-success mx-auto">Crear la Carpeta</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+-->
+{% endif %}

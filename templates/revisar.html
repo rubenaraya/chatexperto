@@ -1,0 +1,68 @@
+{% if usuario.roles == 'Admin' %}
+<div class="row mb-3">
+    <div class="col-12 pe-1 text-end">
+        <button type="button" title="Probar el Chat" class="btn btn-light btn-sm text-dark border" onclick="control.abrirMenu('chat')"><i class="bi bi-chat"></i>Chat</button>
+    </div>
+</div>
+<h3 class="text-center mb-4"><i class="bi {{menu.icono}}"></i> {{menu.titulo}}</h3>
+
+<form id="form_revisar" method="post" onsubmit="return control.revisarInteracciones(1)">
+    <input type="hidden" name="nav" id="con_nav">
+    <div class="row mb-3">
+        <div class="col">
+            <div class="input-group mb-2">
+                <input type="search" id="interacciones" class="form-control" placeholder="Escriba una o más palabras" name="palabras">
+                <button data-bs-toggle="collapse" data-bs-target="#div_opciones" type="button" title="Opciones" class="btn btn-light text-dark border"><i class="bi bi-filter"></i></button>
+                <button class="btn btn-primary" type="submit">Buscar</button>
+            </div>
+        </div>
+    </div>
+    <div class="collapse" id="div_opciones">
+        <div class="card mt-2 mb-4">
+            <div class="card-body">
+                <div class="row mb-2">
+                    <label for="evaluacion" class="col col-form-label">Evaluaciones:</label>
+                    <div class="col">
+                        <select name="evaluacion" id="evaluacion" class="form-select w-auto">
+                            <option value="">Todas</option>
+                            <option value="1">Positivas</option>
+                            <option value="2">Negativas</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <label for="fecha" class="col col-form-label">Fecha:</label>
+                    <div class="col">
+                        <input type="date" id="fecha" name="fecha" class="form-control w-auto">
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <label for="max" class="col col-form-label">Mostrar:</label>
+                    <div class="col">
+                        <select name="max" id="max" class="form-select w-auto">
+                            {% for cantidad in diccionario.max %}
+                            <option value="{{cantidad.valor}}">{{cantidad.etiqueta}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<div id="plantilla_resultado" style="display: none;">
+    <div class="row resultado">
+        <div class="col-12">
+            <hr>
+            <div><small>((fecha)) - ((hora))  (((tiempo)) seg)</small></div>
+            <div class="caso">
+                <div>Pregunta: <b>((peticion))</b></div>
+                <div>Ayudante: <i>((respuesta))</i></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="resultados">
+    <!-- Aquí se mostrarán los resultados de la consulta -->
+</div>
+{% endif %}

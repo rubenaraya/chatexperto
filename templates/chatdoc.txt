@@ -1,0 +1,8 @@
+{% if documento is not none %}{% if documento|length > 0 %}Historial de Consultas al Documento "{{documento.titulo}}"
+{% else %}Historial de Consultas a la Carpeta de conocimiento "{% for opcion in opciones_carpetas %}{% if opcion.carpeta == carpeta %}{{opcion.etiqueta}}{% endif %}{% endfor %}"
+{% endif %}{% else %}Historial de Consultas a la Carpeta de conocimiento "{% for opcion in opciones_carpetas %}{% if opcion.carpeta == carpeta %}{{opcion.etiqueta}}{% endif %}{% endfor %}"{% endif %}
+{% if historial|length > 0 %}{% for interaccion in historial %}
+--------------------------------------------------
+Consulta: {{interaccion.peticion}}
+Respuesta: {{interaccion.respuesta}}
+{% endfor %}{% endif %}

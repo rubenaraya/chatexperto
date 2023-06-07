@@ -1,0 +1,81 @@
+{% if usuario.roles == 'Editor' or usuario.roles == 'Usuario' %}
+<h3 class="text-center mb-4"><i class="bi {{menu.icono}}"></i> {{menu.titulo}}</h3>
+
+{% include 'apikey.html' %}
+
+<div id="seccion_biblioteca">
+    <form id="form_buscar" method="post" onsubmit="return control.buscarBiblioteca()">
+        <!--
+        <ul class="nav nav-pills justify-content-center nav-fill">
+            <li class="nav-item small">
+                <a class="nav-link active" data-bs-toggle="pill" href="#buscar"><i class="bi bi-search h6"></i> Buscar</a>
+            </li>
+            <li class="nav-item small">
+                <a class="nav-link" data-bs-toggle="pill" href="#favoritos"><i class="bi bi-bookmark h6"></i> Favoritos</a>
+            </li>
+        </ul>
+        -->
+        <!--<div class="tab-content pt-2">
+            <div class="tab-pane active" id="buscar">-->
+                <div class="row mb-1">
+                    <div class="col">
+                        <div class="input-group mb-0">
+                            <input type="search" id="con_buscar" class="form-control" placeholder="¿Qué buscas?" name="buscar" maxlength="100" minlength="4">
+                            <button data-bs-toggle="collapse" data-bs-target="#div_opciones" type="button" title="Opciones" class="btn btn-light text-dark border"><i class="bi bi-filter"></i></button>
+                            <button class="btn btn-success" type="submit"><i class="bi bi-search h5"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-1">
+                    <div class="col input-group">
+                        <label for="con_max_docs" class="col-form-label">Dónde: &nbsp;</label>
+                        <select name="carpeta" id="con_carpeta" class="form-select">
+                            {% for opcion in opciones_carpetas %}
+                            {% for modulo in opcion.modulos %}
+                            {% if modulo == 'biblioteca' %}
+                            <option value="{{ opcion.carpeta }}">{{ opcion.etiqueta }}</option>
+                            {% endif %}
+                            {% endfor %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="collapse" id="div_opciones">
+                    <div class="card mt-2 mb-4">
+                        <div class="card-body">
+                            <div class="row mb-2">
+                                <label for="con_max_docs" class="col-4 col-form-label">Referencias:</label>
+                                <div class="col-8">
+                                    <select name="max_docs" id="con_max_docs" class="form-select w-auto">
+                                        {% for cantidad in diccionario.max_docs %}
+                                        <option value="{{cantidad.valor}}">{{cantidad.etiqueta}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <!--
+            </div>
+            <div class="tab-pane fade" id="favoritos">
+                <div class="card mt-2 mb-4">
+                    <div class="card-body">
+                    </div>
+                </div>
+            </div>
+        </div>
+        -->
+    </form>
+    <div id="lista_resultados">
+    </div>
+    <br>
+</div>
+<div id="consultar_chatdoc" style="display: none;">
+</div>
+<script>
+    jQuery(document).ready(function () {
+        control.activarBuscador('con_buscar');
+    });
+</script>
+{% endif %}

@@ -1,0 +1,42 @@
+{% if usuario.roles == 'Admin' %}
+
+<div class="modal-dialog">
+    <div class="modal-content">
+        <form id="form_imagen" method="post" action="{{dir_base}}/{{coleccion}}/imagen" enctype="multipart/form-data" onsubmit="event.preventDefault(); control.subirImagen(this)">
+            <input type="hidden" name="aplicacion" value="{{aplicacion}}">
+            <div class="modal-header">
+                <h5 class="modal-title" id="titulo_ventana"><i class="bi {{menu.icono}}"></i> {{menu.titulo}}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div id="form_imagen_subir">
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="text-secondary small"><i>Sube una imagen PNG de 512 x 512, para generar automáticamente todos los íconos y logos de la Aplicación</i></div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="imagen" class="col-md-4 col-form-label">Imagen:</label>
+                        <div class="col-md-8">
+                            <input type="file" id="imagen" name="imagen" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-danger mt-2 mb-2 p-2 text-center" id="ventana_error" style="display: none;">
+                </div>
+                <div id="form_imagen_espera" style="display: none;">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <img src="{{dir_base}}/{{app.coleccion}}/pwa/espere.gif" style="margin: 0 auto;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" id="form_imagen_botones">
+                <button type="button" class="btn btn-secondary" id="cerrar_ventana" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-primary" id="guardar_archivo"><i class="bi bi-check-square"></i> Subir la imagen</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}

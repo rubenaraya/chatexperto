@@ -1,0 +1,98 @@
+{% if usuario.roles == 'Admin' %}
+<h3 class="text-center mb-4"><i class="bi {{menu.icono}}"></i> {{menu.titulo}}</h3>
+
+{% if lista_usuarios.total > 0 %}
+{% for usuario in lista_usuarios.resultados %}
+<div class="row mb-2 pt-2 pb-1 shadow" id="us_{{usuario.id}}">
+    <div class="col-10">
+        <div>
+            <i class="bi bi-person-circle"></i> {{usuario.alias}}<br>
+            {% for estado in diccionario.estado_usuario %}{% if estado.valor|string == usuario.estado|string %}
+            <small><span class="badge bg-{{estado.color}}">{{estado.etiqueta}}</span>
+            {% endif %}{% endfor %} 
+            <span class="text-secondary"><i>{{usuario.email}} ({{usuario.roles}})</i></span>
+            </small>
+        </div>
+    </div>
+    <div class="col-2 text-end">
+        <div class="input-group mt-1 mb-1">
+            <button type="button" class="btn btn-light btn-sm border dropdown-toggle" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="javascript:void(0)" onclick="control.editarUsuario('{{usuario.id}}')" title="Editar"><i class="bi bi-pencil-square"></i> Editar</a></li>
+              <li><hr class="dropdown-divider"></hr></li>
+              <li><a class="dropdown-item" href="javascript:void(0)" onclick="control.confirmarAccion('usuario','{{usuario.id}}')" title="Borrar"><i class="bi bi-trash"></i> Borrar</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% else %}
+<div class="row mb-5 mt-5">
+    <div class="col-12">
+        <div class="alert alert-warning text-primary text-center">No hay Usuarios</div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row mb-3 mt-5">
+    <div class="col-12 text-center">
+        <button data-bs-toggle="collapse" data-bs-target="#div_crear" type="button" title="Nuevo Usuario" class="btn btn-primary btn-sm"><i class="bi bi-person-plus"></i> Nuevo Usuario</button>
+    </div>
+</div>
+<div class="collapse" id="div_crear">
+    <div class="card mt-2 mb-4">
+        <div class="card-body">
+            <button type="button" class="btn-close float-end" data-bs-toggle="collapse" data-bs-target="#div_crear"></button>
+            <h4><i class="bi bi-person-plus"></i> Crear nuevo Usuario</h4>
+            <form id="form_usuario" method="post" onsubmit="return control.crearUsuario()">
+                <div class="row mb-3 mt-4">
+                    <label for="alias" class="col-md-4 col-form-label">Alias:</label>
+                    <div class="col-md-8">
+                        <input type="text" id="alias" name="alias" class="form-control" placeholder="Alias del usuario" required>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="email" class="col-md-4 col-form-label">Correo-e:</label>
+                    <div class="col-md-8">
+                        <input type="text" id="email" name="email" class="form-control" placeholder="Correo electrónico (único)" required>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="clave" class="col-md-4 col-form-label">Contraseña:</label>
+                    <div class="col-md-8">
+                        <input type="text" id="clave" name="clave" class="form-control" placeholder="Contraseña de la cuenta" required>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="roles" class="col-md-4 col-form-label">Rol de usuario:</label>
+                    <div class="col-md-8">
+                        <select name="roles" id="roles" class="form-select w-auto">
+                            {% for rol in diccionario.roles_usuario %}
+                            <option value="{{rol.valor}}">{{rol.etiqueta}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-12 text-center">
+                        <button type="submit" title="Crear el Usuario" class="btn btn-primary mx-auto">Crear el Usuario</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="resultados">
+    <!-- Aqui se mostrarán los resultados -->
+</div>
+
+<div id="plantilla_respuesta" style="display: none;">
+    <div class="row respuesta my-4 mb-4 caso grisaceo">
+        <div class="col-12 text-center">
+            <p class="text-primary">((respuesta))</p>
+            <p><strong><a href="javascript:void(0)" onclick="control.abrirMenu('usuarios')">Continuar</a></strong></p>
+        </div>
+    </div>
+</div>
+{% endif %}

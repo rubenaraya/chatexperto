@@ -1,0 +1,119 @@
+{% if usuario.roles == 'Editor' %}
+<div class="row mb-3">
+    <div class="col-12 pe-1 text-end">
+        <button type="button" title="Mis Documentos" class="btn btn-light btn-sm text-dark border" onclick="control.abrirMenu('documentos')"><i class="bi bi-files"></i>Mis Documentos</button>
+    </div>
+</div>
+<h3 class="text-center mb-4"><i class="bi {{menu.icono}}"></i> {{menu.titulo}}</h3>
+<div class="row">
+    <div class="col-12 text-center mb-4" id="respuesta" style="font-size: 1.2rem; color:navy; display: none;">
+        <!-- Aquí se mostrará la respuesta -->
+    </div>
+</div>
+<div id="form_subir">
+    <form action="{{dir_base}}/{{coleccion}}/cargar" method="post" enctype="multipart/form-data" onsubmit="event.preventDefault(); control.cargarArchivo(this)">
+        <div class="row mb-3">
+            <div class="col">
+                <div id="drop-area">
+                    <span class="drop-message">Arrastra y suelta un archivo aquí, o<br>
+                        <button type="button" title="Elige un archivo" class="btn btn-secondary text-white border mt-3 mb-3">Elige un archivo</button>
+                    </span>
+                    <input type="file" id="archivo" name="archivo" accept=".pdf,.docx,.pptx,.xlsx,.csv,.txt" style="display: none;">
+                    <div id="datos_archivo" class="text-primary small mb-2"></div>
+                    <div class="row text-center small text-secondary">
+                        <div class="col-12">
+                            <div class="mb-2">Se aceptan los siguientes tipos (aunque depende de cada carpeta):</div>
+                        </div>
+                        <div class="col pe-1">
+                            <img src="{{dir_base}}/static/img/pdf.png" style="width: 24px"><br>pdf
+                        </div>
+                        <div class="col pe-1">
+                            <img src="{{dir_base}}/static/img/docx.png" style="width: 24px"><br>docx
+                        </div>
+                        <div class="col pe-1">
+                            <img src="{{dir_base}}/static/img/pptx.png" style="width: 24px"><br>pptx
+                        </div>
+                        <div class="col pe-1">
+                            <img src="{{dir_base}}/static/img/xlsx.png" style="width: 24px"><br>xlsx
+                        </div>
+                        <div class="col pe-1">
+                            <img src="{{dir_base}}/static/img/csv.png" style="width: 24px"><br>csv
+                        </div>
+                        <div class="col pe-1">
+                            <img src="{{dir_base}}/static/img/txt.png" style="width: 24px"><br>txt
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="carpeta" class="col-md-4 col-form-label">Guardar en carpeta:</label>
+            <div class="col-md-8">
+                <select name="carpeta" id="carpeta" class="form-select w-auto" required>
+                    {% for opcion in opciones_carpetas %}
+                    <option value="{{ opcion.carpeta }}">{{ opcion.etiqueta }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-12 text-center">
+                <button type="submit" title="Cargar el documento elegido" class="btn btn-success mx-auto">Cargar el documento elegido</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div id="plantilla_respuesta" style="display: none;">
+    <div class="row respuesta my-4 mb-4 caso grisaceo">
+        <div class="col-12 text-center">
+            <p class="text-primary">((respuesta))</p>
+            <p><br><strong><a href="javascript:void(0)" onclick="control.abrirMenu('cargar')">Cargar otro</a></strong></p>
+        </div>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        if (control.carpeta) {
+            let carpeta = jQuery( 'select#carpeta' );
+            carpeta.val(control.carpeta);
+        }
+        var dropArea = document.getElementById('drop-area');
+        dropArea.addEventListener('dragenter', preventDefault, false);
+        dropArea.addEventListener('dragleave', preventDefault, false);
+        dropArea.addEventListener('dragover', preventDefault, false);
+        dropArea.addEventListener('drop', preventDefault, false);
+        dropArea.addEventListener('dragenter', addDragOverClass, false);
+        dropArea.addEventListener('dragleave', removeDragOverClass, false);
+        dropArea.addEventListener('drop', handleDrop, false);
+        dropArea.addEventListener('click', function() {
+            jQuery('#archivo').click();
+        });
+        $('#archivo').change(function() {
+            handleSelectedFile(this.files[0]);
+        });
+        function preventDefault(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        function addDragOverClass() {
+            dropArea.classList.add('drag-over');
+        }
+        function removeDragOverClass() {
+            dropArea.classList.remove('drag-over');
+        }
+        function handleDrop(e) {
+            removeDragOverClass();
+            var files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleSelectedFile(files[0]);
+            }
+        }
+        function handleSelectedFile(file) {
+            if (file) {
+                jQuery('#datos_archivo').html( file.name + ' (' + Math.round(file.size / 1024 ) + ' kb)' );
+            }
+        }
+
+    });
+</script>
+{% endif %}

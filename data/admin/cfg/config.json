@@ -1,0 +1,10 @@
+{
+    "app_nombre": "ChatExperto",
+    "app_id": "ChatExperto",
+    "token_key": "key-secreta-admin",
+    "descripcion": "",
+    "carpeta": "",
+    "clase": "",
+    "openai_api_key": "",
+    "app_keys": [ "" ]
+}

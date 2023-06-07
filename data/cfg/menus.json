@@ -1,0 +1,115 @@
+[
+    {
+        "_uid": "admin",
+        "menu": "Apps",
+        "titulo": "Aplicaciones",
+        "icono": "bi-star",
+        "roles": "Admin",
+        "mostrar": "SI"
+    },{
+        "_uid": "imagen",
+        "menu": "Imagen",
+        "titulo": "Subir Imagen",
+        "icono": "bi-image",
+        "roles": "Admin",
+        "mostrar": "NO"
+    },{
+        "_uid": "carpetas",
+        "menu": "Carpetas",
+        "titulo": "Carpetas",
+        "icono": "bi-folder",
+        "roles": "Admin",
+        "mostrar": "SI"
+    },{
+        "_uid": "archivos",
+        "menu": "Archivos",
+        "titulo": "Archivos",
+        "icono": "bi-files",
+        "roles": "Admin",
+        "mostrar": "SI"
+    },{
+        "_uid": "subir",
+        "menu": "Subir",
+        "titulo": "Subir archivo",
+        "icono": "bi-cloud-upload",
+        "roles": "Admin",
+        "mostrar": "NO"
+    },{
+        "_uid": "actualizar",
+        "menu": "Actualizar",
+        "titulo": "Actualizar indices",
+        "icono": "bi-server",
+        "roles": "Admin",
+        "mostrar": "NO"
+    },{
+        "_uid": "chat",
+        "menu": "Chat",
+        "titulo": "Probar el Chat",
+        "icono": "bi-chat",
+        "roles": "Admin",
+        "mostrar": "SI"
+    },{
+        "_uid": "revisar",
+        "menu": "Revisar",
+        "titulo": "Revisar interacciones",
+        "icono": "bi-search",
+        "roles": "Admin",
+        "mostrar": "NO"
+    },{
+        "_uid": "usuarios",
+        "menu": "Usuarios",
+        "titulo": "Usuarios",
+        "icono": "bi-person-circle",
+        "roles": "Admin",
+        "mostrar": "SI"
+    },{
+        "_uid": "importar",
+        "menu": "Importar",
+        "titulo": "Importar metadatos",
+        "icono": "bi-upload",
+        "roles": "Editor",
+        "mostrar": "NO"
+    },{
+        "_uid": "miscarpetas",
+        "menu": "Carpetas",
+        "titulo": "Mis Carpetas",
+        "icono": "bi-folder",
+        "roles": "Editor",
+        "mostrar": "SI"
+    },{
+        "_uid": "documentos",
+        "menu": "Documentos",
+        "titulo": "Mis Documentos",
+        "icono": "bi-files",
+        "roles": "Editor",
+        "mostrar": "SI"
+    },{
+        "_uid": "cargar",
+        "menu": "Cargar",
+        "titulo": "Cargar documento",
+        "icono": "bi-cloud-upload",
+        "roles": "Editor",
+        "mostrar": "NO"
+    },{
+        "_uid": "asistente",
+        "menu": "Asistente",
+        "titulo": "Asistente virtual",
+        "icono": "bi-chat",
+        "roles": "Usuario",
+        "mostrar": "SI"
+    },{
+        "_uid": "biblioteca",
+        "menu": "Biblioteca",
+        "titulo": "Biblioteca virtual",
+        "icono": "bi-bank",
+        "roles": "Usuario",
+        "mostrar": "SI"
+    },{
+        "_uid": "tutor",
+        "menu": "Tutor",
+        "titulo": "Tutor virtual",
+        "icono": "bi-mortarboard",
+        "roles": "Usuario",
+        "mostrar": "NO"
+    }
+]

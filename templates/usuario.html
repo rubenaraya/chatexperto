@@ -1,0 +1,53 @@
+{% if usuario.roles == 'Admin' %}
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <form id="form_editar" method="post" onsubmit="return control.guardarUsuario('{{datos_usuario.id}}')">
+            <div class="modal-header">
+                <h5 class="modal-title" id="titulo_ventana"><i class="bi bi-pencil-square"></i> Editar Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div id="form_editar_campos">
+                    <div class="row mb-1">
+                        <label for="alias" class="col-md-4 col-form-label">Alias:</label>
+                        <div class="col-md-8">
+                            <input type="text" id="alias" name="alias" class="form-control" placeholder="Alias del usuario" value="{{datos_usuario.alias}}" required>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label for="roles" class="col-md-4 col-form-label">Rol de usuario:</label>
+                        <div class="col-md-8">
+                            <select name="roles" id="roles" class="form-select w-auto">
+                                {% for rol in diccionario.roles_usuario %}
+                                <option value="{{rol.valor}}" {% if rol.valor == datos_usuario.roles %}selected{% endif %}>{{rol.etiqueta}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label for="estado" class="col-4 col-form-label">Estado:</label>
+                        <div class="col-8">
+                            <select name="estado" id="estado" class="form-select w-auto">
+                                {% for estado in diccionario.estado_usuario %}
+                                <option value="{{estado.valor}}" class="bg-{{estado.color}} text-white" {% if estado.valor|string == datos_usuario.estado|string %}selected{% endif %}>{{estado.etiqueta}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div id="form_editar_espera" style="display: none;">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <img src="{{dir_base}}/{{app.coleccion}}/pwa/espere.gif" style="margin: 0 auto;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" id="form_editar_botones">
+                <button type="button" class="btn btn-secondary" id="cerrar_ventana" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-primary" id="guardar_usuario"><i class="bi bi-check-square"></i> Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}

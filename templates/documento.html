@@ -1,0 +1,72 @@
+{% if usuario.roles == 'Editor' %}
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <form id="form_editar" method="post" onsubmit="return control.guardarDocumento('{{datos_archivo.id}}')">
+            <input type="hidden" name="estado" value="{{datos_archivo.estado}}">
+            <div class="modal-header">
+                <h5 class="modal-title" id="titulo_ventana"><i class="bi bi-pencil-square"></i> Editar Ficha de Documento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div id="form_editar_campos">
+                    <div class="row mb-1">
+                        <div class="col text-center small">
+                            <a href="javascript:void(0)" class="text-dark text-decoration-none" onclick="control.descargarArchivo('{{datos_archivo.codigo}}')">{{datos_archivo.archivo}}.{{datos_archivo.tipo}}</a>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="form-floating mb-1 mt-1">
+                            <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Título del documento" value="{{datos_archivo.titulo}}" required>
+                            <label for="titulo">Título del documento</label>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label for="resumen" class="col-12 col-form-label">Resumen del contenido:</label>
+                        <div class="col-12">
+                            <textarea class="form-control-sm w-100" rows="7" id="resumen" name="resumen" placeholder="Escribe un breve resumen para el usuario final">{{datos_archivo.resumen if datos_archivo.resumen is not none else '' }}</textarea>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="form-floating mb-1 mt-1">
+                            <input type="text" class="form-control" id="autores" name="autores" placeholder="Autor(es)" value="{{datos_archivo.autores if datos_archivo.autores is not none else '' }}">
+                            <label for="titulo">Autor(es)</label>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label for="fechapub" class="col-5 col-form-label text-end">Fecha publicación:</label>
+                        <div class="col-7">
+                            <input type="date" id="fechapub" name="fechapub" class="form-control w-auto" value="{{datos_archivo.fechapub if datos_archivo.fechapub is not none else '' }}">
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label for="sugerencias" class="col-12 col-form-label">Consultas sugeridas:</label>
+                        <div class="col-12">
+                            <textarea class="form-control-sm w-100" rows="5" id="sugerencias" name="sugerencias" placeholder="Consultas sugeridas para chatear con el documento">{{datos_archivo.sugerencias if datos_archivo.sugerencias is not none else '' }}</textarea>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label for="zona" class="col-md-5 col-form-label">Consultable:</label>
+                        <div class="col-md-7">
+                            <select name="zona" id="zona" class="form-select w-auto">
+                                <option value="N">NO</option>
+                                <option value="C" {% if datos_archivo.zona|string == 'C' %}selected{% endif %}>SI</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div id="form_editar_espera" style="display: none;">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <img src="{{dir_base}}/{{app.coleccion}}/pwa/espere.gif" style="margin: 0 auto;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" id="form_editar_botones">
+                <button type="button" class="btn btn-secondary" id="cerrar_ventana" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-primary" id="guardar_archivo"><i class="bi bi-check-square"></i> Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}

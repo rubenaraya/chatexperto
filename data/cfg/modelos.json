@@ -1,0 +1,35 @@
+[
+    {
+        "_uid": "OpenAI_GPT-3.5",
+        "etiqueta": "GPT-3.5",
+        "type": "completions",
+        "model": "gpt-3.5-turbo",
+        "max_tokens": "512",
+        "frequency_penalty": "0",
+        "presence_penalty": "0.6",
+        "temperature": "0.1"
+    },{
+        "_uid": "OpenAI_GPT-4",
+        "etiqueta": "GPT-4",
+        "type": "completions",
+        "model": "gpt-4",
+        "max_tokens": "1024",
+        "frequency_penalty": "0",
+        "presence_penalty": "0.5",
+        "temperature": "0.3"
+    },{
+        "_uid": "OpenAI_GPT-3",
+        "etiqueta": "GPT-3",
+        "type": "completions",
+        "model": "text-davinci-003",
+        "max_tokens": "512",
+        "frequency_penalty": "0",
+        "presence_penalty": "0.5",
+        "temperature": "0"
+    },{
+        "_uid": "OpenAI_Embeddings",
+        "type": "embeddings",
+        "model": "text-embedding-ada-002",
+        "chunk_size": "500"
+    }
+]

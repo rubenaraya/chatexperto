@@ -1,0 +1,42 @@
+{% if usuario.roles == 'Editor' %}
+
+<div class="modal-dialog">
+    <div class="modal-content">
+        <form id="form_importar" method="post" action="{{dir_base}}/{{coleccion}}/importar" enctype="multipart/form-data" onsubmit="event.preventDefault(); control.importarExcel(this)">
+            <input type="hidden" name="carpeta" value="{{carpeta}}">
+            <div class="modal-header">
+                <h5 class="modal-title" id="titulo_ventana"><i class="bi {{menu.icono}}"></i> {{menu.titulo}}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div id="form_excel_subir">
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="text-secondary small"><i>Sube un archivo Excel (.xlsx) para cargar los metadatos de los documentos. Debe tener 8 columnas (desde la A hasta la H), con los siguientes datos: id, titulo, carpeta, autores, fechapub, resumen, sugerencias y zona.</i></div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="archivo" class="col-md-4 col-form-label">Archivo:</label>
+                        <div class="col-md-8">
+                            <input type="file" id="archivo" name="archivo" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-danger mt-2 mb-2 p-2 text-center" id="ventana_error" style="display: none;">
+                </div>
+                <div id="form_excel_espera" style="display: none;">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <img src="{{dir_base}}/{{app.coleccion}}/pwa/espere.gif" style="margin: 0 auto;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" id="form_excel_botones">
+                <button type="button" class="btn btn-secondary" id="cerrar_ventana" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-primary" id="importar_excel"><i class="bi bi-check-square"></i> Importar el archivo</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}

@@ -1,0 +1,190 @@
+{% if usuario.roles == 'Editor' or usuario.roles == 'Usuario' %}
+<div id="chat-encabezado"></div>
+<div class="card mt-2 mb-4">
+    <div class="card-header titulo_seccion pt-1 pb-1 ps-0 pe-0">
+        <div class="row">
+            <div class="col-10">
+                <i class="bi bi-chat"></i> 
+                {% if documento|length > 0 %}
+                Consultar documento
+                {% else %}
+                Consultar carpeta de conocimiento
+                {% endif %}
+            </div>
+            <div class="col-2 text-end">
+                <button type="button" class="btn-close" onclick="control.volverAsistente()"></button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="pe-1 input-group">
+                    <button type="button" title="Atrás" class="btn btn-light btn-sm text-dark border pe-1 ps-1 me-1" onclick="control.volverAsistente()"><i class="bi bi-chevron-left h5"></i></button>
+                    <button type="button" title="Ir a consultar" class="btn btn-light btn-sm text-dark border pe-1" onclick="control.enfocarInputMensaje()"><i class="bi bi-send-plus h5"></i><span class="small"></span></button>
+                    <button type="button" title="Recargar vista" class="btn btn-light btn-sm text-dark border pe-1" onclick="control.consultarChatdoc('{{carpeta}}','{{doc}}')"><i class="bi bi-arrow-repeat h5"></i><span class="small"></span></button>
+                    <button type="button" title="Aumentar texto" class="btn btn-light btn-sm text-dark border pe-1 ms-1" onclick="control.ajustarTextos('+')"><i class="bi bi-plus-circle h5"></i></button>
+                    <button type="button" title="Disminuir texto" class="btn btn-light btn-sm text-dark border pe-1" onclick="control.ajustarTextos('-')"><i class="bi bi-dash-circle h5"></i></button>
+                    <button type="button" title="Exportar conversación" class="btn btn-light btn-sm text-dark border ms-1 pe-1" onclick="control.exportarChatdoc('{{carpeta}}','{{doc}}')"><i class="bi bi-save h5"></i><span class="small">Exportar</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body pt-2 pb-2 ps-0 pe-0">
+        <div class="row">
+            <div class="col-12">
+                <div class="chat-encabezado">
+                    {% if documento|length > 0 %}
+                    <small><i>Este es el documento <strong>"{{documento.titulo}}"</strong>. El Asistente responderá tus consultas basado exclusivamente en su contenido.</i></small>
+                    {% else %}
+                    <small><i>Esta es la carpeta <strong>"{% for opcion in opciones_carpetas %}{% if opcion.carpeta == carpeta %}{{opcion.etiqueta}}{% endif %}{% endfor %}"</strong>. El Asistente responderá tus consultas únicamente con la información que tenga.</i></small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% if documento|length > 0 %}
+        {% if documento.resumen is not none and documento.resumen != '' %}
+        <div class="row mt-2">
+            <div class="col-12">
+                <i><a href="javascript:void(0)" class="text-primary text-decoration-none" data-bs-toggle="collapse" data-bs-target="#resumen_{{documento.id}}" title="Resumen del documento"><i class="bi bi-eye-fill"></i> Resumen del documento</a></i>
+            </div>
+        </div>
+        <div id="resumen_{{documento.id}}" class="row collapse">
+            <div class="col-12">
+                <div class="card mt-1 mb-1">
+                    <div class="card-body pt-1 pb-1">
+                        <div><small><span class="text-secondary small"><i>{{documento.resumen}}</i></span></small></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
+        {% if historial|length > 0 %}
+        <div class="row mt-2">
+            <div class="col-8">
+                <i><a href="javascript:void(0)" class="text-primary text-decoration-none" data-bs-toggle="collapse" data-bs-target="#historial" title="Consultas anteriores"><i class="bi bi-chat-text"></i> Consultas anteriores ({{historial|length}})</a></i>
+            </div>
+            <div class="col-4 text-end pe-1 pt-0 pb-0">
+                <button type="button" title="Vaciar conversación" class="btn btn-light btn-sm text-dark border ms-1 pt-0 pb-0" onclick="control.confirmarVaciado('{{carpeta}}','{{doc}}')"><i class="bi bi-eraser-fill h5"></i><span class="small">Vaciar</span></button>
+            </div>
+        </div>
+        <div id="historial" class="row collapse">
+            <div class="col-12">
+                {% for interaccion in historial %}
+                <div class="row chat-marco-mensaje">
+                    <div class="col-0 col-sm-2 col-md-3"></div>
+                    <div class="col-12 co-sm-10 col-md-9">
+                        <div class="chat-consulta texto-ajustable"><i class="bi bi-person-square"></i> {{interaccion.peticion}}</div>
+                    </div>
+                </div>
+                <div class="row chat-marco-mensaje">
+                    <div class="col-12 col-sm-10 col-md-9">
+                        <div class="chat-respuesta texto-ajustable" id="resp_{{interaccion.id}}"
+                        {% if interaccion.evaluacion == 1 %} style="background-color: #bdecb6;"{% endif %}{% if interaccion.evaluacion == 2 %} style="background-color: #ebc1c8;"{% endif %}>
+                            <i class="bi bi-chat-left-text-fill"></i> 
+                            <span class="texto-copiable">{% for linea in interaccion.respuesta.splitlines() %}
+                            {{ linea }}<br>
+                            {% endfor %}</span>
+                            <i class="bi bi-clipboard boton-copiar float-end text-dark" style="cursor: pointer;" title="Copiar"></i>
+                            <i class="bi bi-check icono-copiado float-end h4 text-success" style="display: none;"></i>
+                            <a href="javascript:control.evaluarInteraccion({{interaccion.id}},1)" title="Me gusta" class="text-decoration-none text-dark"><i class="bi bi-hand-thumbs-up float-start ms-2 me-2"></i></a>
+                            <a href="javascript:control.evaluarInteraccion({{interaccion.id}},2)" title="No me gusta" class="text-decoration-none text-dark"><i class="bi bi-hand-thumbs-down float-start ms-2 me-2"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-0 col-sm-2 col-md-3"></div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        <div id="chat-mensajes-conversacion"></div>
+        {% if preguntas|length > 0 %}
+        <div class="row mt-2">
+            <div class="col-12">
+                <i><a href="javascript:void(0)" class="text-primary text-decoration-none" data-bs-toggle="collapse" data-bs-target="#preguntas" title="Consultas sugeridas"><i class="bi bi-lightbulb"></i> Consultas sugeridas…</a></i>
+            </div>
+        </div>
+        <div id="preguntas" class="row collapse">
+            <div class="col-12">
+                <div class="card mt-1 mb-1">
+                    <div class="card-body pt-1 pb-1">
+                        <small><span class="text-secondary"><i>
+                            {% for pregunta in preguntas %}
+                            <div><a href="javascript:control.preguntaConsultar('{{pregunta}}')" class="text-secondary text-decoration-none"><i class="bi bi-question-circle-fill"></i> {{pregunta}}</a></div>
+                            {% endfor %}
+                        </i></span></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <form action="javascript:void(0)" method="post" id="form-chat-enviar">
+            <input type="hidden" name="carpeta" value="{{carpeta}}">
+            <input type="hidden" name="doc" value="{{doc}}">
+            <div class="row">
+                <div class="col-12">
+                    <div class="chat-enviar-mensaje" id="chat-enviar-mensaje">
+                        <input type="text" id="input-mensaje-usuario" name="mensaje" minlength="3" maxlength="100" placeholder="Escribe aquí tu consulta">
+                        <button type="button" id="boton-enviar-mensaje" class="btn btn-primary" title="Enviar" onclick="control.enviarConsulta()"><i class="bi bi-send"></i></button>
+                        <button type="button" title="Subir" class="btn btn-light text-dark ms-1 pt-0 pb-0 ps-1 pe-0" onclick="control.desplazarPosicion('+')"><i class="bi bi-arrow-up-circle h5"></i></button>
+                    </div>
+                    <div id="chat-imagen-espera" style="display: none;">
+                        <img src="{{dir_base}}/{{app.coleccion}}/pwa/espere.gif" style="margin: 0 auto;">
+                    </div>
+                    <div id="chat-pie"></div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div id="chat-plantilla-consulta" style="display: none;">
+    <div class="row chat-marco-mensaje">
+        <div class="col-0 col-sm-2 col-md-3"></div>
+        <div class="col-12 co-sm-10 col-md-9">
+            <div class="chat-consulta texto-ajustable"><i class="bi bi-person-square"></i> ((consulta))</div>
+        </div>
+    </div>
+</div>
+<div id="chat-plantilla-respuesta" style="display: none;">
+    <div class="row chat-marco-mensaje">
+        <div class="col-12 col-sm-10 col-md-9">
+            <div class="chat-respuesta texto-ajustable"><i class="bi bi-chat-left-text-fill"></i> ((respuesta))</div>
+        </div>
+        <div class="col-0 col-sm-2 col-md-3"></div>
+    </div>
+</div>
+<div id="chat-plantilla-error" style="display: none;">
+    <div class="row chat-marco-mensaje">
+        <div class="col-2"></div>
+        <div class="col-8">
+            <div class="chat-error texto-ajustable"><i class="bi bi-exclamation-triangle-fill"></i> ((error))</div>
+        </div>
+        <div class="col-2"></div>
+    </div>
+</div>
+<div id="confirmar_vaciado" style="display:none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="titulo_dialogo"><i class="bi bi-question-circle"></i> ¿Vaciar conversación?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="text-secondary"><i>Si confirmas, se borrará el historial de todas las Consultas anteriores en este Asistente</i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="control.vaciarChatdoc('((carpeta))','((id_recurso))')"><i class="bi bi-eraser-fill"></i> Vaciar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        control.activarCopiar();
+    });
+</script>
+{% endif %}

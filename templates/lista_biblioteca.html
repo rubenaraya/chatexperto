@@ -1,0 +1,86 @@
+{% if usuario.roles == 'Editor' or usuario.roles == 'Usuario' %}
+
+{% if datos.archivos|length > 0 %}
+<div class="row mt-2 mb-2">
+    <div class="col text-center text-secondary small">
+        <hr>{{datos.archivos|length}} documento(s) y {{datos.resultados|length }} referencias para "<strong><a href="javascript:void(0)" onclick="control.volverBuscar()" class="text-dark" id="volver_buscar">{{datos.buscar}}</a></strong>"
+        <input type="hidden" name="texto_buscar" id="texto_buscar" value="{{datos.buscar}}">
+        &nbsp; <button type="button" onclick="control.enviarBusqueda()" title="Consultar búsqueda" class="btn btn-success btn-sm text-white pb-0 pt-0" id="pedir_respuesta"><i class="bi bi-chat"></i>Consultar</button>
+    </div>
+</div>
+<div class="row mt-2 mb-3" id="mostrar_espera" style="display: none;">
+    <div class="col text-center">
+        <img src="{{dir_base}}/{{app.coleccion}}/pwa/espere.gif" style="width:50px; margin: 0 auto;">
+    </div>
+</div>
+<div class="row mt-2 mb-3" id="mostrar_respuesta" style="display: none;">
+    <div class="col">
+        <div class="chat-respuesta w-100">
+            <i class="bi bi-chat-left-text-fill"></i> <span id="texto_respuesta"></span><br>
+            <a href="javascript:void(0)" onclick="control.copiarTexto('texto_respuesta')" class="text-dark float-end" id="copiar_texto" style="display:none;">
+                <i class="bi bi-clipboard boton-copiar" title="Copiar"></i>
+            </a>
+            <i class="bi bi-check float-end h4 text-success" id="texto_copiado" style="display: none;"></i>
+        </div>
+    </div>
+</div>
+{% for archivo in datos.archivos %}
+<div class="row mb-4 pt-2 pb-2 shadow">
+    <div class="col-2 text-end pe-1">
+        <img src="{{dir_base}}/static/img/{{archivo.tipo}}.png" style="width: 32px">
+    </div>
+    <div class="col-8">
+        <div>
+            {% if archivo.resumen is not none and archivo.resumen != '' %}
+            <a href="javascript:void(0)" class="text-dark text-decoration-none" data-bs-toggle="collapse" data-bs-target="#ar_{{archivo.id}}_mas" title="Ver resumen">{{archivo.caso}}. {{archivo.titulo}}{% if archivo.paginas > 0 %} <small>({{archivo.paginas}}p)</small>{% endif %} <i class="bi bi-eye-fill text-dark h6"></i></a>
+            {% else %}
+            {{archivo.caso}}. {{archivo.titulo}}{% if archivo.paginas > 0 %} <small>({{archivo.paginas}}p)</small>{% endif %}
+            {% endif %}
+            <span class="text-secondary small">{{archivo.peso}} kb {% if archivo.zona == 'C' %}&nbsp; <a class="text-dark text-decoration-none" href="javascript:void(0)" onclick="control.consultarChatdoc('{{archivo.carpeta}}','{{archivo.id}}')" title="Consultar documento"><i class="bi bi-chat text-dark h6"></i></a>{% endif %}
+            </span>
+        </div>
+    </div>
+    <div class="col-2 text-end">
+        <button type="button" onclick="control.descargarArchivo('{{archivo.codigo}}')" title="Descargar" class="btn btn-secondary btn-sm text-white">
+            <i class="bi bi-download h6"></i>
+        </button>
+    </div>
+    <div class="col-12 text-center">
+        {% for trozo in datos.resultados %}
+        {% if trozo.nombre == archivo.nombre %}
+        <button type="button" class="btn btn-light btn-sm border text-dark mt-1 mb-0 ms-0 me-0 pt-0 pb-0 ps-2 pe-2" onclick="control.verTrozo('{{trozo.trozo}}')">{{trozo.trozo}}</button>
+        {% endif %}
+        {% endfor %}
+    </div>
+    {% for trozo in datos.resultados %}
+    {% if trozo.nombre == archivo.nombre %}
+    <div class="col-12 trozo" id="tr_{{trozo.trozo}}" style="display:none;">
+        <small><strong>[{{trozo.trozo}}]</strong> <i><span class="text-secondary resaltar">{{trozo.contenido}} …{% if trozo.pagina > 0 %} (p.{{trozo.pagina}}){% endif %}</span></i></small>
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% if archivo.resumen is not none and archivo.resumen != '' %}
+    <div id="ar_{{archivo.id}}_mas" class="collapse">
+        <div class="col-12">
+            <div class="card mt-1 mb-2">
+                <div class="card-body">
+                    <div class="clearfix">
+                        <div class="float-start small">Resumen:</div>
+                        <div class="float-end"><button type="button" class="btn-close" data-bs-toggle="collapse" data-bs-target="#ar_{{archivo.id}}_mas"></button></div>
+                    </div>
+                    <div><small><span class="text-secondary small"><i>{{archivo.resumen}}</i></span></small></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endfor %}
+{% else %}
+<div class="row mb-5 mt-5">
+    <div class="col-12">
+        <div class="alert alert-warning text-primary text-center">No hay resultados</div>
+    </div>
+</div>
+{% endif %}
+{% endif %}

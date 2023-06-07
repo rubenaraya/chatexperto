@@ -1,0 +1,84 @@
+{% if usuario.roles == 'Admin' %}
+<h3 class="text-center mb-4"><i class="bi {{menu.icono}}"></i> {{menu.titulo}}</h3>
+
+{% for coleccion in opciones_colecciones %}
+<div class="row mb-2 pt-2 pb-1 shadow">
+    <div class="col-3 text-center">
+        <img src="{{dir_base}}/{{coleccion.coleccion}}/pwa/icon-128x128.png?v={{app.ahora}}" class="rounded" alt="Logo" style="width: 64px;">
+    </div>
+    <div class="col-6">
+        <div><strong>{{coleccion.coleccion}}</strong><br><span class="text-secondary small"><i>{{coleccion.etiqueta}}</i></span></div>
+    </div>
+    <div class="col-3 text-end">
+        <button type="button" title="Imágenes" class="btn btn-light btn-sm border" onclick="control.elegirImagen('{{coleccion.coleccion}}')"><i class="bi bi-image"></i></button>
+        <button type="button" title="Ingresar" class="btn btn-light btn-sm border" onclick="control.abrirUrl('{{dir_base}}/{{coleccion.coleccion}}/inicio')"><i class="bi bi-box-arrow-in-up-right"></i></button>
+    </div>
+</div>
+{% endfor %}
+
+<div class="row mb-3 mt-5">
+    <div class="col-12 text-center">
+        <button data-bs-toggle="collapse" data-bs-target="#div_crear" type="button" title="Nueva Aplicación" class="btn btn-primary btn-sm"><i class="bi bi-plus-square"></i> Nueva Aplicación</button>
+    </div>
+</div>
+<div class="collapse" id="div_crear">
+    <div class="card mt-2 mb-4">
+        <div class="card-body">
+            <button type="button" class="btn-close float-end" data-bs-toggle="collapse" data-bs-target="#div_crear"></button>
+            <h4><i class="bi bi-star"></i> Crear nueva Aplicación</h4>
+            <form id="form_coleccion" method="post" onsubmit="return control.crearColeccion()">
+                <div class="row mb-3 mt-4">
+                    <label for="coleccion" class="col-md-3 col-form-label">Directorio:</label>
+                    <div class="col-md-9">
+                        <input type="text" id="coleccion" name="coleccion" class="form-control" placeholder="Directorio de la Aplicación" required>
+                    </div>
+                    <div class="col-12">
+                        <span class="text-secondary small"><i>Este es el nombre de la <b>Colección</b> y del <b>EntryPoint</b> de la App Web-REST (máximo 20 letras, sólo minúsculas, sin espacios ni signos)</i></span>
+                    </div>
+                </div>
+                <div class="row mb-3 mt-4">
+                    <label for="app_nombre" class="col-md-3 col-form-label">Título:</label>
+                    <div class="col-md-9">
+                        <input type="text" id="app_nombre" name="app_nombre" class="form-control" placeholder="Título de la Aplicación" required>
+                    </div>
+                    <div class="col-12">
+                        <span class="text-secondary small"><i>Este es el título de la Aplicación Web Progresiva (PWA) que se muestra en el escritorio cuando se instala (máximo 4 palabras)</i></span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <div class="form-floating mb-3 mt-3">
+                            <textarea class="form-control" rows="2" id="descripcion" name="descripcion" placeholder="Descripción breve de la Aplicación" required></textarea>
+                            <label for="descripcion">Descripción breve de la Aplicación</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="form-floating mb-3 mt-3">
+                        <input type="text" class="form-control" id="openai_api_key" name="openai_api_key" placeholder="API KEY de OpenAI">
+                        <label for="openai_api_key">API KEY de OpenAI</label>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-12 text-center">
+                        <button type="submit" title="Crear la Aplicación" class="btn btn-primary mx-auto">Crear la Aplicación</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="resultados">
+    <!-- Aqui se mostrarán los resultados -->
+</div>
+
+<div id="plantilla_respuesta" style="display: none;">
+    <div class="row respuesta my-4 mb-4 caso grisaceo">
+        <div class="col-12 text-center">
+            <p class="text-primary">((respuesta))</p>
+            <p><strong><a href="javascript:void(0)" onclick="control.abrirMenu('admin')">Continuar</a></strong></p>
+        </div>
+    </div>
+</div>
+{% endif %}

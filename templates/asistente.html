@@ -1,0 +1,101 @@
+{% if usuario.roles == 'Editor' or usuario.roles == 'Usuario' %}
+<h3 class="text-center mb-4"><i class="bi {{menu.icono}}"></i> {{menu.titulo}}</h3>
+
+{% include 'apikey.html' %}
+
+<div id="seccion_asistente">
+    <ul class="nav nav-pills justify-content-center nav-fill">
+        <li class="nav-item small">
+            <a class="nav-link active" data-bs-toggle="pill" href="#carpetas"><i class="bi bi-folder"></i> Carpetas de conocimiento</a>
+        </li>
+        <li class="nav-item small">
+            <a class="nav-link" data-bs-toggle="pill" href="#documentos"><i class="bi bi-file-text"></i> Documentos</a>
+        </li>
+    </ul>
+    <div class="tab-content pt-2">
+        <div class="tab-pane active" id="carpetas">
+            {% for carpeta in lista_carpetas %}
+
+            {% for opcion in opciones_carpetas %}
+            {% for modulo in opcion.modulos %}
+            {% if modulo == 'asistente' and opcion.carpeta == carpeta.carpeta %}
+            <div class="row mt-3 mb-4 pt-2 pb-1 shadow-lg border rounded-4" id="car_{{carpeta.carpeta}}">
+                <div class="col-1">
+                    <i class="bi bi-folder h2"></i>
+                </div>
+                <div class="col-7">
+                    <div><a href="javascript:void(0)" class="text-dark text-decoration-none" title="Consultar" onclick="control.consultarChatdoc('{{carpeta.carpeta}}')">
+                        {% if opcion.carpeta == carpeta.carpeta %}{{opcion.etiqueta}}{% endif %}
+                        </a>
+                        <br><span class="text-secondary small"><i>{{carpeta.carpeta}} ({{carpeta.total}} docs)</i></span>
+                    </div>
+                </div>
+                <div class="col-4 text-end">
+                    <button type="button" title="Consultar" class="btn btn-light border" onclick="control.consultarChatdoc('{{carpeta.carpeta}}')"><i class="bi bi-chat"></i></button>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+            {% endfor %}
+
+            {% else %}
+            <div class="row mb-5 mt-5">
+                <div class="col-12">
+                    <div class="alert alert-warning text-primary text-center">No hay Carpetas de conocimiento para consultar</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="tab-pane fade" id="documentos">
+            {% for carpeta in lista_carpetas %}
+
+            {% for opcion in opciones_carpetas %}
+            {% for modulo in opcion.modulos %}
+            {% if modulo == 'asistente' and opcion.carpeta == carpeta.carpeta %}
+
+            {% if carpeta.consultables > 0 %}
+            <div class="row">
+                <div class="col">
+                    <div class="pt-1 pb-1 ps-2 rounded-top titulo_seccion">
+                        <i class="bi bi-folder h5"></i>&nbsp;
+                        {% for opcion in opciones_carpetas %}{% if opcion.carpeta == carpeta.carpeta %}{{opcion.etiqueta}}{% endif %}{% endfor %}
+                        &nbsp;({{carpeta.consultables}})
+                    </div>
+                    {% for documento in lista_documentos %}
+                    {% if documento.carpeta == carpeta.carpeta and documento.zona == 'C' %}
+                    <div class="row pt-2 pb-2 border-top" id="ar_{{documento.id}}">
+                        <div class="col-1 text-end pe-0">
+                            <img src="{{dir_base}}/static/img/{{documento.tipo}}.png" style="width: 32px" class="float-end">
+                        </div>
+                        <div class="col-9">
+                            <a href="javascript:void(0)" class="text-dark text-decoration-none small" title="Consultar" onclick="control.consultarChatdoc('{{documento.carpeta}}','{{documento.id}}')">{{documento.titulo}}</a>
+                        </div>
+                        <div class="col-1 text-end pe-0">
+                            <button type="button" title="Consultar" class="btn btn-light border" onclick="control.consultarChatdoc('{{documento.carpeta}}','{{documento.id}}')"><i class="bi bi-chat"></i></button>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% endif %}
+            {% endfor %}
+            {% endfor %}
+
+            {% endfor %}
+            {% if lista_documentos|length == 0 %}
+            <div class="row mb-5 mt-5">
+                <div class="col-12">
+                    <div class="alert alert-warning text-primary text-center">No hay Documentos catalogados para consultar</div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<div id="consultar_chatdoc" style="display: none;">
+</div>
+
+{% endif %}

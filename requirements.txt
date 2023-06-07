@@ -1,0 +1,17 @@
+langchain
+openai
+openai[wandb]
+openai[embeddings]
+openai[datalib]
+flask
+flask-cors
+flask-socketio
+faiss-cpu
+PyJWT
+PyPDF2
+PyMuPDF
+Pillow
+pdfminer.six
+docx2txt
+unstructured
+sentence-transformers

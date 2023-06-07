@@ -1,0 +1,76 @@
+{% if usuario.roles == 'Admin' %}
+<div class="row mb-3">
+    <div class="col-12 pe-1 text-end">
+        <button type="button" title="Actualizar indices" class="btn btn-light btn-sm text-dark border" onclick="control.abrirMenu('actualizar')"><i class="bi bi-server"></i>Actualizar</button>
+        <button type="button" title="Archivos" class="btn btn-light btn-sm text-dark border" onclick="control.abrirMenu('archivos')"><i class="bi bi-files"></i>Archivos</button>
+    </div>
+</div>
+<h3 class="text-center mb-4"><i class="bi {{menu.icono}}"></i> {{menu.titulo}}</h3>
+
+<div class="row">
+    <div class="col-12 text-center mb-4" id="respuesta" style="font-size: 1.2rem; color:navy; display: none;">
+        <!-- Aquí se mostrará la respuesta -->
+    </div>
+</div>
+<div id="form_subir">
+    <form action="{{dir_base}}/{{coleccion}}/subir" method="post" enctype="multipart/form-data" onsubmit="event.preventDefault(); control.subirArchivo(this)">
+        <div class="row mb-3">
+            <label for="archivo" class="col-md-4 col-form-label">Archivo:</label>
+            <div class="col-md-8">
+                <input type="file" id="archivo" name="archivo" class="form-control" required>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="carpeta" class="col-md-4 col-form-label">Guardar en:</label>
+            <div class="col-md-8">
+                <select name="carpeta" id="carpeta" class="form-select w-auto" required>
+                    {% for opcion in opciones_carpetas %}
+                    <option value="{{ opcion.carpeta }}">{{ opcion.etiqueta }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="card mt-2 mb-4">
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="ingresar" name="ingresar" value="1" checked>
+                            <label class="form-check-label" for="ingresar">Ingresar en BD</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="indexar" name="indexar" value="1" checked>
+                            <label class="form-check-label" for="indexar">Crear índice</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="catalogar" name="catalogar" value="1">
+                            <label class="form-check-label" for="catalogar">Catalogar metadatos</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-12 text-center">
+                <button type="submit" title="Subir el archivo" class="btn btn-primary mx-auto">Subir el archivo</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div id="plantilla_respuesta" style="display: none;">
+    <div class="row respuesta my-4 mb-4 caso grisaceo">
+        <div class="col-12 text-center">
+            <p class="text-primary">((respuesta))</p>
+            <p><br><strong><a href="javascript:void(0)" onclick="control.abrirMenu('subir')">Subir otro</a></strong></p>
+        </div>
+    </div>
+</div>
+{% endif %}

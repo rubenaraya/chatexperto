@@ -1,0 +1,31 @@
+[
+    {
+        "_uid": "LOCAL",
+        "id_indice": "index",
+        "ruta_indice": ""
+    },{
+        "_uid": "PINECONE",
+        "id_indice": "",
+        "ruta_indice": ""
+    },{
+        "_uid": "MILVUS",
+        "id_indice": "",
+        "ruta_indice": ""
+    },{
+        "_uid": "QDRANT",
+        "id_indice": "",
+        "ruta_indice": ""
+    },{
+        "_uid": "REDIS",
+        "id_indice": "",
+        "ruta_indice": ""
+    },{
+        "_uid": "WEAVIATE",
+        "id_indice": "",
+        "ruta_indice": ""
+    },{
+        "_uid": "CHROMA",
+        "id_indice": "",
+        "ruta_indice": ""
+    }
+]

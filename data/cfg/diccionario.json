@@ -1,0 +1,113 @@
+{
+    "tipos_archivo": [ 
+        {"valor":"pdf", "etiqueta": "PDF", "marcado": "1"}, 
+        {"valor":"docx", "etiqueta": "Word", "marcado": "1"}, 
+        {"valor":"xlsx", "etiqueta": "Excel", "marcado": "1"},
+        {"valor":"pptx", "etiqueta": "PowerPoint", "marcado": "0"}, 
+        {"valor":"csv", "etiqueta": "CSV", "marcado": "0"},
+        {"valor":"txt", "etiqueta": "TXT", "marcado": "0"}
+    ],
+    "api_llm": [
+        {"valor": "OpenAI_GPT-3.5", "etiqueta": "GPT-3.5"},
+        {"valor": "OpenAI_GPT-4", "etiqueta": "GPT-4"},
+        {"valor": "OpenAI_GPT-3", "etiqueta": "GPT-3"}
+    ],
+    "clase_interaccion": [
+        {"valor": "Conversacion", "etiqueta": "Conversación"},
+        {"valor": "Consulta", "etiqueta": "Consulta"}
+    ],
+    "max_tokens": [
+        {"valor": "32", "etiqueta": "32"},
+        {"valor": "64", "etiqueta": "64"},
+        {"valor": "128", "etiqueta": "128"},
+        {"valor": "256", "etiqueta": "256"},
+        {"valor": "384", "etiqueta": "384"},
+        {"valor": "512", "etiqueta": "512", "marcado": "1"},
+        {"valor": "640", "etiqueta": "640"},
+        {"valor": "768", "etiqueta": "768"},
+        {"valor": "1024", "etiqueta": "1024"},
+        {"valor": "1536", "etiqueta": "1536"},
+        {"valor": "2048", "etiqueta": "2048"}
+    ],
+    "chain_type": [
+        {"valor": "stuff", "etiqueta": "stuff"},
+        {"valor": "refine", "etiqueta": "refine"},
+        {"valor": "map_reduce", "etiqueta": "map_reduce"}
+    ],
+    "num_docs": [
+        {"valor": "2", "etiqueta": "2"},
+        {"valor": "3", "etiqueta": "3"},
+        {"valor": "4", "etiqueta": "4"},
+        {"valor": "5", "etiqueta": "5", "marcado": "1"},
+        {"valor": "6", "etiqueta": "6"},
+        {"valor": "7", "etiqueta": "7"},
+        {"valor": "8", "etiqueta": "8"},
+        {"valor": "9", "etiqueta": "9"},
+        {"valor": "10", "etiqueta": "10"}
+    ],
+    "max_docs": [
+        {"valor": "10", "etiqueta": "10"},
+        {"valor": "15", "etiqueta": "15"},
+        {"valor": "20", "etiqueta": "20"},
+        {"valor": "25", "etiqueta": "25"},
+        {"valor": "30", "etiqueta": "30"}
+    ],
+    "max": [
+        {"valor": "10", "etiqueta": "10 resultados"},
+        {"valor": "25", "etiqueta": "25 resultados"},
+        {"valor": "50", "etiqueta": "50 resultados"}
+    ],
+    "api_emb": [
+        {"valor": "OpenAI_Embeddings", "etiqueta": "OpenAI"}
+    ],
+    "sistema_archivos": [
+        {"valor": "LOCAL", "etiqueta": "LOCAL"}
+    ],
+    "almacen_indice": [
+        {"valor": "LOCAL", "etiqueta": "LOCAL"}
+    ],
+    "cargar_documentos": [
+        {"valor": "Diferenciado", "etiqueta": "Diferenciado"},
+        {"valor": "Generico", "etiqueta": "Generico"}
+    ],
+    "procesar_documentos": [
+        {"valor": "Basico", "etiqueta": "Basico"}
+    ],
+    "que_procesar": [
+        {"valor": "metadatos", "etiqueta": "metadatos"},
+        {"valor": "contenido", "etiqueta": "contenido"},
+        {"valor": "todo", "etiqueta": "todo"}
+    ],
+    "dividir_documentos": [
+        {"valor": "Recursivo", "etiqueta": "Recursivo"},
+        {"valor": "Simple", "etiqueta": "Simple"}
+    ],
+    "trozo": [
+        {"valor": "500", "etiqueta": "500"},
+        {"valor": "750", "etiqueta": "750"},
+        {"valor": "1000", "etiqueta": "1000"}
+    ],
+    "buscar_documentos": [
+        {"valor": "Similares", "etiqueta": "Similares"}
+    ],
+    "estado_documento": [
+        {"valor": "0", "etiqueta": "Nuevo", "color": "danger"},
+        {"valor": "1", "etiqueta": "Ingresado", "color": "warning"},
+        {"valor": "2", "etiqueta": "Indexado", "color": "success"},
+        {"valor": "3", "etiqueta": "Catalogado", "color": "primary"}
+    ],
+    "estado_usuario": [
+        {"valor": "0", "etiqueta": "Inactivo", "color": "warning"},
+        {"valor": "1", "etiqueta": "Activo", "color": "success"}
+    ],
+    "roles_usuario": [
+        {"valor": "Usuario", "etiqueta": "Usuario"},
+        {"valor": "Editor", "etiqueta": "Editor"},
+        {"valor": "Admin", "etiqueta": "Administrador"}
+    ],
+    "modulos": [
+        {"valor": "asistente", "etiqueta": "Asistente", "marcado": "1"},
+        {"valor": "biblioteca", "etiqueta": "Biblioteca"},
+        {"valor": "tutor", "etiqueta": "Tutor"}
+    ]
+}

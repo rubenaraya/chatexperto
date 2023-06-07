@@ -1,0 +1,221 @@
+:root {
+    --body-bg-color: #f0f0f0;
+    --container-bg-color: #fff;
+    --container-border-radius: 12px;
+    --container-box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+    --chat-content-bg-color: #e9e9e9;
+}
+
+.body {
+    font-family: Arial, sans-serif;
+    background-color: var(--body-bg-color);
+}
+
+.logo {
+    width: 128px;
+    margin: 0 auto;
+}
+
+.container {
+    background-color: var(--container-bg-color);
+    border-radius: var(--container-border-radius);
+    box-shadow: var(--container-box-shadow);
+    width: 95%;
+    max-width: 600px;
+    padding: 10px;
+}
+
+.row {
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.chat-content {
+    background-color: var(--chat-content-bg-color);
+    padding: 20px;
+    border-radius: 10px;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: left;
+}
+
+#chat-input { 
+    display: flex; 
+    margin-top: 20px; 
+}
+
+#chat-input input {
+    flex-grow: 1;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 8px 12px;
+    outline: none;
+}
+
+.icon-like, .icon-dislike {
+    cursor: pointer; 
+    font-size: 24px; 
+    padding: 0 5px; 
+}
+
+.icon-like:hover, .icon-dislike:hover {
+    opacity: 0.8;
+}
+
+.rojizo {
+    background-color: #ea899a;
+}
+
+.verdoso {
+    background-color: #bdecb6;
+}
+
+.grisaceo {
+    background-color: #f0f0f0;
+}
+
+.caso {
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.btn i {
+    margin-right: 5px;
+}
+
+.nav-link-admin {
+    background-color: #3399FF;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-left: 3px;
+    margin-right: 3px;
+    margin-top: 2px;
+    margin-bottom: 1px;
+}
+
+.nav-link-admin:hover {
+    background-color: #0033CC;
+    color: white;
+}
+
+.nav-link-usuario {
+    background-color: #198754;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-left: 3px;
+    margin-right: 3px;
+    margin-top: 2px;
+    margin-bottom: 1px;
+}
+
+.nav-link-usuario:hover {
+    background-color: #157347;
+    color: white;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+    color: #000;
+    background-color: #D3D4D5;
+}
+
+.chat-marco-mensaje {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+.chat-encabezado {
+    padding: 4px 8px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: normal;
+    background-color: #fff7de;
+}
+#chat-imagen-espera {
+    text-align: center;
+}
+#chat-enviar-mensaje { 
+    display: flex; 
+    margin-top: 10px; 
+}
+#chat-enviar-mensaje input {
+    flex-grow: 1;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 8px 12px;
+    outline: none;
+}
+
+#boton-enviar-mensaje {
+    background-color: #157347;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+    margin-left: 4px;
+}
+#boton-enviar-mensaje:hover {
+    background-color: #198754;
+}
+.chat-consulta {
+    margin: 12px 0 3px 0;
+    padding: 4px 8px;
+    border-radius: 8px;
+    text-align: right;
+    font-weight: normal;
+    /*border: 1px solid #0d6efd;*/
+    background-color: #cff4fc;
+    color: #0d6efd;
+    width: auto;
+    float:right;
+}
+.chat-respuesta {
+    margin: 3px 0;
+    padding: 4px 8px;
+    border-radius: 8px;
+    text-align: left;
+    font-style: italic;
+    /*border: 1px solid #157347;*/
+    background-color: #d9e7de;
+    color: #157347;
+    width: auto;
+    float:left;
+}
+.chat-error {
+    margin: 3px 0;
+    padding: 4px;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid red;
+    background-color: #fff;
+    color: red;
+}
+
+.titulo_seccion {
+    background-color: #D3D4D5;
+    color: black;
+}
+
+.texto-ajustable {
+    font-size: 16px;
+}
+
+#drop-area {
+    border: 2px dashed #ccc;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+}
+.drop-message {
+    font-size: 18px;
+    color: #888;
+}
+#drop-area.drag-over {
+    background-color: #f7f7f7;
+}
+#drop-area.drag-over .drop-message {
+    color: #333;
+}

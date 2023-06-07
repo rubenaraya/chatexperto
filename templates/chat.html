@@ -1,0 +1,102 @@
+{% if usuario.roles == 'Admin' %}
+<div class="row mb-3">
+    <div class="col-12 pe-1 text-end">
+        <button type="button" title="Revisar interacciones" class="btn btn-light btn-sm text-dark border" onclick="control.abrirMenu('revisar')"><i class="bi bi-search"></i>Revisar</button>
+    </div>
+</div>
+<h3 class="text-center mb-4"><i class="bi {{menu.icono}}"></i> {{menu.titulo}}</h3>
+
+{% if opciones_carpetas|length > 0 %}
+<form action="javascript:void(0)" method="post" id="form_opciones">
+    <div class="row mb-3">
+        <label for="carpeta" class="col-md-4 col-form-label">Carpeta:</label>
+        <div class="col-md-8">
+            <select name="carpeta" id="carpeta" class="form-select w-auto">
+                {% for opcion in opciones_carpetas %}
+                <option value="{{ opcion.carpeta }}">{{ opcion.etiqueta }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="llm" class="col-md-4 col-form-label">Modelo lenguaje:</label>
+        <div class="col-md-7">
+            <div class="input-group mb-3">
+                <select name="llm" id="llm" class="form-select w-auto">
+                    {% for opcion in diccionario.api_llm %}
+                    <option value="{{ opcion.valor }}">{{ opcion.etiqueta }}</option>
+                    {% endfor %}
+                </select>
+                <button data-bs-toggle="collapse" data-bs-target="#div_opciones" type="button" title="Opciones" class="btn btn-light text-dark border"><i class="bi bi-gear"></i></button>
+            </div>
+        </div>
+        <div class="col-1">
+        </div>
+    </div>
+    <div id="div_opciones" class="collapse">
+        <div class="card mt-2 mb-4">
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="temperature" class="form-label">Temperatura (0-1)</label>
+                        <input type="range" class="form-range" id="temperature" step="0.1" min="0" max="1">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="max_tokens" class="col-md-4 col-form-label">Máx. Tokens:</label>
+                    <div class="col-md-8">
+                        <select name="max_tokens" id="max_tokens" class="form-select w-auto">
+                            {% for opcion in diccionario.max_tokens %}
+                            <option value="{{opcion.valor}}" {% if opcion.marcado == '1' %}selected{% endif %}>{{opcion.etiqueta}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="num_docs" class="col-md-4 col-form-label">Num. docs:</label>
+                    <div class="col-md-8">
+                        <select name="num_docs" id="num_docs" class="form-select w-auto">
+                            {% for opcion in diccionario.num_docs %}
+                            <option value="{{opcion.valor}}" {% if opcion.marcado == '1' %}selected{% endif %}>{{opcion.etiqueta}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="chat-content" id="chat-content">
+                <p id="response-content">{{CHAT_MSG_SALUDO}}</p>
+                <div id="evaluacion" style="display: none;">
+                    <span id="like-btn" class="icon-like" title="Me gusta">👍</span>
+                    <span id="dislike-btn" class="icon-dislike" title="No me gusta">👎</span>
+                </div>
+            </div>
+            <div class="chat-input" id="chat-input">
+                <input type="text" id="user-input" name="p" placeholder="{{CHAT_MSG_TUPREGUNTA}}">
+                <button id="send-btn" class="btn btn-primary" title="Enviar" type="button" onclick="control.enviarPregunta()"><i class="bi bi-send"></i></button>
+            </div>
+            <div id="chat-espera" class="text-center" style="display: none;">
+                <img src="{{dir_base}}/{{app.coleccion}}/pwa/espere.gif" style="margin: 0 auto;">
+            </div>
+        </div>
+    </div>
+</form>
+{% else %}
+<div class="row mb-5 mt-5">
+    <div class="col-12">
+        <div class="alert alert-warning text-primary text-center">No hay Carpetas para probar el Chat</div>
+    </div>
+</div>
+{% endif %}
+<div id="plantilla_resultado" style="display: none;">
+    <div class="row resultado">
+        <div class="col-12">
+            <p><b>((peticion))</b></p>
+            <p><i>((respuesta))</i></p>
+        </div>
+    </div>
+</div>
+{% endif %}

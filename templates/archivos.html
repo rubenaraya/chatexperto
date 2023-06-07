@@ -1,0 +1,85 @@
+{% if usuario.roles == 'Admin' %}
+{% if opciones_carpetas|length > 0 %}
+<div class="row mb-3">
+    <div class="col-12 pe-1 text-end">
+        <button type="button" title="Subir archivo" class="btn btn-primary btn-sm" onclick="control.abrirMenu('subir')"><i class="bi bi-cloud-upload"></i>Subir</button>
+        <button type="button" title="Actualizar indices" class="btn btn-light btn-sm text-dark border" onclick="control.abrirMenu('actualizar')"><i class="bi bi-server"></i>Actualizar</button>
+    </div>
+</div>
+{% endif %}
+<h3 class="text-center mb-4"><i class="bi {{menu.icono}}"></i> {{menu.titulo}}</h3>
+{% if opciones_carpetas|length > 0 %}
+<form id="form_archivos" method="post" onsubmit="return control.consultarArchivos(1)">
+    <input type="hidden" name="nav" id="con_nav">
+    <div class="row mb-3">
+        <div class="col">
+            <div class="input-group mb-2">
+                <input type="search" id="con_texto" class="form-control" placeholder="Filtrar títulos" name="texto">
+                <select name="carpeta" id="con_carpeta" class="form-select">
+                    <option value=""></option>
+                    {% for opcion in opciones_carpetas %}
+                    <option value="{{ opcion.carpeta }}" {% if opcion.carpeta == carpeta %}selected{% endif %}>{{ opcion.etiqueta }}</option>
+                    {% endfor %}
+                </select>
+                <button data-bs-toggle="collapse" data-bs-target="#div_opciones" type="button" title="Opciones" class="btn btn-light text-dark border"><i class="bi bi-filter"></i></button>
+                <button class="btn btn-primary" type="submit">Buscar</button>
+            </div>
+        </div>
+    </div>
+    <div class="collapse" id="div_opciones">
+        <div class="card mt-2 mb-4">
+            <div class="card-body">
+                <div class="row mb-2">
+                    <label for="con_estado" class="col col-form-label">Estado:</label>
+                    <div class="col">
+                        <select name="estado" id="con_estado" class="form-select w-auto">
+                            <option value="">Todos</option>
+                            {% for estado in diccionario.estado_documento %}
+                            <option value="{{estado.valor}}" class="bg-{{estado.color}} text-white">{{estado.etiqueta}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <label for="con_tipo" class="col col-form-label">Tipo:</label>
+                    <div class="col">
+                        <select name="tipo" id="con_tipo" class="form-select w-auto">
+                            <option value="">Todos</option>
+                            {% for tipo in diccionario.tipos_archivo %}
+                            <option value="{{tipo.valor}}">{{tipo.etiqueta}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <label for="con_max" class="col col-form-label">Mostrar:</label>
+                    <div class="col">
+                        <select name="max" id="con_max" class="form-select w-auto">
+                            {% for cantidad in diccionario.max %}
+                            <option value="{{cantidad.valor}}">{{cantidad.etiqueta}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div id="lista_archivos">
+</div>
+<div id="consultar_chatdoc" style="display: none;">
+</div>
+<script>
+    jQuery(document).ready(function () {
+        control.consultarArchivos(1);
+    });
+</script>
+{% else %}
+<div class="row mb-5 mt-5">
+    <div class="col-12">
+        <div class="alert alert-warning text-primary text-center">No hay Carpetas de archivos</div>
+    </div>
+</div>
+{% endif %}
+{% endif %}

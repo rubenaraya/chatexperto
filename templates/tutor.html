@@ -1,0 +1,13 @@
+{% if usuario.roles == 'Editor' or usuario.roles == 'Usuario' %}
+<h3 class="text-center mb-4"><i class="bi {{menu.icono}}"></i> {{menu.titulo}}</h3>
+
+{% include 'apikey.html' %}
+
+<div id="seccion_tutor">
+</div>
+
+<script>
+    jQuery(document).ready(function () {
+    });
+</script>
+{% endif %}
