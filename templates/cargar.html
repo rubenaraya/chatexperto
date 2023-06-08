@@ -88,7 +88,7 @@
         dropArea.addEventListener('click', function() {
             jQuery('#archivo').click();
         });
-        $('#archivo').change(function() {
+        jQuery('#archivo').change(function() {
             handleSelectedFile(this.files[0]);
         });
         function preventDefault(e) {
@@ -105,6 +105,8 @@
             removeDragOverClass();
             var files = e.dataTransfer.files;
             if (files.length > 0) {
+                var fileInput = document.getElementById('archivo');
+                fileInput.files = files;
                 handleSelectedFile(files[0]);
             }
         }
@@ -113,7 +115,6 @@
                 jQuery('#datos_archivo').html( file.name + ' (' + Math.round(file.size / 1024 ) + ' kb)' );
             }
         }
-
     });
 </script>
 {% endif %}
