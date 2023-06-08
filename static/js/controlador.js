@@ -1,6 +1,6 @@
 /* controlador.js
 ******************************************************
-CHAT EXPERTO (Front-end) - Actualizado el: 06/06/2023
+CHAT EXPERTO (Front-end) - Actualizado el: 08/06/2023
 ******************************************************
 Clase: Controlador */
 
@@ -205,8 +205,20 @@ class Controlador {
         ventana.modal( 'show' );
     }
 
+    abrirModal(contenido) {
+        var ventana = jQuery( '#INT_MODAL' );
+        ventana.html( contenido );
+        ventana.modal( 'show' );
+    }
+
     cerrarVentana() {
         var ventana = jQuery( '#INT_VENTANA' );
+        ventana.modal( 'hide' );
+        ventana.html('');
+    }
+
+    cerrarModal() {
+        var ventana = jQuery( '#INT_MODAL' );
         ventana.modal( 'hide' );
         ventana.html('');
     }
@@ -1190,7 +1202,7 @@ class Controlador {
             }
         });
         peticion.done((respuesta) => {
-            control.abrirVentana(respuesta);
+            control.abrirModal(respuesta);
         });
         peticion.fail((jqXHR, estado, mensaje) => {
             control.mostrarError( jqXHR, estado, mensaje );
@@ -1217,7 +1229,7 @@ class Controlador {
         });
         peticion.done((respuesta) => {
             jQuery("#form_editar_espera").hide();
-            control.cerrarVentana();
+            control.cerrarModal();
             control.mostrarRespuesta( respuesta );
         });
         peticion.fail((jqXHR, estado, mensaje) => {
