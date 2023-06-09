@@ -33,7 +33,7 @@
     </div>
 </div>
 {% endfor %}
-<!--
+{% if app.carpetas %}
 <div class="row mb-3 mt-5">
     <div class="col-12 text-center">
         <button data-bs-toggle="collapse" data-bs-target="#div_crear" type="button" title="Nueva Carpeta" class="btn btn-success btn-sm"><i class="bi bi-folder-plus"></i> Nueva Carpeta</button>
@@ -88,5 +88,6 @@
         </div>
     </div>
 </div>
--->
+
+{% endif %}
 {% endif %}
