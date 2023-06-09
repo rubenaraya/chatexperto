@@ -1,0 +1,38 @@
+PROCEDIMIENTO PARA INSTALAR CHATEXPERTO EN UN SERVIDOR WEB GESTIONADO CON CPANEL
+
+1- Crear una nueva aplicación Python en CPanel con "Software / Setup Python App / CREATE APPLICATION":
+  Python version: 3.10.9
+  Application root: directorio raíz de la app en el File Manager.
+  Application URL: directorio web de inicio de la app, desde la raíz del dominio.
+  Application startup file: script principal, usualmente es "app.py".
+  Application Entry point: objeto wsgi, usualmente es "app".
+
+2- Una vez creada, ingresar en CPanel a  "Files / File Manager". Al entrar allí, buscar el directorio raíz de la aplicación. Es necesario mover temporalmente todo su contenido a otra ubicación, para que el directorio quede completamente vacío. El contenido que vamos a mover es: carpetas "public" y "tmp", más los archivos "passenger_wsgi.py" y "app.py".
+
+- Una vez vaciado el directorio, ingresar en CPanel a "Files / Git Version Control". Allí se debe crear un repositorio usando "Create":
+  Clone URL: https://github.com/rubenaraya/chatexperto.git
+  Repository Path: directorio raiz de la app (el que acabamos de dejar vacío).
+  Repository Name: chatexperto.
+  + Pulsar botón "Create".
+
+- Volver al "File Manager" de CPanel y restaurar el contenido que fue movido a su ubicación en el directorio raíz de la aplicación, salvo el archivo "app.py" que no hay que restaurarlo pues ya hay uno nuevo que es el de la aplicación clonada desde el repositorio de GitHub.
+
+- Se deben crear las siguientes carpetas vacias, en las rutas relativas a el directorio raíz de la aplicación:
+  [raiz_app]/logs
+  [raiz_app]/data/admin/sesiones
+
+- Se debe crear un archivo "colecciones.json" en la ruta [raiz_app]/data/cfg/, con el siguiente contenido:
+"""
+[{ "coleccion": "admin", "etiqueta": "Admin ChatExperto" }]
+"""
+
+- Volver a "Setup Python App" e ir a editar la Web Application recién creada. Allí se debe copiar el enlace que se muestra en la parte superior en "Enter to the virtual environment. To enter to virtual environment, run the command:".
+
+- Abrir un terminal en CPanel "Advanced / Terminal", y allí pegar y ejecutar en la línea de comandos el enlace copiado en el paso anterior. A continuación ejecutar los siguientes comandos para instalar las bibliotecas Python requeridas por la aplicación:
+  pip install -r requirements.txt
+  pip install unstructured
+  pip uninstall numpy
+  pip install numpy
+  pip install sentence-transformers
+
+- Por último, Volver a "Setup Python App" y allí iniciar la aplicación con el botón "Start" o "Restart the application".

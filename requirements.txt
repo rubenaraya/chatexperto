@@ -13,5 +13,4 @@ PyMuPDF
 Pillow
 pdfminer.six
 docx2txt
-unstructured
-sentence-transformers
+tiktoken

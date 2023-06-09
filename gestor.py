@@ -891,8 +891,7 @@ class GestorColeccion:
                     datos = self.ALMACEN.leer_excel( nombre=nombre, directorio="TEMP" )
                     if datos:
                         for fila in datos:
-                            bd.importar_metadatos( parametros=fila )
-                        resultado = True
+                            resultado = bd.importar_metadatos( parametros=fila )
 
         except Exception as e:
             self.gestor_registrar.error( f"{e}" )
