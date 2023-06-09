@@ -41,7 +41,7 @@
             </div>
         </div>
         {% if documento|length > 0 %}
-        {% if documento.resumen is not none and documento.resumen != '' %}
+        {% if documento.resumen is not none and documento.resumen != '' and documento.resumen|length > 5 %}
         <div class="row mt-2">
             <div class="col-12">
                 <i><a href="javascript:void(0)" class="text-primary text-decoration-none" data-bs-toggle="collapse" data-bs-target="#resumen_{{documento.id}}" title="Resumen del documento"><i class="bi bi-eye-fill"></i> Resumen del documento</a></i>
@@ -97,7 +97,7 @@
         </div>
         {% endif %}
         <div id="chat-mensajes-conversacion"></div>
-        {% if preguntas|length > 0 %}
+        {% if preguntas|length > 1 %}
         <div class="row mt-2">
             <div class="col-12">
                 <i><a href="javascript:void(0)" class="text-primary text-decoration-none" data-bs-toggle="collapse" data-bs-target="#preguntas" title="Consultas sugeridas"><i class="bi bi-lightbulb"></i> Consultas sugeridas…</a></i>
@@ -109,7 +109,9 @@
                     <div class="card-body pt-1 pb-1">
                         <small><span class="text-secondary"><i>
                             {% for pregunta in preguntas %}
+                            {% if pregunta|length > 5 %}
                             <div><a href="javascript:control.preguntaConsultar('{{pregunta}}')" class="text-secondary text-decoration-none"><i class="bi bi-question-circle-fill"></i> {{pregunta}}</a></div>
+                            {% endif %}
                             {% endfor %}
                         </i></span></small>
                     </div>

@@ -12,7 +12,7 @@
         <img src="{{dir_base}}/static/img/{{archivo.tipo}}.png" style="width: 32px">
     </div>
     <div class="col-8">
-        {% if archivo.resumen is not none and archivo.resumen != '' %}
+        {% if archivo.resumen is not none and archivo.resumen != '' and archivo.resumen|length > 5 %}
         <a href="javascript:void(0)" class="text-dark text-decoration-none" data-bs-toggle="collapse" data-bs-target="#ar_{{archivo.id}}_mas" title="Ver resumen">
             {{archivo.titulo}} &nbsp;
             <i class="bi bi-eye-fill text-dark h6"></i>
@@ -42,7 +42,7 @@
             </ul>
         </div>
     </div>
-    {% if archivo.resumen is not none and archivo.resumen != '' %}
+    {% if archivo.resumen is not none and archivo.resumen != '' and archivo.resumen|length > 5 %}
     <div id="ar_{{archivo.id}}_mas" class="collapse">
         <div class="col-12">
             <div class="card mt-1 mb-2">

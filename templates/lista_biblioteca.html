@@ -31,7 +31,7 @@
     </div>
     <div class="col-8">
         <div>
-            {% if archivo.resumen is not none and archivo.resumen != '' %}
+            {% if archivo.resumen is not none and archivo.resumen != '' and archivo.resumen|length > 5 %}
             <a href="javascript:void(0)" class="text-dark text-decoration-none" data-bs-toggle="collapse" data-bs-target="#ar_{{archivo.id}}_mas" title="Ver resumen">{{archivo.caso}}. {{archivo.titulo}}{% if archivo.paginas > 0 %} <small>({{archivo.paginas}}p)</small>{% endif %} <i class="bi bi-eye-fill text-dark h6"></i></a>
             {% else %}
             {{archivo.caso}}. {{archivo.titulo}}{% if archivo.paginas > 0 %} <small>({{archivo.paginas}}p)</small>{% endif %}
@@ -59,7 +59,7 @@
     </div>
     {% endif %}
     {% endfor %}
-    {% if archivo.resumen is not none and archivo.resumen != '' %}
+    {% if archivo.resumen is not none and archivo.resumen != '' and archivo.resumen|length > 5 %}
     <div id="ar_{{archivo.id}}_mas" class="collapse">
         <div class="col-12">
             <div class="card mt-1 mb-2">
