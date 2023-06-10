@@ -1035,19 +1035,21 @@ class BaseDatos:
                 conexion.close()
 
     # Función para obtener listas de documentos destacados
-    def documentos_destacados( self, total ):
+    def documentos_destacados( self, total, carpetas=[] ):
         try:
-            param = [ total ]
+            reemplazar = ','.join(['?'] * len(carpetas))
             conexion = sqlite3.connect( self._BD.get('RECURSOS') )
             bd = conexion.cursor()
 
             # Ejecuta las consultas SQL y obtiene sus resultados
             consulta_sql = self._SQL.get( 'SELECT_DOC_RECIENTES' )
-            bd.execute( consulta_sql, param )
+            consulta_sql = str(f"{consulta_sql} LIMIT {total}").format(reemplazar)
+            bd.execute( consulta_sql, carpetas )
             datos1 = bd.fetchall()
             columnas1 = [desc[0] for desc in bd.description]
             consulta_sql = self._SQL.get( 'SELECT_DOC_POPULARES' )
-            bd.execute( consulta_sql, param )
+            consulta_sql = str(f"{consulta_sql} LIMIT {total}").format(reemplazar)
+            bd.execute( consulta_sql, carpetas )
             datos2 = bd.fetchall()
             columnas2 = [desc[0] for desc in bd.description]
             conexion.close()

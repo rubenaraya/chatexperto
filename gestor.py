@@ -899,9 +899,12 @@ class GestorColeccion:
         return resultado
 
     # Función para obtener los documentos destacados
-    def consultar_destacados( self, total=10 ):
+    def consultar_destacados( self, total=10, modulo='' ):
+        if not total:
+            total = 10
         bd = BaseDatos(self.config)
-        resultados = bd.documentos_destacados( total=total )
+        carpetas = self._lista_carpetas( modulo=modulo )
+        resultados = bd.documentos_destacados( total=int(total), carpetas=carpetas )
         return resultados
 
 
@@ -1045,3 +1048,14 @@ class GestorColeccion:
 
         # Si hay más de una parte, devuelve la última parte, que corresponde a la extensión
         return partes[-1]
+
+    def _lista_carpetas( self, modulo ):
+        ruta_archivo = f"{self.config.RUTA.get('CONFIG')}/carpetas.json"
+        with open( ruta_archivo, 'r', encoding='utf-8' ) as f:
+            datos = json.load( f )
+        carpetas = []
+        for item in datos:
+            if modulo in item['modulos']:
+                carpetas.append(item['carpeta'])
+
+        return carpetas

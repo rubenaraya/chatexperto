@@ -73,11 +73,12 @@ def global_exception_handler( error ):
 ######################################################
 
 ######################################################
-# API REST PARA APLICACIONES EXTERNAS (4)
+# API REST PARA APLICACIONES EXTERNAS (5)
 # "/<coleccion>/chat_bot" (POST) [K]
 # "/<coleccion>/chat/<int:uid>" (POST) [K]
 # "/<coleccion>/mibiblioteca" (GET) [K]
 # "/<coleccion>/mibiblioteca" (POST) [K]
+# "/<coleccion>/misdestacados" (GET) [K]
 ######################################################
 # APLICACION WEB GENERICA (5):
 # "/<coleccion>" (GET)
@@ -2151,12 +2152,35 @@ def interfaz_destacados( coleccion ):
         return jsonify( {'error': config.MENSAJES.get('ERROR_ACCESO_DENEGADO')} ), 401
 
     gestor = GestorColeccion(config)
-    resultados = gestor.consultar_destacados( 5 )
+    resultados = gestor.consultar_destacados( total=5, modulo='biblioteca' )
 
     # Entrega la interfaz HTML
     return render_template( 'destacados.html', app=config.APP, dir_base=request.script_root, usuario=config.USUARIO, 
-            diccionario = config.cargar_valores( 'diccionario.json' ),
-            opciones_carpetas = config.cargar_valores( 'carpetas.json' ),
+            lista_archivos = resultados
+        )
+
+######################################################
+# URL: "/<coleccion>/misdestacados" (GET) [K]
+# Muestra una interfaz HTML con listas de documentos destacados
+@app.route( '/<coleccion>/misdestacados', methods=['GET'] )
+@cross_origin()
+def interfaz_misdestacados( coleccion ):
+    config = Config(coleccion)
+
+    # Comprueba la colección
+    if not config.comprobar_coleccion( coleccion ):
+        return jsonify( {'error': config.MENSAJES.get('ERROR_COLECCION_NOEXISTE')} ), 404
+
+    # Valida sesión del usuario para autorizar
+    if not comprobar_sesion( app_key=True, config=config ):
+        return jsonify( {'error': config.MENSAJES.get('ERROR_ACCESO_DENEGADO')} ), 401
+
+    numero = obtener_parametro( 'numero' )
+    gestor = GestorColeccion(config)
+    resultados = gestor.consultar_destacados( total=numero, modulo='biblioteca' )
+
+    # Entrega la interfaz HTML
+    return render_template( 'misdestacados.html', app=config.APP, dir_base=request.script_root, 
             lista_archivos = resultados
         )
 
