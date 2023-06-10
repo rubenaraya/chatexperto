@@ -70,12 +70,16 @@
     <div id="lista_resultados">
     </div>
     <br>
+    <div id="lista_destacados" style="display: none;">
+    </div>
+    <br>
 </div>
 <div id="consultar_chatdoc" style="display: none;">
 </div>
 <script>
     jQuery(document).ready(function () {
         control.activarBuscador('con_buscar');
+        control.consultarDestacados();
     });
 </script>
 {% endif %}

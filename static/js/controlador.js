@@ -1,6 +1,6 @@
 /* controlador.js
 ******************************************************
-CHAT EXPERTO (Front-end) - Actualizado el: 08/06/2023
+CHAT EXPERTO (Front-end) - Actualizado el: 10/06/2023
 ******************************************************
 Clase: Controlador */
 
@@ -1597,6 +1597,7 @@ class Controlador {
         cerrar.hide();
         var datos = jQuery( '#form_buscar' ).serialize();
         jQuery("#lista_resultados").hide();
+        jQuery("#lista_destacados").hide();
         jQuery("#zona_espera").show();
         con_buscar.val('');
         const peticion = jQuery.ajax({
@@ -1617,7 +1618,6 @@ class Controlador {
             jQuery("#zona_espera").hide();
             destino.show();
             control.resaltarPalabras();
-            //control.enviarBusqueda();
             jQuery("#volver_buscar").focus();
         });
         peticion.fail((jqXHR, estado, mensaje) => {
@@ -1850,6 +1850,29 @@ class Controlador {
             control.verMensaje( this.t['error_excel'], 'error' );
             console.error(error);
         }
+    }
+
+    consultarDestacados() {
+        const peticion = jQuery.ajax({
+            type: "GET",
+            url: control.ruta_base + "/destacados",
+            beforeSend: function (xhr) {
+                var token = leerCookie('token');
+                var id_sesion = leerCookie('id_sesion');
+                xhr.setRequestHeader('id_sesion', id_sesion);
+                xhr.setRequestHeader('token', token);
+                xhr.setRequestHeader('app', control.app);
+            }
+        });
+        peticion.done((respuesta) => {
+            var destino = jQuery( '#lista_destacados' );
+            destino.html( respuesta );
+            destino.fadeIn();
+        });
+        peticion.fail((jqXHR, estado, mensaje) => {
+            control.mostrarError( jqXHR, estado, mensaje );
+        });
+        return false;
     }
 
 }

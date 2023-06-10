@@ -1034,6 +1034,43 @@ class BaseDatos:
             if conexion:
                 conexion.close()
 
+    # Función para obtener listas de documentos destacados
+    def documentos_destacados( self, total ):
+        try:
+            param = [ total ]
+            conexion = sqlite3.connect( self._BD.get('RECURSOS') )
+            bd = conexion.cursor()
+
+            # Ejecuta las consultas SQL y obtiene sus resultados
+            consulta_sql = self._SQL.get( 'SELECT_DOC_RECIENTES' )
+            bd.execute( consulta_sql, param )
+            datos1 = bd.fetchall()
+            columnas1 = [desc[0] for desc in bd.description]
+            consulta_sql = self._SQL.get( 'SELECT_DOC_POPULARES' )
+            bd.execute( consulta_sql, param )
+            datos2 = bd.fetchall()
+            columnas2 = [desc[0] for desc in bd.description]
+            conexion.close()
+            recientes = []
+            if datos1:
+                for registro in datos1:
+                    caso = {columnas1[i]: registro[i] for i in range(len(columnas1))}
+                    recientes.append(caso)
+            populares = []
+            if datos2:
+                for registro in datos2:
+                    caso = {columnas2[i]: registro[i] for i in range(len(columnas2))}
+                    populares.append(caso)
+            lista = { "recientes": recientes, "populares": populares }
+            return lista
+
+        except Exception as e:
+            self.basedatos_registrar.error( f"{e}" )
+            return {}
+        finally:
+            if conexion:
+                conexion.close()
+
 
 ######################################################
 # FUNCIONES PRIVADAS

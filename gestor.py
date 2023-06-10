@@ -898,6 +898,12 @@ class GestorColeccion:
 
         return resultado
 
+    # Función para obtener los documentos destacados
+    def consultar_destacados( self, total=10 ):
+        bd = BaseDatos(self.config)
+        resultados = bd.documentos_destacados( total=total )
+        return resultados
+
 
 ######################################################
 # FUNCIONES PRIVADAS

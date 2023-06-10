@@ -1,6 +1,6 @@
 # app.py
 #######################################################
-# CHAT EXPERTO (Back-end) - Actualizado el: 06/06/2023
+# CHAT EXPERTO (Back-end) - Actualizado el: 10/06/2023
 #######################################################
 """
 Aplicación WEB-REST en Python para implementar un back-end para múltiples servicios de Chat inteligentes que responden preguntas sobre bases de conocimiento personalizadas.
@@ -73,9 +73,11 @@ def global_exception_handler( error ):
 ######################################################
 
 ######################################################
-# API REST PARA APLICACIONES EXTERNAS DE CHAT (2)
+# API REST PARA APLICACIONES EXTERNAS (4)
 # "/<coleccion>/chat_bot" (POST) [K]
 # "/<coleccion>/chat/<int:uid>" (POST) [K]
+# "/<coleccion>/mibiblioteca" (GET) [K]
+# "/<coleccion>/mibiblioteca" (POST) [K]
 ######################################################
 # APLICACION WEB GENERICA (5):
 # "/<coleccion>" (GET)
@@ -114,7 +116,7 @@ def global_exception_handler( error ):
 # "/<coleccion>/metadatos/<int:uid>" (GET) [T]
 # "/<coleccion>/metadatos/<int:uid>" (POST) [T]
 ######################################################
-# APLICACION WEB PARA USAR COLECCIONES (20):
+# APLICACION WEB PARA USAR COLECCIONES (21):
 # "/<coleccion>/cargar" (GET) [T]
 # "/<coleccion>/cargar" (POST) [T]
 # "/<coleccion>/miscarpetas" (GET) [T]
@@ -135,6 +137,7 @@ def global_exception_handler( error ):
 # "/<coleccion>/importar" (POST) [T]
 # "/<coleccion>/exportar/<carpeta>" (GET) [T]
 # "/<coleccion>/indexar" (POST) [T]
+# "/<coleccion>/destacados" (GET) [T]
 
 ######################################################
 # URL: "/<coleccion>" (GET)
@@ -2066,6 +2069,96 @@ def funcion_indexar( coleccion ):
         return jsonify( {'respuesta': mensaje} ), 200
     else:
         return jsonify( {'error': config.MENSAJES.get('ERROR_DATOS_INCOMPLETOS')} ), 400
+
+######################################################
+# URL: "/<coleccion>/mibiblioteca" (GET) [K]
+# Devuelve la lista de documentos encontrados en la biblioteca en formato HTML
+@app.route( '/<coleccion>/mibiblioteca', methods=['GET'] )
+@cross_origin()
+def interfaz_mibiblioteca( coleccion ):
+    config = Config(coleccion)
+
+    # Comprueba la colección
+    if not config.comprobar_coleccion( coleccion ):
+        return jsonify( {'error': config.MENSAJES.get('ERROR_COLECCION_NOEXISTE')} ), 404
+
+    # Valida sesión del usuario para autorizar
+    if not comprobar_sesion( app_key=True, config=config ):
+        return jsonify( {'error': config.MENSAJES.get('ERROR_ACCESO_DENEGADO')} ), 401
+
+    # Lee y asigna los parámetros de la consulta
+    config.CARPETA = obtener_parametro( 'carpeta' )
+    parametros = {}
+    for campo in request.args:
+        parametros[campo] = request.args[campo]
+
+    gestor = GestorColeccion(config)
+    datos = gestor.buscar_textos_documentos( parametros=parametros )
+
+    # Entrega la interfaz HTML
+    return render_template( 'mibiblioteca.html', app=config.APP, dir_base=request.script_root, 
+            diccionario = config.cargar_valores( 'diccionario.json' ),
+            opciones_carpetas = config.cargar_valores( 'carpetas.json' ),
+            datos = datos
+        )
+
+######################################################
+# URL: "/<coleccion>/mibiblioteca" (POST) [K]
+# Devuelve la lista de documentos encontrados en la biblioteca en formato JSON
+@app.route( '/<coleccion>/mibiblioteca', methods=['POST'] )
+@cross_origin()
+def funcion_mibiblioteca( coleccion ):
+    config = Config(coleccion)
+
+    # Comprueba la colección
+    if not config.comprobar_coleccion( coleccion ):
+        return jsonify( {'error': config.MENSAJES.get('ERROR_COLECCION_NOEXISTE')} ), 404
+
+    # Valida sesión del usuario para autorizar
+    if not comprobar_sesion( app_key=True, config=config ):
+        return jsonify( {'error': config.MENSAJES.get('ERROR_ACCESO_DENEGADO')} ), 401
+
+    # Lee y asigna los parámetros de la consulta
+    config.CARPETA = obtener_parametro( 'carpeta' )
+    parametros = {}
+    for campo in request.form:
+        parametros[campo] = request.form[campo]
+
+    gestor = GestorColeccion(config)
+    datos = gestor.buscar_textos_documentos( parametros=parametros )
+    if datos:
+        return jsonify( {'resultados': datos} ), 200
+    else:
+        return jsonify( {'error': config.MENSAJES.get('ERROR_GENERAL')} ), 500
+
+######################################################
+# URL: "/<coleccion>/destacados" (GET) [T]
+# Muestra una interfaz HTML con listas de documentos destacados
+@app.route( '/<coleccion>/destacados', methods=['GET'] )
+def interfaz_destacados( coleccion ):
+    roles = ["Editor","Usuario"]
+    config = Config(coleccion)
+
+    # Comprueba la colección
+    if not config.comprobar_coleccion( coleccion ):
+        return jsonify( {'error': config.MENSAJES.get('ERROR_COLECCION_NOEXISTE')} ), 404
+
+    # Valida sesión del usuario para autorizar
+    if not comprobar_sesion( app_key=False, config=config ):
+        return redirect( f"{request.script_root}/{coleccion}/login" )
+
+    if not config.USUARIO.get('roles') in roles:
+        return jsonify( {'error': config.MENSAJES.get('ERROR_ACCESO_DENEGADO')} ), 401
+
+    gestor = GestorColeccion(config)
+    resultados = gestor.consultar_destacados( 5 )
+
+    # Entrega la interfaz HTML
+    return render_template( 'destacados.html', app=config.APP, dir_base=request.script_root, usuario=config.USUARIO, 
+            diccionario = config.cargar_valores( 'diccionario.json' ),
+            opciones_carpetas = config.cargar_valores( 'carpetas.json' ),
+            lista_archivos = resultados
+        )
 
 
 ######################################################
