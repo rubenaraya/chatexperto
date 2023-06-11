@@ -113,32 +113,6 @@ class Almacenes:
 
         return False
 
-    # Función para combinar índices de múltiples archivos en un índice de carpeta
-    def combinar_indices( self, nombre_indice, api_emb=None ):
-
-        if self.CFG.get('_uid') == 'LOCAL' or self.CFG.get('_uid') == 'FAISS':
-            return self._combinar_indices_faiss( nombre_indice=nombre_indice, api_emb=api_emb )
-
-        elif self.CFG.get('_uid') == 'MILVUS':
-            return False
-
-        elif self.CFG.get('_uid') == 'PINECONE':
-            return False
-
-        elif self.CFG.get('_uid') == 'QDRANT':
-            return False
-
-        elif self.CFG.get('_uid') == 'REDIS':
-            return False
-
-        elif self.CFG.get('_uid') == 'WEAVIATE':
-            return False
-
-        elif self.CFG.get('_uid') == 'CHROMA':
-            return False
-
-        return False
-
     # Función para abrir un índice vectorial existente
     def cargar_indice( self, api_emb=None, id_doc=0 ):
         self.INDICE = None
@@ -504,22 +478,6 @@ class Almacenes:
             # Crea un indice FAISS con los textos trozados y la API de embeddings y lo almacena en el disco local
             self.INDICE = FAISS.from_documents( documentos, api_emb )
             self.INDICE.save_local( self.CFG.get('ruta_indice'), self.CFG.get('id_indice') )
-            """
-            TODO: Este fragmento de código no funciona (igual caso que en "_combinar_indices_faiss"), ya que los índies deben ser IndexFlatL2
-            # Si se creó un índice de documento, lo agrega al índice de la carpeta
-            if int(id_doc) > 0:
-                ruta_indice_carpeta = f"{self.CFG.get('ruta_indice')}/index.faiss"
-                if archivos.comprobar_archivo( ruta=ruta_indice_carpeta ):
-                    local_db = FAISS.load_local(
-                        folder_path = self.CFG.get('ruta_indice'),
-                        embeddings = api_emb,
-                        index_name = 'index'
-                    )
-                    local_db.merge_from(self.INDICE)
-                    local_db.save_local( self.CFG.get('ruta_indice'), 'index' )
-                else:
-                    self.INDICE.save_local( self.CFG.get('ruta_indice'), 'index' )
-            """
             return True
 
         except Exception as e:
@@ -573,52 +531,6 @@ class Almacenes:
                 ruta_borrar = f"{self.CFG.get('ruta_indice')}/{self.CFG.get('id_indice')}.faiss"
                 archivos.borrar_archivo( ruta=ruta_borrar )
                 return True
-
-        except Exception as e:
-            self.almacenes_registrar.error( f"{e}" )
-
-        return False
-
-    # TODO: Se debe corregir para habilitar
-    def _combinar_indices_faiss( self, nombre_indice, api_emb=None ):
-        from langchain.vectorstores.faiss import FAISS
-
-        if not nombre_indice or not api_emb:
-            return False
-
-        try:
-            # Configuración de rutas y nombres
-            archivos = Archivos(self.config)
-            if len( self.CFG.get('ruta_indice') ) == 0:
-                self.CFG['ruta_indice'] = archivos.obtener_ruta( tipo_recurso="INDICES" )
-
-            # Borra el nuevo índice si ya existe
-            nuevo_indice = f"{self.CFG['ruta_indice']}/{nombre_indice}.faiss"
-            archivos.borrar_archivo( ruta=nuevo_indice )
-
-            # Obtiene la lista de archivos .faiss en la carpeta de índices
-            lista_archivos = archivos.obtener_lista_archivos( extension='faiss', ruta=self.CFG['ruta_indice'] )
-            if not lista_archivos:
-                return False
-
-            indice_base = lista_archivos[0]
-            self.INDICE = FAISS.load_local( 
-                folder_path = self.CFG.get('ruta_indice'), 
-                embeddings = api_emb, 
-                index_name = indice_base 
-            )
-            
-            for archivo in lista_archivos:
-                if archivo not in [ self.CFG['id_indice'], 'index', indice_base ]:
-                    indice_archivo = FAISS.load_local( 
-                        folder_path = self.CFG.get('ruta_indice'), 
-                        embeddings = api_emb, 
-                        index_name = archivo 
-                    )
-                    # self.INDICE.merge_from( indice_archivo )
-
-            # self.INDICE.save_local( self.CFG.get('ruta_indice'), nombre_indice )
-            return False
 
         except Exception as e:
             self.almacenes_registrar.error( f"{e}" )

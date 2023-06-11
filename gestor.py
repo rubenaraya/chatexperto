@@ -87,15 +87,6 @@ class GestorColeccion:
                 else:
                     self.gestor_registrar.error( f"{self.config.MENSAJES.get('ERROR_INDICE_NOCREADO')}: {self.config.CARPETA}" )
 
-            # METODO: COMBINAR
-            elif metodo == "combinar":
-                resultado = self.ALMACEN.combinar_indices(
-                    nombre_indice = 'carpeta',
-                    api_emb = self.MODELO.api_emb()
-                )
-                if resultado:
-                    return True
-
         except Exception as e:
             self.gestor_registrar.error( f"{e}" )
 
@@ -152,7 +143,7 @@ class GestorColeccion:
 
             # Actualizar estado del documento en la BD
             if resultado:
-                actualizar = bd.actualizar_estado_documento( id_doc=id_doc, estado=self.ESTADO_DOC.get('INDEXADO') )
+                actualizar = bd.actualizar_documento( id_doc=id_doc, estado=self.ESTADO_DOC.get('INDEXADO'), parametros=[] )
                 if actualizar:
                     return True
                 else:
@@ -533,7 +524,7 @@ class GestorColeccion:
         return mensaje
 
 ######################################################
-# FUNCIONES PUBLICAS PARA DOCUMENTOS (ARCHIVOS)
+# FUNCIONES PUBLICAS PARA ARCHIVOS Y DOCUMENTOS
 ######################################################
 
     # Función para subir un archivo y guardarlo

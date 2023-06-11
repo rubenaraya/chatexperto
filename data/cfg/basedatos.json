@@ -5,7 +5,6 @@
     "SELECT_INTERACCIONES": "SELECT id, fecha, hora, peticion, respuesta, tiempo, evaluacion, coleccion FROM interacciones WHERE 1",
     "INSERT_DOCUMENTO": "INSERT INTO documentos (estado{campos}) VALUES (?{valores})",
     "UPDATE_DOCUMENTO": "UPDATE documentos SET estado=?{campos} WHERE id=?",
-    "UPDATE_ESTADO_DOCUMENTO": "UPDATE documentos SET estado=? WHERE id=?",
     "UPDATE_DESCARGA_DOCUMENTO": "UPDATE documentos SET descargas=descargas + 1 WHERE id=?",
     "UPDATE_METADATOS_DOCUMENTO": "UPDATE documentos SET id=id{campos} WHERE id=?",
     "SELECT_DOCUMENTO": "SELECT archivo, tipo, titulo, ruta, carpeta FROM documentos WHERE id=?",

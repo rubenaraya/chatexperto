@@ -2,7 +2,6 @@
 <div class="modal-dialog modal-lg">
     <div class="modal-content">
         <form id="form_editar" method="post" onsubmit="return control.guardarArchivo('{{datos_archivo.id}}')">
-            <input type="hidden" name="estado" value="{{datos_archivo.estado}}">
             <div class="modal-header">
                 <h5 class="modal-title" id="titulo_ventana"><i class="bi bi-pencil-square"></i> Editar Archivo</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
@@ -45,6 +44,16 @@
                             <select name="zona" id="zona" class="form-select w-auto">
                                 <option value="N">NO</option>
                                 <option value="C" {% if datos_archivo.zona|string == 'C' %}selected{% endif %}>SI</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label for="estado" class="col-md-5 col-form-label">Estado:</label>
+                        <div class="col-md-7">
+                            <select name="estado" id="estado" class="form-select w-auto">
+                                {% for estado in diccionario.estado_documento %}
+                                <option value="{{estado.valor}}" class="bg-{{estado.color}} text-white" {% if estado.valor|string == datos_archivo.estado|string %}selected{% endif %}>{{estado.etiqueta}}</option>
+                                {% endfor %}
                             </select>
                         </div>
                     </div>

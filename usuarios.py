@@ -121,11 +121,17 @@ class Usuarios:
 
     # Función para actualizar los datos de un usuario
     def guardar_usuario( self, uid=0, parametros={} ):
+        guardado = False
         bd = BaseDatos(self.config)
-        guardado = bd.actualizar_usuario(
-            uid = uid,
-            parametros = parametros
-        )
+        if parametros:
+            clave = parametros.get('clave', None)
+            if clave:
+                clave_encriptada = self.config.cifrar_texto( clave )
+                parametros['clave'] = clave_encriptada
+            guardado = bd.actualizar_usuario(
+                uid = uid,
+                parametros = parametros
+            )
         return guardado
 
     # Función para borrar un usuario

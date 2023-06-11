@@ -281,65 +281,66 @@ class BaseDatos:
             param = [ estado ]
             campos = ''
 
-            titulo = parametros.get('titulo', None)
-            if titulo:
-                param.append( titulo )
-                campos = f"{campos}, titulo=?"
+            if parametros:
+                titulo = parametros.get('titulo', None)
+                if titulo:
+                    param.append( titulo )
+                    campos = f"{campos}, titulo=?"
 
-            autores = parametros.get('autores', None)
-            if autores:
-                param.append( autores )
-                campos = f"{campos}, autores=?"
+                autores = parametros.get('autores', None)
+                if autores:
+                    param.append( autores )
+                    campos = f"{campos}, autores=?"
 
-            editores = parametros.get('editores', None)
-            if editores:
-                param.append( editores )
-                campos = f"{campos}, editores=?"
+                editores = parametros.get('editores', None)
+                if editores:
+                    param.append( editores )
+                    campos = f"{campos}, editores=?"
 
-            fechapub = parametros.get('fechapub', None)
-            if fechapub:
-                param.append( fechapub )
-                campos = f"{campos}, fechapub=?"
+                fechapub = parametros.get('fechapub', None)
+                if fechapub:
+                    param.append( fechapub )
+                    campos = f"{campos}, fechapub=?"
 
-            descripcion = parametros.get('descripcion', None)
-            if descripcion:
-                param.append( descripcion )
-                campos = f"{campos}, descripcion=?"
+                descripcion = parametros.get('descripcion', None)
+                if descripcion:
+                    param.append( descripcion )
+                    campos = f"{campos}, descripcion=?"
 
-            palabras = parametros.get('palabras', None)
-            if palabras:
-                param.append( palabras )
-                campos = f"{campos}, palabras=?"
+                palabras = parametros.get('palabras', None)
+                if palabras:
+                    param.append( palabras )
+                    campos = f"{campos}, palabras=?"
 
-            resumen = parametros.get('resumen', None)
-            if resumen:
-                param.append( resumen )
-                campos = f"{campos}, resumen=?"
+                resumen = parametros.get('resumen', None)
+                if resumen:
+                    param.append( resumen )
+                    campos = f"{campos}, resumen=?"
 
-            sugerencias = parametros.get('sugerencias', None)
-            if sugerencias:
-                param.append( sugerencias )
-                campos = f"{campos}, sugerencias=?"
+                sugerencias = parametros.get('sugerencias', None)
+                if sugerencias:
+                    param.append( sugerencias )
+                    campos = f"{campos}, sugerencias=?"
 
-            seccion = parametros.get('seccion', None)
-            if seccion:
-                param.append( seccion )
-                campos = f"{campos}, seccion=?"
+                seccion = parametros.get('seccion', None)
+                if seccion:
+                    param.append( seccion )
+                    campos = f"{campos}, seccion=?"
 
-            categoria = parametros.get('categoria', None)
-            if categoria:
-                param.append( categoria )
-                campos = f"{campos}, categoria=?"
+                categoria = parametros.get('categoria', None)
+                if categoria:
+                    param.append( categoria )
+                    campos = f"{campos}, categoria=?"
 
-            zona = parametros.get('zona', None)
-            if zona:
-                param.append( zona )
-                campos = f"{campos}, zona=?"
+                zona = parametros.get('zona', None)
+                if zona:
+                    param.append( zona )
+                    campos = f"{campos}, zona=?"
 
-            periodo = parametros.get('periodo', 0)
-            if periodo:
-                param.append( int(periodo) )
-                campos = f"{campos}, periodo=?"
+                periodo = parametros.get('periodo', 0)
+                if periodo:
+                    param.append( int(periodo) )
+                    campos = f"{campos}, periodo=?"
 
             param.append( id_doc )
             consulta_sql = self._SQL.get( 'UPDATE_DOCUMENTO' )
@@ -400,27 +401,6 @@ class BaseDatos:
         except sqlite3.Error as e:
             self.basedatos_registrar.error( f"{e}" )
             return None
-        finally:
-            if conexion:
-                conexion.close()
-
-    # Función para modificar el estado de un documento de una colección
-    def actualizar_estado_documento( self, id_doc=0, estado=0 ):
-        try:
-            conexion = sqlite3.connect( self._BD.get('RECURSOS') )
-            consulta_sql = self._SQL.get( 'UPDATE_ESTADO_DOCUMENTO' )
-            parametros = [ 
-                int(estado), 
-                int(id_doc) 
-            ]
-            bd = conexion.cursor()
-            bd.execute( consulta_sql, parametros )
-            conexion.commit()
-            conexion.close()
-            return True
-        except Exception as e:
-            self.basedatos_registrar.error( f"{e}" )
-            return False
         finally:
             if conexion:
                 conexion.close()
@@ -744,6 +724,11 @@ class BaseDatos:
             if estado:
                 param.append( int(estado) )
                 campos = f"{campos}, estado=?"
+
+            clave = parametros.get('clave', None)
+            if clave:
+                param.append( clave )
+                campos = f"{campos}, clave=?"
 
             param.append( uid )
             consulta_sql = self._SQL.get( 'UPDATE_USUARIO' )
