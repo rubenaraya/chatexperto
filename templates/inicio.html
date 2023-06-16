@@ -17,6 +17,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{dir_base}}/static/js/serializejson.js"></script>
     <script src="{{dir_base}}/static/js/controlador.js?v={{app.ahora}}"></script>
+    <script src="{{dir_base}}/static/js/prompts.js?v={{app.ahora}}"></script>
 </head>
 <body class="body my-2" style="background-color: #f8f9fa;">
     <nav class="navbar navbar-expand-md navbar-light bg-light">
@@ -42,7 +43,7 @@
                 {% endif %}
 
                 {% if usuario.roles == 'Usuario' or usuario.roles == 'Editor' %}
-                <ul class="navbar-nav" style="font-size: 0.9rem">
+                <ul class="navbar-nav" style="font-size: 1rem">
 
                     {% for menu in menus %}
                     {% if menu.roles == 'Editor' and usuario.roles == 'Editor' and menu.mostrar == 'SI' %}

@@ -1,6 +1,6 @@
 # app.py
 #######################################################
-# CHAT EXPERTO (Back-end) - Actualizado el: 10/06/2023
+# CHAT EXPERTO (Back-end) - Actualizado el: 16/06/2023
 #######################################################
 """
 Aplicación WEB-REST en Python para implementar un back-end para múltiples servicios de Chat inteligentes que responden preguntas sobre bases de conocimiento personalizadas.
@@ -117,7 +117,7 @@ def global_exception_handler( error ):
 # "/<coleccion>/metadatos/<int:uid>" (GET) [T]
 # "/<coleccion>/metadatos/<int:uid>" (POST) [T]
 ######################################################
-# APLICACION WEB PARA USAR COLECCIONES (21):
+# APLICACION WEB PARA USAR COLECCIONES (24):
 # "/<coleccion>/cargar" (GET) [T]
 # "/<coleccion>/cargar" (POST) [T]
 # "/<coleccion>/miscarpetas" (GET) [T]
@@ -139,6 +139,9 @@ def global_exception_handler( error ):
 # "/<coleccion>/exportar/<carpeta>" (GET) [T]
 # "/<coleccion>/indexar" (POST) [T]
 # "/<coleccion>/destacados" (GET) [T]
+# "/<coleccion>/prompts" (GET) [T]
+# "/<coleccion>/prompts" (POST) [T]
+# "/<coleccion>/prompts" (DELETE) [T]
 
 ######################################################
 # URL: "/<coleccion>" (GET)
@@ -1159,6 +1162,8 @@ def funcion_admin( coleccion ):
     nombre = obtener_parametro( 'app_nombre' )
     descripcion = obtener_parametro( 'descripcion' )
     api_key = obtener_parametro( 'openai_api_key' )
+    carpetas = obtener_parametro( 'carpetas' )
+    chatgpt = obtener_parametro( 'chatgpt' )
 
     # Crea instancia del Gestor de la Colección
     gestor = GestorColeccion(config)
@@ -1739,7 +1744,7 @@ def funcion_chatdoc( coleccion ):
         return jsonify( {'respuesta': config.MENSAJES.get('CHAT_PREGUNTA_VACIA'), 'peticion': peticion} ), 200
     if len( peticion ) < 4:
         return jsonify( {'respuesta': config.MENSAJES.get('CHAT_PREGUNTA_MUYCORTA'), 'peticion': peticion} ), 200
-    if len( peticion ) > 200:
+    if len( peticion ) > 1000:
         return jsonify( {'respuesta': config.MENSAJES.get('CHAT_PREGUNTA_MUYLARGA'), 'peticion': peticion} ), 200
 
     # Recupera datos
@@ -2183,6 +2188,138 @@ def interfaz_misdestacados( coleccion ):
     return render_template( 'misdestacados.html', app=config.APP, dir_base=request.script_root, 
             lista_archivos = resultados
         )
+
+######################################################
+# URL: "/<coleccion>/prompts" (GET) [T]
+# Proporciona una interfaz HTML con un formulario para construir un prompt para GPT
+@app.route( '/<coleccion>/prompts', methods=['GET'] )
+def interfaz_prompts( coleccion ):
+    roles = ["Editor","Usuario"]
+    config = Config(coleccion)
+
+    # Comprueba la colección
+    if not config.comprobar_coleccion( coleccion ):
+        return jsonify( {'error': config.MENSAJES.get('ERROR_COLECCION_NOEXISTE')} ), 404
+
+    # Valida sesión del usuario para autorizar
+    if not comprobar_sesion( app_key=False, config=config ):
+        return redirect( f"{request.script_root}/{coleccion}/login" )
+
+    if not config.USUARIO.get('roles') in roles:
+        return jsonify( {'error': config.MENSAJES.get('ERROR_ACCESO_DENEGADO')} ), 401
+
+    historial = []
+    config.CARPETA = "chatgpt"
+    gestor = GestorColeccion(config)
+    historial = gestor.obtener_interacciones( id_doc=0 )
+
+    # Entrega la interfaz HTML
+    return render_template( 'prompts.html', app=config.APP, dir_base=request.script_root, usuario=config.USUARIO, 
+            diccionario = config.cargar_valores( 'prompts.json' ),
+            historial = historial
+        )
+
+######################################################
+# URL: "/<coleccion>/prompts" (POST) [T]
+# Recibe una pregunta para enviar a GPT y devuelve la respuesta recibida en formato JSON
+@app.route( '/<coleccion>/prompts', methods=['POST'] )
+def funcion_prompts( coleccion ):
+    import re
+    roles = ["Editor","Usuario"]
+    config = Config(coleccion)
+
+    # Comprueba la colección
+    if not config.comprobar_coleccion( coleccion ):
+        return jsonify( {'error': config.MENSAJES.get('ERROR_COLECCION_NOEXISTE')} ), 404
+
+    # Valida sesión del usuario para autorizar
+    if not comprobar_sesion( app_key=False, config=config ):
+        return jsonify( {'error': config.MENSAJES.get('ERROR_ACCESO_DENEGADO')} ), 401
+
+    if not config.USUARIO.get('roles') in roles:
+        return jsonify( {'error': config.MENSAJES.get('ERROR_ACCESO_DENEGADO')} ), 401
+
+    mensaje = obtener_parametro( 'mensaje' )
+    if not mensaje:
+        return jsonify( {'respuesta': config.MENSAJES.get('CHAT_PREGUNTA_VACIA'), 'peticion': mensaje} ), 200
+    if len( mensaje ) < 20:
+        return jsonify( {'respuesta': config.MENSAJES.get('CHAT_PREGUNTA_MUYCORTA'), 'peticion': mensaje} ), 200
+    if len( mensaje ) > 7000:
+        return jsonify( {'respuesta': config.MENSAJES.get('CHAT_PREGUNTA_MUYLARGA'), 'peticion': mensaje} ), 200
+
+    # Recupera parametros
+    parametros = {
+        "llm": obtener_parametro( 'modelo' ),
+        "max_tokens": obtener_parametro( 'longitud' ),
+        "temperature": obtener_parametro( 'expresion' ),
+        "num_docs": '0'
+    }
+
+    # Crea instancia del Gestor de la Colección con la carpeta seleccionada
+    config.CARPETA = "chatgpt"
+    gestor = GestorColeccion(config)
+    gestor.configurar_ejecutor( parametros=parametros )
+    try:
+        # Envía la solicitud a OpenAI y recibe la respuesta
+        ini_time = time.time()
+        gestor.CFG['clase_interaccion'] = "Peticion"
+        gestor.abrir_ejecutor()
+        respuesta = gestor.ejecutar_instruccion( peticion=mensaje, id_sesion=config.USUARIO.get('email') )
+        respuesta = str( respuesta ).strip()
+        tiempo = round( time.time() - ini_time, None )
+        if '"""' in mensaje:
+            mensaje = mensaje[:mensaje.index('"""')]
+        mensaje = re.sub(r'\n', ' ', mensaje)
+        resultado = gestor.procesar_respuesta(
+            respuesta = respuesta,
+            peticion = mensaje,
+            coleccion = f"{config.USUARIO.get('email')}-0-{config.CARPETA}",
+            tiempo = tiempo
+        )
+        respuesta = resultado.get("respuesta", "")
+        uid = int(resultado.get("uid", 0))
+
+    # Si se produce un error
+    except Exception as e:
+        return jsonify( {'error': config.MENSAJES.get('ERROR_GENERAL')} ), 500
+    # Si no se recibe respuesta
+    if not respuesta:
+        return jsonify( {'respuesta': config.MENSAJES.get('CHAT_RESPUESTA_NOSE'), 'peticion': mensaje} ), 200
+    
+    # Si todo está bien, devuelve el resultado en formato JSON
+    return jsonify({
+            'respuesta': respuesta, 
+            'peticion': mensaje, 
+            'id': uid,
+            'tiempo': tiempo
+        }), 200
+
+######################################################
+# URL: "/<coleccion>/prompts" (DELETE) [T]
+@app.route( '/<coleccion>/prompts', methods=['DELETE'] )
+def funcion_vaciar( coleccion ):
+    roles = ["Editor","Usuario"]
+    config = Config(coleccion)
+
+    # Comprueba la colección
+    if not config.comprobar_coleccion( coleccion ):
+        return jsonify( {'error': config.MENSAJES.get('ERROR_COLECCION_NOEXISTE')} ), 404
+
+    # Valida sesión del usuario para autorizar
+    if not comprobar_sesion( app_key=False, config=config ):
+        return redirect( f"{request.script_root}/{coleccion}/login" )
+
+    if not config.USUARIO.get('roles') in roles:
+        return jsonify( {'error': config.MENSAJES.get('ERROR_ACCESO_DENEGADO')} ), 401
+
+    config.CARPETA = "chatgpt"
+    gestor = GestorColeccion(config)
+    resultado = gestor.vaciar_interacciones( id_doc=0 )
+    if resultado:
+        return jsonify( {'respuesta': config.MENSAJES.get('EXITO_INTERACCIONES_BORRADAS')} ), 200
+    else:
+        return jsonify( {'respuesta': config.MENSAJES.get('ERROR_INTERACCIONES_NOBORRADAS')} ), 200
+
 
 
 ######################################################

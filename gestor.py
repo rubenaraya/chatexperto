@@ -160,7 +160,7 @@ class GestorColeccion:
             if llm:
                 self.MODELO.LLM = self.MODELO.cargar_configuracion( id_modelo = llm )
                 self.CFG['api_llm'] = llm
-                if llm in [ "OpenAI_GPT-3.5", "OpenAI_GPT-4" ]:
+                if llm in [ "OpenAI_GPT-3.5", "OpenAI_GPT-3.5-16k", "OpenAI_GPT-4" ]:
                     self.CFG['clase_interaccion'] = "Conversacion"
                 elif llm in [ "OpenAI_GPT-3" ]:
                     self.CFG['clase_interaccion'] = "Consulta"
@@ -215,29 +215,25 @@ class GestorColeccion:
     def abrir_ejecutor( self, id_doc=0, instruccion=None ):
         try:
             # Carga el índice vectorial en almacen.INDICE
-            self.ALMACEN.cargar_indice(
-                api_emb = self.MODELO.api_emb(),
-                id_doc = id_doc
-            )
-            if not self.ALMACEN.INDICE:
-                return False
-
-            # Si no se asignó instrucción, crea una por defecto
-            if not instruccion:
-                instruccion = self.CFG.get('instruccion')
-
-            # Si se cargó el índice, crea un ejecutor y lo entrega
-            if self.ALMACEN.INDICE:
-                self.EJECUTOR = self.MODELO.crear_cadena(
-                    indice = self.ALMACEN.INDICE,
-                    clase = self.CFG.get('clase_interaccion'),
-                    chain_type = str(self.CFG.get('chain_type')),
-                    num_docs = int( self.CFG.get('num_docs') ),
-                    plantilla = self._construir_plantilla( nombre=instruccion )
+            if self.CFG.get('clase_interaccion') != "Peticion":
+                self.ALMACEN.cargar_indice(
+                    api_emb = self.MODELO.api_emb(),
+                    id_doc = id_doc
                 )
-                return self.EJECUTOR
-            else:
-                self.gestor_registrar.error( f"{self.config.MENSAJES.get('ERROR_GESTOR_NODEFINIDO')}: {self.config.CARPETA}" )
+
+                # Si no se asignó instrucción, crea una por defecto
+                if not instruccion:
+                    instruccion = self.CFG.get('instruccion')
+
+            # Crea un ejecutor y lo entrega
+            self.EJECUTOR = self.MODELO.crear_cadena(
+                indice = self.ALMACEN.INDICE,
+                clase = self.CFG.get('clase_interaccion'),
+                chain_type = str(self.CFG.get('chain_type')),
+                num_docs = int( self.CFG.get('num_docs') ),
+                plantilla = self._construir_plantilla( nombre=instruccion )
+            )
+            return self.EJECUTOR
 
         except Exception as e:
             self.gestor_registrar.error( f"{e}" )
@@ -260,6 +256,19 @@ class GestorColeccion:
                         return_only_outputs = True
                     )
                     respuesta = resultado['answer']
+                    self._guardar_historial( uuid = f"{id_sesion}-{self.config.CARPETA}" )
+
+                # Clase: Peticion
+                if self.CFG.get('clase_interaccion') == "Peticion":
+                    
+                    chat_history = self._abrir_historial( uuid = f"{id_sesion}-{self.config.CARPETA}" )
+                    resultado = self.EJECUTOR( inputs = {
+                            "input": peticion,
+                            "chat_history": chat_history
+                        },
+                        return_only_outputs = True
+                    )
+                    respuesta = resultado['response']
                     self._guardar_historial( uuid = f"{id_sesion}-{self.config.CARPETA}" )
 
                 # Clase: Consulta
@@ -399,7 +408,7 @@ class GestorColeccion:
 ######################################################
 
     # Función para crear una nueva colección / aplicación
-    def crear_coleccion( self, coleccion, nombre, descripcion, api_key ):
+    def crear_coleccion( self, coleccion, nombre, descripcion, api_key, carpetas, chatgpt ):
         import unicodedata
         from archivos import Archivos
         archivos = Archivos(self.config)
@@ -432,6 +441,8 @@ class GestorColeccion:
                         datos['token_key'] = f"key-secreta-{coleccion}"
                         datos['descripcion'] = descripcion
                         datos['carpeta'] = ''
+                        datos['carpetas'] = carpetas
+                        datos['chatgpt'] = chatgpt
                         datos['openai_api_key'] = api_key
                         with open( ruta_aux, "w", encoding='utf-8' ) as f:
                             json.dump( datos, f, indent=4 )
@@ -934,7 +945,7 @@ class GestorColeccion:
     def _construir_plantilla( self, nombre="", peticion="" ):
         instruccion = peticion
         try:
-            if len( nombre ) > 0:
+            if nombre:
                 base = self._cargar_instruccion( nombre )
                 if base:
                     peticion = str(peticion).strip()

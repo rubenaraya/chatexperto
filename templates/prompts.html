@@ -1,0 +1,315 @@
+{% if usuario.roles == 'Editor' or usuario.roles == 'Usuario' %}
+<h3 class="text-center mb-4"><i class="bi bi-card-text"></i> Prompts para ChatGPT</h3>
+
+{% include 'apikey.html' %}
+
+<div id="chat-encabezado"></div>
+<form action="javascript:void(0)" method="post" id="form-base">
+    <div class="row mb-1">
+        <label for="tarea" class="col-4 col-form-label">Tarea:</label>
+        <div class="col-8">
+            <select name="tarea" id="tarea" class="form-select w-auto" onchange="prompts.elegirTarea()">
+                <option value="">ELEGIR...</option>
+                {% for opcion in diccionario.tareas %}
+                {% if opcion.visible == '1' %}
+                <option value="{{opcion.valor}}">{{opcion.etiqueta}}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="row mb-1">
+        <label for="lenguaje" class="col-4 col-form-label">Lenguaje:</label>
+        <div class="col-8">
+            <select name="lenguaje" id="lenguaje" class="form-select w-auto">
+                {% for opcion in diccionario.lenguajes %}
+                <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="row mb-1">
+        <label for="estilo" class="col-4 col-form-label">Estilo:</label>
+        <div class="col-8">
+            <select name="estilo" id="estilo" class="form-select w-auto">
+                {% for opcion in diccionario.estilos %}
+                <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="row mb-1">
+        <label for="tono" class="col-4 col-form-label">Tono:</label>
+        <div class="col-8">
+            <select name="tono" id="tono" class="form-select w-auto">
+                {% for opcion in diccionario.tonos %}
+                <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</form>
+
+<form action="javascript:void(0)" method="post" id="form-informe" class="form-prompt" style="display: none;">
+    <hr>
+    <div class="row">
+        <div class="col-9">
+            <div class="pe-1 input-group">
+                <label for="tipo-informe" class="col-form-label">Tipo informe:&nbsp;</label>
+                <select name="tipo" id="tipo-informe" class="form-select w-auto">
+                    {% for opcion in diccionario.tareas %}{% if opcion.valor == 'informe' %}
+                    {% for tipo in opcion.tipos %}{% if tipo.visible == '1' %}
+                    <option value="{{tipo.valor}}">{{tipo.etiqueta}}</option>
+                    {% endif %}{% endfor %}
+                    {% endif %}{% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-3 text-end">
+            <button type="button" title="Limpiar campos" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.limpiarCampos('informe')"><i class="bi bi-eraser-fill h5"></i></button>
+            <button type="button" title="Usar Plantilla" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.usarPlantilla('tipo-informe')"><i class="bi bi-box-arrow-in-down-left h5"></i></button>
+        </div>
+        <div class="col-12">
+            <div class="form-floating">
+                <textarea id="informe-intro" name="intro" placeholder="Instrucción de encuadre" maxlength="250" class="form-control auto-resize"></textarea>
+                <label for="informe-intro">Instrucción de encuadre</label>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-floating">
+                <textarea id="informe-peticion" name="peticion" maxlength="1000" class="form-control auto-resize"></textarea>
+                <label for="informe-peticion">Petición detallada (max: 1.000 caracteres)</label>
+            </div>
+        </div>
+        <div class="col-12 text-dark small text-center mt-2">
+            Reemplaza y completa los textos que estén entre ((paréntesis dobles))
+        </div>
+        <div class="col-12">
+            <div class="form-floating">
+                <textarea id="informe-texto" name="texto" maxlength="4000" class="form-control auto-resize"></textarea>
+                <label for="informe-texto">Texto base con datos para el informe (max: 4.000 caracteres)</label>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!--TODO: Completar -->
+<form action="javascript:void(0)" method="post" id="form-articulo" class="form-prompt" style="display: none;">
+</form>
+
+<!--TODO: Completar -->
+<form action="javascript:void(0)" method="post" id="form-noticia" class="form-prompt" style="display: none;">
+</form>
+
+<!--TODO: Completar -->
+<form action="javascript:void(0)" method="post" id="form-presentacion" class="form-prompt" style="display: none;">
+</form>
+
+<!--TODO: Completar -->
+<form action="javascript:void(0)" method="post" id="form-guion" class="form-prompt" style="display: none;">
+</form>
+
+<!--TODO: Completar -->
+<form action="javascript:void(0)" method="post" id="form-aviso" class="form-prompt" style="display: none;">
+</form>
+
+<!--TODO: Completar -->
+<form action="javascript:void(0)" method="post" id="form-correo" class="form-prompt" style="display: none;">
+</form>
+
+<!--TODO: Completar -->
+<form action="javascript:void(0)" method="post" id="form-preguntas" class="form-prompt" style="display: none;">
+</form>
+
+<!--TODO: Completar -->
+<form action="javascript:void(0)" method="post" id="form-texto" class="form-prompt" style="display: none;">
+</form>
+
+<!--TODO: Completar -->
+<form action="javascript:void(0)" method="post" id="form-instrucciones" class="form-prompt" style="display: none;">
+</form>
+
+<!--TODO: Completar -->
+<form action="javascript:void(0)" method="post" id="form-ideas" class="form-prompt" style="display: none;">
+</form>
+
+<div class="row mb-4 mt-2">
+    <div class="col-12 text-center">
+        <button type="button" title="Generar el Prompt" class="btn btn-success mx-auto form-prompt" id="generar_prompt" onclick="prompts.generarPrompt()" style="display: none;">Generar el Prompt</button>
+    </div>
+</div>
+<div class="card mt-2 mb-4">
+    <div class="card-header titulo_seccion pt-1 pb-1 ps-0 pe-0">
+        <div class="row mb-1">
+            <div class="col-5">
+                <img src="{{dir_base}}/static/img/chatgpt.png" style="width: 24px">
+                 ChatGPT
+            </div>
+            <div class="col-7">
+                <div class="pe-1 input-group float-end">
+                    <button data-bs-toggle="collapse" data-bs-target="#div_opciones" type="button" title="Configurar respuesta" class="btn btn-light btn-sm text-dark border pe-1"><i class="bi bi-gear h5"></i></button>
+                    <button type="button" title="Aumentar texto" class="btn btn-light btn-sm text-dark border pe-1 ms-1" onclick="control.ajustarTextos('+')"><i class="bi bi-plus-circle h5"></i></button>
+                    <button type="button" title="Disminuir texto" class="btn btn-light btn-sm text-dark border pe-1" onclick="control.ajustarTextos('-')"><i class="bi bi-dash-circle h5"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body pt-2 pb-2 ps-0 pe-0">
+        {% if historial|length > 0 %}
+        <div class="row mt-2" id="titulo_historial">
+            <div class="col-8">
+                <i><a href="javascript:void(0)" class="text-primary text-decoration-none" data-bs-toggle="collapse" data-bs-target="#historial" title="Historial"><i class="bi bi-chat-text"></i> Historial ({{historial|length}})</a></i>
+            </div>
+            <div class="col-4 text-end pe-1 pt-0 pb-0">
+                <button type="button" title="Vaciar historial" class="btn btn-light btn-sm text-dark border ms-1 pt-0 pb-0" onclick="prompts.confirmarVaciado()"><i class="bi bi-eraser-fill h5"></i><span class="small">Vaciar</span></button>
+            </div>
+        </div>
+        <div id="historial" class="row collapse">
+            <div class="col-12">
+                {% for interaccion in historial %}
+                <div class="row chat-marco-mensaje">
+                    <div class="col-0 col-sm-1"></div>
+                    <div class="col-12 co-sm-11">
+                        <div class="chat-consulta texto-ajustable"><i class="bi bi-person-square"></i> {{interaccion.peticion}}</div>
+                    </div>
+                </div>
+                <div class="row chat-marco-mensaje">
+                    <div class="col-12">
+                        <div class="chat-respuesta texto-ajustable" id="resp_{{interaccion.id}}"
+                        {% if interaccion.evaluacion == 1 %} style="background-color: #bdecb6;"{% endif %}{% if interaccion.evaluacion == 2 %} style="background-color: #ebc1c8;"{% endif %}>
+                            <i class="bi bi-chat-left-text-fill"></i> 
+                            <span class="texto-copiable">{% for linea in interaccion.respuesta.splitlines() %}
+                            {{ linea }}<br>
+                            {% endfor %}</span>
+                            <i class="bi bi-clipboard boton-copiar float-end text-dark" style="cursor: pointer;" title="Copiar"></i>
+                            <i class="bi bi-check icono-copiado float-end h4 text-success" style="display: none;"></i>
+                            <a href="javascript:control.evaluarInteraccion({{interaccion.id}},1)" title="Me gusta" class="text-decoration-none text-dark"><i class="bi bi-hand-thumbs-up float-start ms-2 me-2"></i></a>
+                            <a href="javascript:control.evaluarInteraccion({{interaccion.id}},2)" title="No me gusta" class="text-decoration-none text-dark"><i class="bi bi-hand-thumbs-down float-start ms-2 me-2"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-0 col-sm-2 col-md-3"></div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        <div id="chat-mensajes-conversacion"></div>
+        <form action="javascript:void(0)" method="post" id="form-chat-enviar">
+            <div id="div_opciones" class="collapse">
+                <div class="row mb-1">
+                    <div class="col">
+                        <hr><div>Configuración de la respuesta:</div>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <label for="longitud" class="col-4 col-form-label">Longitud:</label>
+                    <div class="col-8">
+                        <select name="longitud" id="longitud" class="form-select w-auto">
+                            {% for opcion in diccionario.longitudes %}
+                            <option value="{{opcion.valor}}" {% if opcion.marcado == '1' %}selected{% endif %}>{{opcion.etiqueta}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <label for="expresion" class="col-4 col-form-label">Expresión:</label>
+                    <div class="col-8">
+                        <select name="expresion" id="expresion" class="form-select w-auto">
+                            {% for opcion in diccionario.expresiones %}
+                            <option value="{{opcion.valor}}" {% if opcion.marcado == '1' %}selected{% endif %}>{{opcion.etiqueta}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-0">
+                    <label for="modelo" class="col-4 col-form-label">Modelo:</label>
+                    <div class="col-8">
+                        <select name="modelo" id="modelo" class="form-select w-auto">
+                            {% for opcion in diccionario.modelos %}
+                            <option value="{{opcion.valor}}" {% if opcion.marcado == '1' %}selected{% endif %}>{{opcion.etiqueta}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="chat-enviar-mensaje" id="chat-enviar-mensaje">
+                        <textarea class="form-control auto-resize" id="input-mensaje-usuario" rows="1" name="mensaje" minlength="20" maxlength="7000" placeholder="Escribe o pega aquí tu Prompt"></textarea>
+                        <button type="button" id="boton-enviar-mensaje" class="btn btn-primary pe-2" title="Enviar" onclick="prompts.enviarConsulta()" style="height:2.6rem"><i class="bi bi-send"></i></button>
+                    </div>
+                    <div class="row mt-2 mb-2">
+                        <div class="col-5 small"><span id="num_caracteres">0</span> caracteres</div>
+                        <div class="col-7 pe-0 text-end">
+                            <button data-bs-toggle="collapse" data-bs-target="#div_opciones" type="button" title="Configurar respuesta" class="btn btn-light text-dark border ps-2 pe-1"><i class="bi bi-gear h5"></i></button>
+                            <button type="button" title="Copiar prompt" class="btn btn-light text-dark border ps-2 pe-1" onclick="prompts.copiarPrompt()"><i class="bi bi-clipboard h5"></i></button>
+                            <button type="button" title="Volver arriba" class="btn btn-light text-dark border ps-2 pe-1" onclick="control.desplazarPosicion('+')"><i class="bi bi-arrow-up-circle h5"></i></button>
+                        </div>
+                    </div>
+                    <div id="chat-imagen-espera" style="display: none;">
+                        <img src="{{dir_base}}/{{app.coleccion}}/pwa/espere.gif" style="margin: 0 auto;">
+                    </div>
+                    <div id="chat-pie"></div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div id="pie-prompts"></div>
+<div id="chat-plantilla-consulta" style="display: none;">
+    <div class="row chat-marco-mensaje">
+        <div class="col-0 col-sm-1"></div>
+        <div class="col-12 co-sm-11">
+            <div class="chat-consulta texto-ajustable"><i class="bi bi-person-square"></i> ((consulta))</div>
+        </div>
+    </div>
+</div>
+<div id="chat-plantilla-respuesta" style="display: none;">
+    <div class="row chat-marco-mensaje">
+        <div class="col-12">
+            <div class="chat-respuesta texto-ajustable">
+                <i class="bi bi-chat-left-text-fill"></i> <span class="texto-copiable">((respuesta))</span>
+                <i class="bi bi-clipboard boton-copiar float-end text-dark" style="cursor: pointer;" title="Copiar"></i>
+                <i class="bi bi-check icono-copiado float-end h4 text-success" style="display: none;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="chat-plantilla-error" style="display: none;">
+    <div class="row chat-marco-mensaje">
+        <div class="col-2"></div>
+        <div class="col-8">
+            <div class="chat-error texto-ajustable"><i class="bi bi-exclamation-triangle-fill"></i> ((error))</div>
+        </div>
+        <div class="col-2"></div>
+    </div>
+</div>
+<div id="confirmar_vaciado" style="display:none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="titulo_dialogo"><i class="bi bi-question-circle"></i> ¿Vaciar Historial?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="text-secondary"><i>Si confirmas, se borrará el historial de conversaciones de este Chat</i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="prompts.vaciarConversacion()"><i class="bi bi-eraser-fill"></i> Vaciar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{{dir_base}}/static/js/prompts-config.js?v={{app.ahora}}"></script>
+<script>
+    jQuery(document).ready(function () {
+        control.activarCopiar();
+        prompts.iniciarFormularios();
+    });
+</script>
+{% endif %}

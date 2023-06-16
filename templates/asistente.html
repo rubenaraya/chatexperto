@@ -94,6 +94,9 @@
             {% endif %}
         </div>
     </div>
+    {% if app.chatgpt %}
+    <div class="text-center mt-2 mb-2"><a href="javascript:void(0)" onclick="control.abrirMenu('prompts')" class="text-dark text-decoration-none">Prompts para ChatGPT</a></div>
+    {% endif %}
 </div>
 <div id="consultar_chatdoc" style="display: none;">
 </div>

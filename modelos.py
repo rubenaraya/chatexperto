@@ -99,7 +99,7 @@ class Modelos:
                 )
 
             # Si el servicio es la API de OpenAI con GPT-3.5 o GPT-4
-            elif self.LLM.get('_uid') in [ "OpenAI_GPT-3.5", "OpenAI_GPT-4" ]:
+            elif self.LLM.get('_uid') in [ "OpenAI_GPT-3.5", "OpenAI_GPT-3.5-16k", "OpenAI_GPT-4" ]:
                 from langchain.chat_models import ChatOpenAI
                 interfaz = ChatOpenAI(
                     model_name = self.LLM.get('model'), 
@@ -118,14 +118,14 @@ class Modelos:
     # Función para crear una interfaz para cadena y configurar sus componentes y atributos
     def crear_cadena( self, indice=None, clase="Conversacion", plantilla=None, num_docs=4, chain_type="stuff" ):
         interfaz = None
-        if not indice:
-            return None
+        recuperador = None
 
         try:
-            recuperador = indice.as_retriever( 
-                search_type = "similarity",
-                search_kwargs = {"k": num_docs}
-            )
+            if indice:
+                recuperador = indice.as_retriever( 
+                    search_type = "similarity",
+                    search_kwargs = {"k": num_docs}
+                )
 
             # Si es una cadena de Consulta
             if clase == 'Consulta':
@@ -134,6 +134,10 @@ class Modelos:
             # Si es una cadena de conversación
             elif clase == 'Conversacion':
                 interfaz = self._crear_cadena_conversacion( recuperador=recuperador, plantilla=plantilla )
+
+            # Si es una cadena de peticion
+            elif clase == 'Peticion':
+                interfaz = self._crear_cadena_peticion()
 
             # Si es una cadena de búsqueda
             elif clase == 'Busqueda':
@@ -274,6 +278,43 @@ class Modelos:
                 return_source_documents = False
             )
             interfaz.combine_docs_chain = qa_chain
+
+        except Exception as e:
+            self.modelos_registrar.error( f"{e}" )
+
+        return interfaz
+
+    def _crear_cadena_peticion( self ):
+        from langchain.chains import ConversationChain
+        from langchain.prompts import ( ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate )
+        from langchain.memory import ConversationBufferMemory
+
+        interfaz = None
+        try:
+            # Definición plantilla de prompt
+            plantilla_system = "History:\n{chat_history}"
+            plantilla_human = "{input}"
+
+            prompt_system = SystemMessagePromptTemplate.from_template( template = plantilla_system )
+            prompt_human = HumanMessagePromptTemplate.from_template( template = plantilla_human )
+            PROMPT = ChatPromptTemplate.from_messages( [ prompt_system, prompt_human ] )
+
+            # Configuración del buffer de memoria
+            self.MEMORIA = ConversationBufferMemory(
+                return_messages = True,
+                memory_key = "chat_history",
+                human_prefix = "user",
+                ai_prefix = "assistant",
+                input_key = "input"
+            )
+
+            # Configuración de la cadena de tarea
+            interfaz = ConversationChain(
+                llm = self.api_llm(),
+                memory = self.MEMORIA,
+                verbose = False,
+                prompt = PROMPT
+            )
 
         except Exception as e:
             self.modelos_registrar.error( f"{e}" )
