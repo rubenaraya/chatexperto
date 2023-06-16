@@ -18,6 +18,7 @@ class Prompts {
         this.texto = [];
         this.instrucciones = [];
         this.ideas = [];
+        this.propuesta = [];
     }
 
     iniciarFormularios() {
@@ -137,6 +138,11 @@ class Prompts {
         tempElement.remove();
     }
 
+    limpiarPrompt() {
+        jQuery('#input-mensaje-usuario').val('');
+        jQuery('#input-mensaje-usuario').trigger('input');
+    }
+
     confirmarVaciado() {
         let html = jQuery('#confirmar_vaciado').html();
         control.abrirVentana(html);
@@ -167,58 +173,148 @@ class Prompts {
 
     }
 
-    //TODO: Completar
     limpiarCampos(tarea) {
-        if (tarea == 'informe') {
-            jQuery('#informe-intro').val('');
-            jQuery('#informe-peticion').val('');
-            jQuery('#informe-texto').val('');
-            jQuery('#informe-intro').trigger('input');
-            jQuery('#informe-peticion').trigger('input');
-            jQuery('#informe-texto').trigger('input');
-        }
+        jQuery('#' + tarea + '-intro').val('');
+        jQuery('#' + tarea + '-peticion').val('');
+        jQuery('#' + tarea + '-texto').val('');
+        jQuery('#' + tarea + '-intro').trigger('input');
+        jQuery('#' + tarea + '-peticion').trigger('input');
+        jQuery('#' + tarea + '-texto').trigger('input');
     }
 
-    //TODO: Completar
     usarPlantilla(campo) {
         var tipo = jQuery('#' + campo).val();
         var tarea = jQuery('#tarea').val();
-        if (tarea == 'informe') {
-            if (this.informe[tipo]) {
-                jQuery('#informe-intro').val( this.informe[tipo]['intro'] );
-                let peticion = this.informe[tipo]['peticion'];
-                peticion = peticion.replace(/\|/g, "\n");
-                jQuery('#informe-peticion').val(peticion);
-                let texto = this.informe[tipo]['texto'];
-                texto = texto.replace(/\|/g, "\n");
-                jQuery('#informe-texto').val(texto);
-                jQuery('#informe-intro').trigger('input');
-                jQuery('#informe-peticion').trigger('input');
-                jQuery('#informe-texto').trigger('input');
+        var peticion = '';
+        var intro = '';
+        var texto = '';
+        switch (tarea) {
+            case "informe":
+                if (this.informe[tipo]) {
+                    intro = this.informe[tipo]['intro'];
+                    peticion = this.informe[tipo]['peticion'];
+                    texto = this.informe[tipo]['texto'];
+                }
+                break;
+            case "articulo": 
+                if (this.articulo[tipo]) {
+                    intro = this.articulo[tipo]['intro'];
+                    peticion = this.articulo[tipo]['peticion'];
+                    texto = this.articulo[tipo]['texto'];
+                }
+                break;
+            case "noticia": 
+                if (this.noticia[tipo]) {
+                    intro = this.noticia[tipo]['intro'];
+                    peticion = this.noticia[tipo]['peticion'];
+                    texto = this.noticia[tipo]['texto'];
+                }
+                break;
+            case "presentacion": 
+            if (this.presentacion[tipo]) {
+                intro = this.presentacion[tipo]['intro'];
+                peticion = this.presentacion[tipo]['peticion'];
+                texto = this.presentacion[tipo]['texto'];
             }
-            else {
+                break;
+            case "guion": 
+            if (this.guion[tipo]) {
+                intro = this.guion[tipo]['intro'];
+                peticion = this.guion[tipo]['peticion'];
+                texto = this.guion[tipo]['texto'];
+            }
+                break;
+            case "aviso": 
+            if (this.aviso[tipo]) {
+                intro = this.aviso[tipo]['intro'];
+                peticion = this.aviso[tipo]['peticion'];
+                texto = this.aviso[tipo]['texto'];
+            }
+                break;
+            case "correo": 
+                if (this.correo[tipo]) {
+                    intro = this.correo[tipo]['intro'];
+                    peticion = this.correo[tipo]['peticion'];
+                    texto = this.correo[tipo]['texto'];
+                }
+                break;
+            case "preguntas": 
+            if (this.preguntas[tipo]) {
+                intro = this.preguntas[tipo]['intro'];
+                peticion = this.preguntas[tipo]['peticion'];
+                texto = this.preguntas[tipo]['texto'];
+            }
+                break;
+            case "texto": 
+            if (this.texto[tipo]) {
+                intro = this.texto[tipo]['intro'];
+                peticion = this.texto[tipo]['peticion'];
+                texto = this.texto[tipo]['texto'];
+            }
+                break;
+            case "instrucciones": 
+            if (this.instrucciones[tipo]) {
+                intro = this.instrucciones[tipo]['intro'];
+                peticion = this.instrucciones[tipo]['peticion'];
+                texto = this.instrucciones[tipo]['texto'];
+            }
+                break;
+            case "ideas": 
+            if (this.ideas[tipo]) {
+                intro = this.ideas[tipo]['intro'];
+                peticion = this.ideas[tipo]['peticion'];
+                texto = this.ideas[tipo]['texto'];
+            }
+                break;
+            case "propuesta": 
+            if (this.propuesta[tipo]) {
+                intro = this.propuesta[tipo]['intro'];
+                peticion = this.propuesta[tipo]['peticion'];
+                texto = this.propuesta[tipo]['texto'];
+            }
+                break;
+            default:
                 control.verMensaje('No se encontró la plantilla: ' + tipo, 'error');
-            }
+                break;
         }
+        intro = intro.replace(/\|/g, "\n");
+        peticion = peticion.replace(/\|/g, "\n");
+        texto = texto.replace(/\|/g, "\n");
+        jQuery('#' + tarea + '-intro').val(intro);
+        jQuery('#' + tarea + '-peticion').val(peticion);
+        jQuery('#' + tarea + '-texto').val(texto);
+        jQuery('#' + tarea + '-intro').trigger('input');
+        jQuery('#' + tarea + '-peticion').trigger('input');
+        jQuery('#' + tarea + '-texto').trigger('input');
     }
 
-    //TODO: Completar
     generarPrompt() {
         var tarea = jQuery('#tarea').val();
         var estilo = jQuery('#estilo').val();
         var tono = jQuery('#tono').val();
         var lenguaje = jQuery('#lenguaje').val();
         var prompt = '';
-        if (tarea == 'informe') {
-            let intro = jQuery('#informe-intro').val();
-            let peticion = jQuery('#informe-peticion').val();
-            let texto = jQuery('#informe-texto').val();
-            prompt = this.informe['prompt'];
-            prompt = prompt.replace(/\|/g, "\n");
-            prompt = prompt.replace('((intro))', intro);
-            prompt = prompt.replace('((peticion))', peticion);
-            prompt = prompt.replace('((texto))', texto);
+        switch (tarea) {
+            case "informe": prompt = this.informe['prompt']; break;
+            case "articulo": prompt = this.articulo['prompt']; break;
+            case "noticia": prompt = this.noticia['prompt']; break;
+            case "presentacion": prompt = this.presentacion['prompt']; break;
+            case "guion": prompt = this.guion['prompt']; break;
+            case "aviso": prompt = this.aviso['prompt']; break;
+            case "correo": prompt = this.correo['prompt']; break;
+            case "preguntas": prompt = this.preguntas['prompt']; break;
+            case "texto": prompt = this.texto['prompt']; break;
+            case "instrucciones": prompt = this.instrucciones['prompt']; break;
+            case "ideas": prompt = this.ideas['prompt']; break;
+            case "propuesta": prompt = this.propuesta['prompt']; break;
         }
+        let intro = jQuery('#' + tarea + '-intro').val();
+        let peticion = jQuery('#' + tarea + '-peticion').val();
+        let texto = jQuery('#' + tarea + '-texto').val();
+        prompt = prompt.replace(/\|/g, "\n");
+        prompt = prompt.replace('((intro))', intro);
+        prompt = prompt.replace('((peticion))', peticion);
+        prompt = prompt.replace('((texto))', texto);
         prompt = prompt.replace('((estilo))', estilo);
         prompt = prompt.replace('((tono))', tono);
         prompt = prompt.replace('((lenguaje))', lenguaje);
