@@ -89,7 +89,8 @@ class Prompts {
                 html = html.replace('((consulta))', consulta );
                 mensajes_conversacion.append(html);
                 html = jQuery("div#chat-plantilla-respuesta").html();
-                let respuesta = response.respuesta
+                let respuesta = response.respuesta;
+                respuesta = respuesta.replace(/\n/g, "<br>");
 				html = html.replace('((respuesta))', respuesta);
 				mensajes_conversacion.append(html);
 			} else if (response && response.respuesta) {
@@ -101,7 +102,8 @@ class Prompts {
                 html = html.replace('((consulta))', consulta );
                 mensajes_conversacion.append(html);
 				html = jQuery("div#chat-plantilla-respuesta").html();
-                let respuesta = response.respuesta
+                let respuesta = response.respuesta;
+                respuesta = respuesta.replace(/\n/g, "<br>");
 				html = html.replace('((respuesta))', respuesta);
 				mensajes_conversacion.append(html);
 			} else if (response && response.error) {

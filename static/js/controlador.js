@@ -232,7 +232,8 @@ class Controlador {
 
     activarCopiar() {
         jQuery('.boton-copiar').click(function() {
-            var texto = jQuery(this).prev('.texto-copiable').text();
+            var texto = jQuery(this).prev('.texto-copiable').html();
+            texto = texto.replace(/<br>/g, "\n");
             texto = texto.replace(/^\s+/gm, '')
             .replace(/\s{2,}/g, ' ')
             .replace(/\n\s*\n/g, '\n');

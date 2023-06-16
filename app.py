@@ -2265,6 +2265,9 @@ def funcion_prompts( coleccion ):
         gestor.CFG['clase_interaccion'] = "Peticion"
         gestor.abrir_ejecutor()
         respuesta = gestor.ejecutar_instruccion( peticion=mensaje, id_sesion=config.USUARIO.get('email') )
+        if not respuesta:
+            return jsonify( {'error': config.MENSAJES.get('ERROR_RESPUESTA_LLM')} ), 500
+        
         respuesta = str( respuesta ).strip()
         tiempo = round( time.time() - ini_time, None )
         if '"""' in mensaje:

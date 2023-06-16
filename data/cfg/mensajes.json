@@ -44,6 +44,7 @@
 "ERROR_CONSULTAR_BUSQUEDA": "No se pudo realizar la consulta al Asistente, intenta nuevamente en un momento",
 "ERROR_METADATOS_NOEXPORTADOS": "No se pudieron exportar los metadatos de los documentos",
 "ERROR_METADATOS_NOIMPORTADOS": "No se pudieron importar los metadatos de los documentos",
+"ERROR_RESPUESTA_LLM": "El modelo de lenguaje no pudo responder la petición",
 "EXITO_METADATOS_IMPORTADOS": "Los metadatos fueron importados con éxito",
 "EXITO_INTERACCIONES_BORRADAS": "El historial de consultas fue vaciado",
 "EXITO_APIKEY_GUARDADA": "La API KEY fue guardada en tu perfil personal",
