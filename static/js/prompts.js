@@ -19,6 +19,18 @@ class Prompts {
         this.instrucciones = [];
         this.ideas = [];
         this.propuesta = [];
+        this.informe['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.articulo['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.noticia['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.presentacion['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.guion['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.aviso['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.correo['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.preguntas['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.texto['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.instrucciones['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.ideas['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.propuesta['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono)).|Usa como base el siguiente texto:|"""|((texto))|"""';
     }
 
     iniciarFormularios() {

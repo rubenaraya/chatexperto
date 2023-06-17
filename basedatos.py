@@ -13,6 +13,7 @@ class BaseDatos:
         self._BD = {
             'USUARIOS': f"{self.config.RUTA.get('BASEDATOS')}/usuarios.db",
             'LOGS': f"{self.config.RUTA.get('BASEDATOS')}/logs.db",
+            'COLECCION': f"{self.config.RUTA.get('BASEDATOS')}/coleccion.db",
             'RECURSOS': f"{self.config.RUTA.get('BASEDATOS')}/recursos.db"
         }
 
@@ -1051,6 +1052,52 @@ class BaseDatos:
             lista = { "recientes": recientes, "populares": populares }
             return lista
 
+        except Exception as e:
+            self.basedatos_registrar.error( f"{e}" )
+            return {}
+        finally:
+            if conexion:
+                conexion.close()
+
+    # Función para obtener lista de tareas visibles
+    def seleccionar_tareas( self ):
+        try:
+            conexion = sqlite3.connect( self._BD.get('COLECCION') )
+            bd = conexion.cursor()
+            consulta_sql = self._SQL.get( 'SELECT_TAREAS' )
+            bd.execute( consulta_sql )
+            datos = bd.fetchall()
+            columnas = [desc[0] for desc in bd.description]
+            conexion.close()
+            lista = []
+            if datos:
+                for registro in datos:
+                    caso = {columnas[i]: registro[i] for i in range(len(columnas))}
+                    lista.append(caso)
+            return lista
+        except Exception as e:
+            self.basedatos_registrar.error( f"{e}" )
+            return {}
+        finally:
+            if conexion:
+                conexion.close()
+    
+    # Función para obtener lista de prompts visibles
+    def seleccionar_prompts( self ):
+        try:
+            conexion = sqlite3.connect( self._BD.get('COLECCION') )
+            bd = conexion.cursor()
+            consulta_sql = self._SQL.get( 'SELECT_PROMPTS' )
+            bd.execute( consulta_sql )
+            datos = bd.fetchall()
+            columnas = [desc[0] for desc in bd.description]
+            conexion.close()
+            lista = []
+            if datos:
+                for registro in datos:
+                    caso = {columnas[i]: registro[i] for i in range(len(columnas))}
+                    lista.append(caso)
+            return lista
         except Exception as e:
             self.basedatos_registrar.error( f"{e}" )
             return {}

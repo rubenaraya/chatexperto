@@ -534,6 +534,14 @@ class GestorColeccion:
             mensaje = f"{self.config.MENSAJES.get('ERROR_CARPETA_NOBORRADA')}"
         return mensaje
 
+    # Función para consultar los prompts de la colección
+    def consultar_prompts( self ):
+        bd = BaseDatos(self.config)
+        tareas = bd.seleccionar_tareas()
+        prompts = bd.seleccionar_prompts()
+        resultados = { "tareas": tareas, "prompts": prompts }
+        return resultados
+
 ######################################################
 # FUNCIONES PUBLICAS PARA ARCHIVOS Y DOCUMENTOS
 ######################################################

@@ -10,10 +10,8 @@
         <div class="col-8">
             <select name="tarea" id="tarea" class="form-select w-auto" onchange="prompts.elegirTarea()">
                 <option value="">ELEGIR...</option>
-                {% for opcion in diccionario.tareas %}
-                {% if opcion.visible == '1' %}
+                {% for opcion in datos.tareas %}
                 <option value="{{opcion.valor}}">{{opcion.etiqueta}}</option>
-                {% endif %}
                 {% endfor %}
             </select>
         </div>
@@ -69,7 +67,7 @@
     </div>
 </form>
 <hr>
-{% for tarea in diccionario.tareas %}{% if tarea.visible == '1' %}
+{% for tarea in datos.tareas %}
 <form action="javascript:void(0)" method="post" id="form-{{tarea.valor}}" class="form-prompt" style="display: none;">
     <input type="hidden" name="marcas" id="{{tarea.valor}}-marcas">
     <input type="hidden" name="claves" id="{{tarea.valor}}-claves">
@@ -82,8 +80,8 @@
             <div class="pe-1 input-group">
                 <label for="tipo-{{tarea.valor}}" class="col-form-label">Tipo {{tarea.valor}}:&nbsp;</label>
                 <select name="tipo" id="tipo-{{tarea.valor}}" class="form-select w-auto">
-                    {% for tipo in tarea.tipos %}{% if tipo.visible == '1' %}
-                    <option value="{{tipo.valor}}">{{tipo.etiqueta}}</option>
+                    {% for prompt in datos.prompts %}{% if prompt.tipo == tarea.valor %}
+                    <option value="{{prompt.valor}}">{{prompt.etiqueta}}</option>
                     {% endif %}{% endfor %}
                 </select>
             </div>
@@ -101,10 +99,10 @@
         <div class="col-12 text-dark small mt-3 text-center">
             Reemplaza todos los textos entre ((paréntesis dobles))
         </div>
-        <div class="col-7 text-secondary mt-3">
+        <div class="col-6 text-secondary mt-3">
             Petición detallada:
         </div>
-        <div class="col-5 text-end mt-3">
+        <div class="col-6 text-end mt-3">
             <button type="button" title="Copiar petición" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.copiarCampo('{{tarea.valor}}-peticion')"><i class="bi bi-clipboard h5"></i></button>
             <button type="button" title="Reemplazar claves" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.formularioClaves()"><i class="bi bi-list-ul h5"></i></button>
         </div>
@@ -114,10 +112,10 @@
                 <label for="{{tarea.valor}}-peticion">Petición detallada (max: 1.000 caracteres)</label>
             </div>
         </div>
-        <div class="col-7 text-secondary mt-3">
+        <div class="col-6 text-secondary mt-3">
             Texto base:
         </div>
-        <div class="col-5 text-end mt-3">
+        <div class="col-6 text-end mt-3">
             <button type="button" title="Copiar texto" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.copiarCampo('{{tarea.valor}}-texto')"><i class="bi bi-clipboard h5"></i></button>
             <button type="button" title="Reemplazar marcas" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.formularioMarcas()"><i class="bi bi-list-ul h5"></i></button>
         </div>
@@ -129,7 +127,7 @@
         </div>
     </div>
 </form>
-{% endif %}{% endfor %}
+{% endfor %}
 
 <div class="row mb-4 mt-3">
     <div class="col-12 text-center">
@@ -368,12 +366,14 @@
         </div>
     </div>
 </div>
-<script src="{{dir_base}}/static/js/prompts-config.js?v={{app.ahora}}"></script>
 <script>
     jQuery(document).ready(function () {
         control.activarCopiar();
         prompts.iniciarFormularios();
         prompts.iniciarTips();
+        {% for prompt in datos.prompts %}
+        prompts.{{prompt.tipo}}['{{prompt.valor}}'] = {"intro": "{{prompt.intro}}", "peticion": "{{prompt.peticion}}", "texto": "{{prompt.texto}}", "marcas": "{{prompt.marcas}}", "claves": "{{prompt.claves}}", "config": "{{prompt.config}}"};
+        {% endfor %}
     });
 </script>
 {% endif %}

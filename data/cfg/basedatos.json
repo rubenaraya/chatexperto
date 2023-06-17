@@ -30,5 +30,7 @@
     "DELETE_HISTORIAL": "DELETE FROM historiales WHERE uuid=?",
     "DELETE_INTERACCIONES": "DELETE FROM interacciones WHERE coleccion=?",
     "SELECT_DOC_RECIENTES": "SELECT id, archivo, tipo, peso, carpeta, titulo, fechaing, autores, codigo, descargas FROM documentos WHERE carpeta IN ({}) AND estado > 1 ORDER BY fechaing DESC, id DESC",
-    "SELECT_DOC_POPULARES": "SELECT id, archivo, tipo, peso, carpeta, titulo, fechaing, autores, codigo, descargas FROM documentos WHERE carpeta IN ({}) AND estado > 1 AND descargas > 0 ORDER BY descargas DESC, id DESC"
+    "SELECT_DOC_POPULARES": "SELECT id, archivo, tipo, peso, carpeta, titulo, fechaing, autores, codigo, descargas FROM documentos WHERE carpeta IN ({}) AND estado > 1 AND descargas > 0 ORDER BY descargas DESC, id DESC",
+    "SELECT_TAREAS": "SELECT id, valor, etiqueta, descripcion FROM tareas WHERE visible='1' ORDER BY valor",
+    "SELECT_PROMPTS": "SELECT id, tipo, valor, etiqueta, intro, peticion, texto, marcas, claves, config FROM prompts WHERE visible='1' ORDER BY tipo, valor"
 }

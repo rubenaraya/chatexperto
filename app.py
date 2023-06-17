@@ -1,6 +1,6 @@
 # app.py
 #######################################################
-# CHAT EXPERTO (Back-end) - Actualizado el: 16/06/2023
+# CHAT EXPERTO (Back-end) - Actualizado el: 17/06/2023
 #######################################################
 """
 Aplicación WEB-REST en Python para implementar un back-end para múltiples servicios de Chat inteligentes que responden preguntas sobre bases de conocimiento personalizadas.
@@ -2212,11 +2212,13 @@ def interfaz_prompts( coleccion ):
     config.CARPETA = "chatgpt"
     gestor = GestorColeccion(config)
     historial = gestor.obtener_interacciones( id_doc=0 )
+    datos = gestor.consultar_prompts()
 
     # Entrega la interfaz HTML
     return render_template( 'prompts.html', app=config.APP, dir_base=request.script_root, usuario=config.USUARIO, 
             diccionario = config.cargar_valores( 'prompts.json' ),
-            historial = historial
+            historial = historial,
+            datos = datos
         )
 
 ######################################################
