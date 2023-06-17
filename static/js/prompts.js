@@ -130,8 +130,8 @@ class Prompts {
         });
     }
 
-    copiarPrompt() {
-        var texto = jQuery('#input-mensaje-usuario').val();
+    copiarCampo(campo) {
+        var texto = jQuery('#' + campo).val();
         var tempElement = jQuery('<textarea>');
         tempElement.val(texto).appendTo('body').select();
         document.execCommand('copy');
@@ -191,6 +191,8 @@ class Prompts {
         var intro = '';
         var texto = '';
         var marcas = '';
+        var claves = '';
+        var config = '';
         switch (tarea) {
             case "informe":
                 if (this.informe[tipo]) {
@@ -198,6 +200,8 @@ class Prompts {
                     peticion = this.informe[tipo]['peticion'];
                     texto = this.informe[tipo]['texto'];
                     marcas = this.informe[tipo]['marcas'];
+                    claves = this.informe[tipo]['claves'];
+                    config = this.informe[tipo]['config'];
                 }
                 break;
             case "articulo": 
@@ -206,6 +210,8 @@ class Prompts {
                     peticion = this.articulo[tipo]['peticion'];
                     texto = this.articulo[tipo]['texto'];
                     marcas = this.articulo[tipo]['marcas'];
+                    claves = this.articulo[tipo]['claves'];
+                    config = this.articulo[tipo]['config'];
                 }
                 break;
             case "noticia": 
@@ -214,31 +220,39 @@ class Prompts {
                     peticion = this.noticia[tipo]['peticion'];
                     texto = this.noticia[tipo]['texto'];
                     marcas = this.noticia[tipo]['marcas'];
+                    claves = this.noticia[tipo]['claves'];
+                    config = this.noticia[tipo]['config'];
                 }
                 break;
             case "presentacion": 
-            if (this.presentacion[tipo]) {
-                intro = this.presentacion[tipo]['intro'];
-                peticion = this.presentacion[tipo]['peticion'];
-                texto = this.presentacion[tipo]['texto'];
-                marcas = this.presentacion[tipo]['marcas'];
-            }
+                if (this.presentacion[tipo]) {
+                    intro = this.presentacion[tipo]['intro'];
+                    peticion = this.presentacion[tipo]['peticion'];
+                    texto = this.presentacion[tipo]['texto'];
+                    marcas = this.presentacion[tipo]['marcas'];
+                    claves = this.presentacion[tipo]['claves'];
+                    config = this.presentacion[tipo]['config'];
+                }
                 break;
             case "guion": 
-            if (this.guion[tipo]) {
-                intro = this.guion[tipo]['intro'];
-                peticion = this.guion[tipo]['peticion'];
-                texto = this.guion[tipo]['texto'];
-                marcas = this.guion[tipo]['marcas'];
-            }
+                if (this.guion[tipo]) {
+                    intro = this.guion[tipo]['intro'];
+                    peticion = this.guion[tipo]['peticion'];
+                    texto = this.guion[tipo]['texto'];
+                    marcas = this.guion[tipo]['marcas'];
+                    claves = this.guion[tipo]['claves'];
+                    config = this.guion[tipo]['config'];
+                }
                 break;
             case "aviso": 
-            if (this.aviso[tipo]) {
-                intro = this.aviso[tipo]['intro'];
-                peticion = this.aviso[tipo]['peticion'];
-                texto = this.aviso[tipo]['texto'];
-                marcas = this.aviso[tipo]['marcas'];
-            }
+                if (this.aviso[tipo]) {
+                    intro = this.aviso[tipo]['intro'];
+                    peticion = this.aviso[tipo]['peticion'];
+                    texto = this.aviso[tipo]['texto'];
+                    marcas = this.aviso[tipo]['marcas'];
+                    claves = this.aviso[tipo]['claves'];
+                    config = this.aviso[tipo]['config'];
+                }
                 break;
             case "correo": 
                 if (this.correo[tipo]) {
@@ -246,47 +260,59 @@ class Prompts {
                     peticion = this.correo[tipo]['peticion'];
                     texto = this.correo[tipo]['texto'];
                     marcas = this.correo[tipo]['marcas'];
+                    claves = this.correo[tipo]['claves'];
+                    config = this.correo[tipo]['config'];
                 }
                 break;
             case "preguntas": 
-            if (this.preguntas[tipo]) {
-                intro = this.preguntas[tipo]['intro'];
-                peticion = this.preguntas[tipo]['peticion'];
-                texto = this.preguntas[tipo]['texto'];
-                marcas = this.preguntas[tipo]['marcas'];
-            }
+                if (this.preguntas[tipo]) {
+                    intro = this.preguntas[tipo]['intro'];
+                    peticion = this.preguntas[tipo]['peticion'];
+                    texto = this.preguntas[tipo]['texto'];
+                    marcas = this.preguntas[tipo]['marcas'];
+                    claves = this.preguntas[tipo]['claves'];
+                    config = this.preguntas[tipo]['config'];
+                }
                 break;
             case "texto": 
-            if (this.texto[tipo]) {
-                intro = this.texto[tipo]['intro'];
-                peticion = this.texto[tipo]['peticion'];
-                texto = this.texto[tipo]['texto'];
-                marcas = this.texto[tipo]['marcas'];
-            }
+                if (this.texto[tipo]) {
+                    intro = this.texto[tipo]['intro'];
+                    peticion = this.texto[tipo]['peticion'];
+                    texto = this.texto[tipo]['texto'];
+                    marcas = this.texto[tipo]['marcas'];
+                    claves = this.texto[tipo]['claves'];
+                    config = this.texto[tipo]['config'];
+                }
                 break;
             case "instrucciones": 
-            if (this.instrucciones[tipo]) {
-                intro = this.instrucciones[tipo]['intro'];
-                peticion = this.instrucciones[tipo]['peticion'];
-                texto = this.instrucciones[tipo]['texto'];
-                marcas = this.instrucciones[tipo]['marcas'];
-            }
+                if (this.instrucciones[tipo]) {
+                    intro = this.instrucciones[tipo]['intro'];
+                    peticion = this.instrucciones[tipo]['peticion'];
+                    texto = this.instrucciones[tipo]['texto'];
+                    marcas = this.instrucciones[tipo]['marcas'];
+                    claves = this.instrucciones[tipo]['claves'];
+                    config = this.instrucciones[tipo]['config'];
+                }
                 break;
             case "ideas": 
-            if (this.ideas[tipo]) {
-                intro = this.ideas[tipo]['intro'];
-                peticion = this.ideas[tipo]['peticion'];
-                texto = this.ideas[tipo]['texto'];
-                marcas = this.ideas[tipo]['marcas'];
-            }
+                if (this.ideas[tipo]) {
+                    intro = this.ideas[tipo]['intro'];
+                    peticion = this.ideas[tipo]['peticion'];
+                    texto = this.ideas[tipo]['texto'];
+                    marcas = this.ideas[tipo]['marcas'];
+                    claves = this.ideas[tipo]['claves'];
+                    config = this.ideas[tipo]['config'];
+                }
                 break;
             case "propuesta": 
-            if (this.propuesta[tipo]) {
-                intro = this.propuesta[tipo]['intro'];
-                peticion = this.propuesta[tipo]['peticion'];
-                texto = this.propuesta[tipo]['texto'];
-                marcas = this.propuesta[tipo]['marcas'];
-            }
+                if (this.propuesta[tipo]) {
+                    intro = this.propuesta[tipo]['intro'];
+                    peticion = this.propuesta[tipo]['peticion'];
+                    texto = this.propuesta[tipo]['texto'];
+                    marcas = this.propuesta[tipo]['marcas'];
+                    claves = this.propuesta[tipo]['claves'];
+                    config = this.propuesta[tipo]['config'];
+                }
                 break;
             default:
                 control.verMensaje('No se encontró la plantilla: ' + tipo, 'error');
@@ -299,9 +325,16 @@ class Prompts {
         jQuery('#' + tarea + '-peticion').val(peticion);
         jQuery('#' + tarea + '-texto').val(texto);
         jQuery('#' + tarea + '-marcas').val(marcas);
+        jQuery('#' + tarea + '-claves').val(claves);
         jQuery('#' + tarea + '-intro').trigger('input');
         jQuery('#' + tarea + '-peticion').trigger('input');
         jQuery('#' + tarea + '-texto').trigger('input');
+        let datos = config.split('|');
+        if (datos.length==3) {
+            jQuery('#lenguaje').val(datos[0]);
+            jQuery('#estilo').val(datos[1]);
+            jQuery('#tono').val(datos[2]);
+        }
     }
 
     generarPrompt() {
@@ -401,6 +434,56 @@ class Prompts {
     reemplazarTextoMarca(completa, buscada, reemplazo) {
         var regex = new RegExp('\\(\\(' + buscada + '\\)\\)', 'g');
         return completa.replace(regex, reemplazo);
+    }
+
+    formularioClaves() {
+        var tarea = jQuery('#tarea').val();
+        var lista = jQuery('#' + tarea + '-claves').val();
+        var texto = jQuery('#' + tarea + '-peticion').val();
+        var plantilla = jQuery('#formulario_claves');
+        var formulario = jQuery('#form-claves');
+        var campos = lista.split('|');
+        formulario.html('');
+        campos.forEach( function(campo) {
+            let id = campo.toLowerCase().replace(/\s/g, '-');
+            let etiqueta = campo.replace(/-/g, ' ');
+            etiqueta = etiqueta.charAt(0).toUpperCase() + etiqueta.slice(1);
+            let input = jQuery("div#campo_clave").html();
+            input = input.replace(/idcampo2/g, id);
+            input = input.replace(/etiqueta2/g, etiqueta);
+            if (texto.includes('(('+ id + '))')) {
+                formulario.append(input);
+            }
+        });
+        let html = plantilla.html();
+        control.abrirModal(html);
+        jQuery('#form-claves .auto-resize').on('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+            var maxHeight = 400;
+            if (this.scrollHeight > maxHeight) {
+                this.style.height = maxHeight + 'px';
+                this.style.overflowY = 'auto';
+            }
+            if (this.value.length === 0) {
+                this.style.height = 'auto';
+            }
+        });
+    }
+
+    reemplazarClaves() {
+        var tarea = jQuery('#tarea').val();
+        var texto = jQuery('#' + tarea + '-peticion').val();
+        jQuery('textarea.form-clave').each( function() {
+            let area = jQuery(this);
+            let nombre = area.attr('name');
+            let valor = area.val();
+            if (valor.length >0) {
+                texto = prompts.reemplazarTextoMarca(texto, nombre, valor);
+            }
+        });
+        jQuery('#' + tarea + '-peticion').val(texto);
+        control.cerrarModal();
     }
 
 }

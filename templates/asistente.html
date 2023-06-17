@@ -95,7 +95,9 @@
         </div>
     </div>
     {% if app.chatgpt %}
-    <div class="text-center mt-2 mb-2"><a href="javascript:void(0)" onclick="control.abrirMenu('prompts')" class="text-dark text-decoration-none">Prompts para ChatGPT</a></div>
+    <div class="text-center mt-2 mb-2">
+        <button type="button" title="Prompts para ChatGPT" class="btn btn-success mx-auto" onclick="control.abrirMenu('prompts')">Prompts para ChatGPT</button>
+    </div>
     {% endif %}
 </div>
 <div id="consultar_chatdoc" style="display: none;">

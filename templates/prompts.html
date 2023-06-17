@@ -72,6 +72,7 @@
 {% for tarea in diccionario.tareas %}{% if tarea.visible == '1' %}
 <form action="javascript:void(0)" method="post" id="form-{{tarea.valor}}" class="form-prompt" style="display: none;">
     <input type="hidden" name="marcas" id="{{tarea.valor}}-marcas">
+    <input type="hidden" name="claves" id="{{tarea.valor}}-claves">
     <div class="row">
         <div class="col-12 mb-3">
             <h5>{{tarea.etiqueta}}</h5>
@@ -91,22 +92,33 @@
             <button type="button" title="Limpiar campos" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.limpiarCampos('{{tarea.valor}}')"><i class="bi bi-eraser-fill h5"></i></button>
             <button type="button" title="Usar Plantilla" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.usarPlantilla('tipo-{{tarea.valor}}')"><i class="bi bi-box-arrow-in-down-left h5"></i></button>
         </div>
-        <div class="col-12 mt-2">
+        <div class="col-12 mt-3">
             <div class="form-floating">
                 <textarea id="{{tarea.valor}}-intro" name="intro" maxlength="250" class="form-control auto-resize"></textarea>
                 <label for="{{tarea.valor}}-intro">Instrucción de encuadre</label>
             </div>
         </div>
-        <div class="col-12 mt-2">
+        <div class="col-12 text-dark small mt-3 text-center">
+            Reemplaza todos los textos entre ((paréntesis dobles))
+        </div>
+        <div class="col-7 text-secondary mt-3">
+            Petición detallada:
+        </div>
+        <div class="col-5 text-end mt-3">
+            <button type="button" title="Copiar petición" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.copiarCampo('{{tarea.valor}}-peticion')"><i class="bi bi-clipboard h5"></i></button>
+            <button type="button" title="Reemplazar claves" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.formularioClaves()"><i class="bi bi-list-ul h5"></i></button>
+        </div>
+        <div class="col-12 mt-1">
             <div class="form-floating">
                 <textarea id="{{tarea.valor}}-peticion" name="peticion" maxlength="1000" class="form-control auto-resize"></textarea>
                 <label for="{{tarea.valor}}-peticion">Petición detallada (max: 1.000 caracteres)</label>
             </div>
         </div>
-        <div class="col-10 text-dark small mt-3">
-            Reemplaza los textos con marcas de ((paréntesis dobles)):
+        <div class="col-7 text-secondary mt-3">
+            Texto base:
         </div>
-        <div class="col-2 text-end mt-3">
+        <div class="col-5 text-end mt-3">
+            <button type="button" title="Copiar texto" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.copiarCampo('{{tarea.valor}}-texto')"><i class="bi bi-clipboard h5"></i></button>
             <button type="button" title="Reemplazar marcas" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.formularioMarcas()"><i class="bi bi-list-ul h5"></i></button>
         </div>
         <div class="col-12 mt-1">
@@ -228,7 +240,7 @@
                         <div class="col-5 small"><span id="num_caracteres">0</span> caracteres</div>
                         <div class="col-7 pe-0 text-end">
                             <button data-bs-toggle="collapse" data-bs-target="#div_opciones" type="button" title="Configurar respuesta" class="btn btn-light text-dark border ps-2 pe-1"><i class="bi bi-gear h5"></i></button>
-                            <button type="button" title="Copiar prompt" class="btn btn-light text-dark border ps-2 pe-1" onclick="prompts.copiarPrompt()"><i class="bi bi-clipboard h5"></i></button>
+                            <button type="button" title="Copiar prompt" class="btn btn-light text-dark border ps-2 pe-1" onclick="prompts.copiarCampo('input-mensaje-usuario')"><i class="bi bi-clipboard h5"></i></button>
                             <button type="button" title="Limpiar prompt" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.limpiarPrompt()"><i class="bi bi-x-square h5"></i></button>
                             <button type="button" title="Volver arriba" class="btn btn-light text-dark border ps-2 pe-1" onclick="control.desplazarPosicion('+')"><i class="bi bi-arrow-up-circle h5"></i></button>
                         </div>
@@ -320,6 +332,38 @@
             <div class="form-floating">
                 <textarea id="idcampo" name="idcampo" placeholder="etiqueta" maxlength="500" class="form-control auto-resize form-marca"></textarea>
                 <label for="idcampo">etiqueta</label>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="formulario_claves" style="display:none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="titulo_claves"><i class="bi bi-list-ul"></i> Reemplazar claves en petición</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <form action="javascript:void(0)" method="post" id="form-claves">
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="prompts.reemplazarClaves()"><i class="bi bi-check-square"></i> Reemplazar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="campo_clave" style="display:none;">
+    <div class="row">
+        <div class="col-12 mt-1 mb-1">
+            <div class="form-floating">
+                <textarea id="idcampo2" name="idcampo2" placeholder="etiqueta2" maxlength="250" class="form-control auto-resize form-clave"></textarea>
+                <label for="idcampo2">etiqueta2</label>
             </div>
         </div>
     </div>
