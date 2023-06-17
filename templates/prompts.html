@@ -1,9 +1,9 @@
 {% if usuario.roles == 'Editor' or usuario.roles == 'Usuario' %}
+<div id="chat-encabezado"></div>
 <h3 class="text-center mb-4"><i class="bi bi-card-text"></i> Prompts para ChatGPT</h3>
 
 {% include 'apikey.html' %}
 
-<div id="chat-encabezado"></div>
 <form action="javascript:void(0)" method="post" id="form-base">
     <div class="row mb-1">
         <label for="tarea" class="col-4 col-form-label">Tarea:</label>
@@ -21,29 +21,48 @@
     <div class="row mb-1">
         <label for="lenguaje" class="col-4 col-form-label">Lenguaje:</label>
         <div class="col-8">
-            <select name="lenguaje" id="lenguaje" class="form-select w-auto">
-                {% for opcion in diccionario.lenguajes %}
-                <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
-                {% endfor %}
-            </select>
+            <div class=" input-group">
+                <select name="lenguaje" id="lenguaje" class="form-select w-auto">
+                    {% for opcion in diccionario.lenguajes %}
+                    <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
+                    {% endfor %}
+                </select>
+                <span data-bs-toggle="tooltip" title="Lenguaje: Conjunto de palabras y frases que se usan para comunicar un mensaje" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+            </div>
         </div>
     </div>
     <div class="row mb-1">
         <label for="estilo" class="col-4 col-form-label">Estilo:</label>
         <div class="col-8">
-            <select name="estilo" id="estilo" class="form-select w-auto">
-                {% for opcion in diccionario.estilos %}
-                <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
-                {% endfor %}
-            </select>
+            <div class=" input-group">
+                <select name="estilo" id="estilo" class="form-select w-auto">
+                    {% for opcion in diccionario.estilos %}
+                    <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
+                    {% endfor %}
+                </select>
+                <span data-bs-toggle="tooltip" title="Estilo: Patrón general de escritura y formato que se emplea en un texto" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+            </div>
         </div>
     </div>
     <div class="row mb-1">
         <label for="tono" class="col-4 col-form-label">Tono:</label>
         <div class="col-8">
-            <select name="tono" id="tono" class="form-select w-auto">
-                {% for opcion in diccionario.tonos %}
-                <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
+            <div class=" input-group">
+                <select name="tono" id="tono" class="form-select w-auto">
+                    {% for opcion in diccionario.tonos %}
+                    <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
+                    {% endfor %}
+                </select>
+                <span data-bs-toggle="tooltip" title="Tono: Actitud o perspectiva de quien escribe hacia el tema que está escribiendo" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-1">
+        <label for="idioma" class="col-4 col-form-label">Idioma:</label>
+        <div class="col-8">
+            <select name="idioma" id="idioma" class="form-select w-auto">
+                {% for opcion in diccionario.idiomas %}
+                <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %}>{{ opcion.etiqueta }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -52,7 +71,12 @@
 <hr>
 {% for tarea in diccionario.tareas %}{% if tarea.visible == '1' %}
 <form action="javascript:void(0)" method="post" id="form-{{tarea.valor}}" class="form-prompt" style="display: none;">
+    <input type="hidden" name="marcas" id="{{tarea.valor}}-marcas">
     <div class="row">
+        <div class="col-12 mb-3">
+            <h5>{{tarea.etiqueta}}</h5>
+            <div class="text-secondary small">{{tarea.descripcion}}</div>
+        </div>
         <div class="col-9">
             <div class="pe-1 input-group">
                 <label for="tipo-{{tarea.valor}}" class="col-form-label">Tipo {{tarea.valor}}:&nbsp;</label>
@@ -67,22 +91,25 @@
             <button type="button" title="Limpiar campos" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.limpiarCampos('{{tarea.valor}}')"><i class="bi bi-eraser-fill h5"></i></button>
             <button type="button" title="Usar Plantilla" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.usarPlantilla('tipo-{{tarea.valor}}')"><i class="bi bi-box-arrow-in-down-left h5"></i></button>
         </div>
-        <div class="col-12">
+        <div class="col-12 mt-2">
             <div class="form-floating">
                 <textarea id="{{tarea.valor}}-intro" name="intro" maxlength="250" class="form-control auto-resize"></textarea>
                 <label for="{{tarea.valor}}-intro">Instrucción de encuadre</label>
             </div>
         </div>
-        <div class="col-12">
+        <div class="col-12 mt-2">
             <div class="form-floating">
                 <textarea id="{{tarea.valor}}-peticion" name="peticion" maxlength="1000" class="form-control auto-resize"></textarea>
                 <label for="{{tarea.valor}}-peticion">Petición detallada (max: 1.000 caracteres)</label>
             </div>
         </div>
-        <div class="col-12 text-dark small text-center mt-2">
-            Reemplaza y completa los textos que estén entre ((paréntesis dobles))
+        <div class="col-10 text-dark small mt-3">
+            Reemplaza los textos con marcas de ((paréntesis dobles)):
         </div>
-        <div class="col-12">
+        <div class="col-2 text-end mt-3">
+            <button type="button" title="Reemplazar marcas" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.formularioMarcas()"><i class="bi bi-list-ul h5"></i></button>
+        </div>
+        <div class="col-12 mt-1">
             <div class="form-floating">
                 <textarea id="{{tarea.valor}}-texto" name="texto" maxlength="4000" class="form-control auto-resize"></textarea>
                 <label for="{{tarea.valor}}-texto">Texto base con datos para {{tarea.valor}} (max: 4.000 caracteres)</label>
@@ -92,7 +119,7 @@
 </form>
 {% endif %}{% endfor %}
 
-<div class="row mb-4 mt-2">
+<div class="row mb-4 mt-3">
     <div class="col-12 text-center">
         <button type="button" title="Generar el Prompt" class="btn btn-success mx-auto form-prompt" id="generar_prompt" onclick="prompts.generarPrompt()" style="display: none;">Generar el Prompt</button>
     </div>
@@ -100,9 +127,9 @@
 <div class="card mt-2 mb-4">
     <div class="card-header titulo_seccion pt-1 pb-1 ps-0 pe-0">
         <div class="row mb-1">
-            <div class="col-5">
+            <div class="col-5 h5">
                 <img src="{{dir_base}}/static/img/chatgpt.png" style="width: 24px">
-                 ChatGPT
+                 <strong>ChatGPT</strong>
             </div>
             <div class="col-7">
                 <div class="pe-1 input-group float-end">
@@ -202,7 +229,7 @@
                         <div class="col-7 pe-0 text-end">
                             <button data-bs-toggle="collapse" data-bs-target="#div_opciones" type="button" title="Configurar respuesta" class="btn btn-light text-dark border ps-2 pe-1"><i class="bi bi-gear h5"></i></button>
                             <button type="button" title="Copiar prompt" class="btn btn-light text-dark border ps-2 pe-1" onclick="prompts.copiarPrompt()"><i class="bi bi-clipboard h5"></i></button>
-                            <button type="button" title="Limpiar prompt" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.limpiarPrompt()"><i class="bi bi-eraser-fill h5"></i></button>
+                            <button type="button" title="Limpiar prompt" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.limpiarPrompt()"><i class="bi bi-x-square h5"></i></button>
                             <button type="button" title="Volver arriba" class="btn btn-light text-dark border ps-2 pe-1" onclick="control.desplazarPosicion('+')"><i class="bi bi-arrow-up-circle h5"></i></button>
                         </div>
                     </div>
@@ -248,7 +275,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="titulo_dialogo"><i class="bi bi-question-circle"></i> ¿Vaciar Historial?</h5>
+                <h5 class="modal-title" id="titulo_vaciar"><i class="bi bi-question-circle"></i> ¿Vaciar Historial?</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
@@ -265,11 +292,44 @@
         </div>
     </div>
 </div>
+<div id="formulario_marcas" style="display:none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="titulo_marcas"><i class="bi bi-list-ul"></i> Reemplazar marcas en texto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <form action="javascript:void(0)" method="post" id="form-marcas">
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="prompts.reemplazarMarcas()"><i class="bi bi-check-square"></i> Reemplazar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="campo_marca" style="display:none;">
+    <div class="row">
+        <div class="col-12 mt-1 mb-1">
+            <div class="form-floating">
+                <textarea id="idcampo" name="idcampo" placeholder="etiqueta" maxlength="500" class="form-control auto-resize form-marca"></textarea>
+                <label for="idcampo">etiqueta</label>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="{{dir_base}}/static/js/prompts-config.js?v={{app.ahora}}"></script>
 <script>
     jQuery(document).ready(function () {
         control.activarCopiar();
         prompts.iniciarFormularios();
+        prompts.iniciarTips();
     });
 </script>
 {% endif %}

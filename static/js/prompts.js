@@ -141,6 +141,7 @@ class Prompts {
     limpiarPrompt() {
         jQuery('#input-mensaje-usuario').val('');
         jQuery('#input-mensaje-usuario').trigger('input');
+        jQuery('#input-mensaje-usuario').focus();
     }
 
     confirmarVaciado() {
@@ -177,6 +178,7 @@ class Prompts {
         jQuery('#' + tarea + '-intro').val('');
         jQuery('#' + tarea + '-peticion').val('');
         jQuery('#' + tarea + '-texto').val('');
+        jQuery('#' + tarea + '-marcas').val('');
         jQuery('#' + tarea + '-intro').trigger('input');
         jQuery('#' + tarea + '-peticion').trigger('input');
         jQuery('#' + tarea + '-texto').trigger('input');
@@ -188,12 +190,14 @@ class Prompts {
         var peticion = '';
         var intro = '';
         var texto = '';
+        var marcas = '';
         switch (tarea) {
             case "informe":
                 if (this.informe[tipo]) {
                     intro = this.informe[tipo]['intro'];
                     peticion = this.informe[tipo]['peticion'];
                     texto = this.informe[tipo]['texto'];
+                    marcas = this.informe[tipo]['marcas'];
                 }
                 break;
             case "articulo": 
@@ -201,6 +205,7 @@ class Prompts {
                     intro = this.articulo[tipo]['intro'];
                     peticion = this.articulo[tipo]['peticion'];
                     texto = this.articulo[tipo]['texto'];
+                    marcas = this.articulo[tipo]['marcas'];
                 }
                 break;
             case "noticia": 
@@ -208,6 +213,7 @@ class Prompts {
                     intro = this.noticia[tipo]['intro'];
                     peticion = this.noticia[tipo]['peticion'];
                     texto = this.noticia[tipo]['texto'];
+                    marcas = this.noticia[tipo]['marcas'];
                 }
                 break;
             case "presentacion": 
@@ -215,6 +221,7 @@ class Prompts {
                 intro = this.presentacion[tipo]['intro'];
                 peticion = this.presentacion[tipo]['peticion'];
                 texto = this.presentacion[tipo]['texto'];
+                marcas = this.presentacion[tipo]['marcas'];
             }
                 break;
             case "guion": 
@@ -222,6 +229,7 @@ class Prompts {
                 intro = this.guion[tipo]['intro'];
                 peticion = this.guion[tipo]['peticion'];
                 texto = this.guion[tipo]['texto'];
+                marcas = this.guion[tipo]['marcas'];
             }
                 break;
             case "aviso": 
@@ -229,6 +237,7 @@ class Prompts {
                 intro = this.aviso[tipo]['intro'];
                 peticion = this.aviso[tipo]['peticion'];
                 texto = this.aviso[tipo]['texto'];
+                marcas = this.aviso[tipo]['marcas'];
             }
                 break;
             case "correo": 
@@ -236,6 +245,7 @@ class Prompts {
                     intro = this.correo[tipo]['intro'];
                     peticion = this.correo[tipo]['peticion'];
                     texto = this.correo[tipo]['texto'];
+                    marcas = this.correo[tipo]['marcas'];
                 }
                 break;
             case "preguntas": 
@@ -243,6 +253,7 @@ class Prompts {
                 intro = this.preguntas[tipo]['intro'];
                 peticion = this.preguntas[tipo]['peticion'];
                 texto = this.preguntas[tipo]['texto'];
+                marcas = this.preguntas[tipo]['marcas'];
             }
                 break;
             case "texto": 
@@ -250,6 +261,7 @@ class Prompts {
                 intro = this.texto[tipo]['intro'];
                 peticion = this.texto[tipo]['peticion'];
                 texto = this.texto[tipo]['texto'];
+                marcas = this.texto[tipo]['marcas'];
             }
                 break;
             case "instrucciones": 
@@ -257,6 +269,7 @@ class Prompts {
                 intro = this.instrucciones[tipo]['intro'];
                 peticion = this.instrucciones[tipo]['peticion'];
                 texto = this.instrucciones[tipo]['texto'];
+                marcas = this.instrucciones[tipo]['marcas'];
             }
                 break;
             case "ideas": 
@@ -264,6 +277,7 @@ class Prompts {
                 intro = this.ideas[tipo]['intro'];
                 peticion = this.ideas[tipo]['peticion'];
                 texto = this.ideas[tipo]['texto'];
+                marcas = this.ideas[tipo]['marcas'];
             }
                 break;
             case "propuesta": 
@@ -271,6 +285,7 @@ class Prompts {
                 intro = this.propuesta[tipo]['intro'];
                 peticion = this.propuesta[tipo]['peticion'];
                 texto = this.propuesta[tipo]['texto'];
+                marcas = this.propuesta[tipo]['marcas'];
             }
                 break;
             default:
@@ -283,6 +298,7 @@ class Prompts {
         jQuery('#' + tarea + '-intro').val(intro);
         jQuery('#' + tarea + '-peticion').val(peticion);
         jQuery('#' + tarea + '-texto').val(texto);
+        jQuery('#' + tarea + '-marcas').val(marcas);
         jQuery('#' + tarea + '-intro').trigger('input');
         jQuery('#' + tarea + '-peticion').trigger('input');
         jQuery('#' + tarea + '-texto').trigger('input');
@@ -293,6 +309,7 @@ class Prompts {
         var estilo = jQuery('#estilo').val();
         var tono = jQuery('#tono').val();
         var lenguaje = jQuery('#lenguaje').val();
+        var idioma = jQuery('#idioma').val();
         var prompt = '';
         switch (tarea) {
             case "informe": prompt = this.informe['prompt']; break;
@@ -318,9 +335,72 @@ class Prompts {
         prompt = prompt.replace('((estilo))', estilo);
         prompt = prompt.replace('((tono))', tono);
         prompt = prompt.replace('((lenguaje))', lenguaje);
+        prompt = prompt.replace('((idioma))', idioma);
         jQuery('#input-mensaje-usuario').val(prompt);
         jQuery('#input-mensaje-usuario').trigger('input');
         jQuery(window).scrollTop( jQuery('div#pie-prompts' ).position().top);
+    }
+
+    iniciarTips() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+          return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+    }
+
+    formularioMarcas() {
+        var tarea = jQuery('#tarea').val();
+        var lista = jQuery('#' + tarea + '-marcas').val();
+        var texto = jQuery('#' + tarea + '-texto').val();
+        var plantilla = jQuery('#formulario_marcas');
+        var formulario = jQuery('#form-marcas');
+        var campos = lista.split('|');
+        formulario.html('');
+        campos.forEach( function(campo) {
+            let id = campo.toLowerCase().replace(/\s/g, '-');
+            let etiqueta = campo.replace(/-/g, ' ');
+            etiqueta = etiqueta.charAt(0).toUpperCase() + etiqueta.slice(1);
+            let input = jQuery("div#campo_marca").html();
+            input = input.replace(/idcampo/g, id);
+            input = input.replace(/etiqueta/g, etiqueta);
+            if (texto.includes('(('+ id + '))')) {
+                formulario.append(input);
+            }
+        });
+        let html = plantilla.html();
+        control.abrirModal(html);
+        jQuery('#form-marcas .auto-resize').on('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+            var maxHeight = 400;
+            if (this.scrollHeight > maxHeight) {
+                this.style.height = maxHeight + 'px';
+                this.style.overflowY = 'auto';
+            }
+            if (this.value.length === 0) {
+                this.style.height = 'auto';
+            }
+        });
+    }
+
+    reemplazarMarcas() {
+        var tarea = jQuery('#tarea').val();
+        var texto = jQuery('#' + tarea + '-texto').val();
+        jQuery('textarea.form-marca').each( function() {
+            let area = jQuery(this);
+            let nombre = area.attr('name');
+            let valor = area.val();
+            if (valor.length >0) {
+                texto = prompts.reemplazarTextoMarca(texto, nombre, valor);
+            }
+        });
+        jQuery('#' + tarea + '-texto').val(texto);
+        control.cerrarModal();
+    }
+
+    reemplazarTextoMarca(completa, buscada, reemplazo) {
+        var regex = new RegExp('\\(\\(' + buscada + '\\)\\)', 'g');
+        return completa.replace(regex, reemplazo);
     }
 
 }
