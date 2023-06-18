@@ -1,6 +1,6 @@
 /* prompts.js
 ******************************************************
-CHAT EXPERTO (Front-end) - Actualizado el: 16/06/2023
+CHAT EXPERTO (Front-end) - Actualizado el: 18/06/2023
 ******************************************************
 Clase: Prompts */
 
@@ -19,18 +19,34 @@ class Prompts {
         this.instrucciones = [];
         this.ideas = [];
         this.propuesta = [];
-        this.informe['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.articulo['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.noticia['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.presentacion['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.guion['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.aviso['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.correo['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.preguntas['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.texto['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.instrucciones['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.ideas['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.propuesta['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.contrato = [];
+        this.poema = [];
+        this.curriculum = [];
+        this.carta = [];
+        this.curso = [];
+        this.historia = [];
+        this.reseña = [];
+        this.presupuesto = [];
+        this.informe['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.articulo['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.noticia['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.presentacion['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.guion['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.aviso['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.correo['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.preguntas['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.texto['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.instrucciones['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.ideas['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.propuesta['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.contrato['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.poema['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.curriculum['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.carta['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.curso['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.historia['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.reseña['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.presupuesto['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
     }
 
     iniciarFormularios() {
@@ -190,7 +206,6 @@ class Prompts {
         jQuery('#' + tarea + '-intro').val('');
         jQuery('#' + tarea + '-peticion').val('');
         jQuery('#' + tarea + '-texto').val('');
-        jQuery('#' + tarea + '-marcas').val('');
         jQuery('#' + tarea + '-intro').trigger('input');
         jQuery('#' + tarea + '-peticion').trigger('input');
         jQuery('#' + tarea + '-texto').trigger('input');
@@ -202,8 +217,6 @@ class Prompts {
         var peticion = '';
         var intro = '';
         var texto = '';
-        var marcas = '';
-        var claves = '';
         var config = '';
         switch (tarea) {
             case "informe":
@@ -211,8 +224,6 @@ class Prompts {
                     intro = this.informe[tipo]['intro'];
                     peticion = this.informe[tipo]['peticion'];
                     texto = this.informe[tipo]['texto'];
-                    marcas = this.informe[tipo]['marcas'];
-                    claves = this.informe[tipo]['claves'];
                     config = this.informe[tipo]['config'];
                 }
                 break;
@@ -221,8 +232,6 @@ class Prompts {
                     intro = this.articulo[tipo]['intro'];
                     peticion = this.articulo[tipo]['peticion'];
                     texto = this.articulo[tipo]['texto'];
-                    marcas = this.articulo[tipo]['marcas'];
-                    claves = this.articulo[tipo]['claves'];
                     config = this.articulo[tipo]['config'];
                 }
                 break;
@@ -231,8 +240,6 @@ class Prompts {
                     intro = this.noticia[tipo]['intro'];
                     peticion = this.noticia[tipo]['peticion'];
                     texto = this.noticia[tipo]['texto'];
-                    marcas = this.noticia[tipo]['marcas'];
-                    claves = this.noticia[tipo]['claves'];
                     config = this.noticia[tipo]['config'];
                 }
                 break;
@@ -241,8 +248,6 @@ class Prompts {
                     intro = this.presentacion[tipo]['intro'];
                     peticion = this.presentacion[tipo]['peticion'];
                     texto = this.presentacion[tipo]['texto'];
-                    marcas = this.presentacion[tipo]['marcas'];
-                    claves = this.presentacion[tipo]['claves'];
                     config = this.presentacion[tipo]['config'];
                 }
                 break;
@@ -251,8 +256,6 @@ class Prompts {
                     intro = this.guion[tipo]['intro'];
                     peticion = this.guion[tipo]['peticion'];
                     texto = this.guion[tipo]['texto'];
-                    marcas = this.guion[tipo]['marcas'];
-                    claves = this.guion[tipo]['claves'];
                     config = this.guion[tipo]['config'];
                 }
                 break;
@@ -261,8 +264,6 @@ class Prompts {
                     intro = this.aviso[tipo]['intro'];
                     peticion = this.aviso[tipo]['peticion'];
                     texto = this.aviso[tipo]['texto'];
-                    marcas = this.aviso[tipo]['marcas'];
-                    claves = this.aviso[tipo]['claves'];
                     config = this.aviso[tipo]['config'];
                 }
                 break;
@@ -271,8 +272,6 @@ class Prompts {
                     intro = this.correo[tipo]['intro'];
                     peticion = this.correo[tipo]['peticion'];
                     texto = this.correo[tipo]['texto'];
-                    marcas = this.correo[tipo]['marcas'];
-                    claves = this.correo[tipo]['claves'];
                     config = this.correo[tipo]['config'];
                 }
                 break;
@@ -281,8 +280,6 @@ class Prompts {
                     intro = this.preguntas[tipo]['intro'];
                     peticion = this.preguntas[tipo]['peticion'];
                     texto = this.preguntas[tipo]['texto'];
-                    marcas = this.preguntas[tipo]['marcas'];
-                    claves = this.preguntas[tipo]['claves'];
                     config = this.preguntas[tipo]['config'];
                 }
                 break;
@@ -291,8 +288,6 @@ class Prompts {
                     intro = this.texto[tipo]['intro'];
                     peticion = this.texto[tipo]['peticion'];
                     texto = this.texto[tipo]['texto'];
-                    marcas = this.texto[tipo]['marcas'];
-                    claves = this.texto[tipo]['claves'];
                     config = this.texto[tipo]['config'];
                 }
                 break;
@@ -301,8 +296,6 @@ class Prompts {
                     intro = this.instrucciones[tipo]['intro'];
                     peticion = this.instrucciones[tipo]['peticion'];
                     texto = this.instrucciones[tipo]['texto'];
-                    marcas = this.instrucciones[tipo]['marcas'];
-                    claves = this.instrucciones[tipo]['claves'];
                     config = this.instrucciones[tipo]['config'];
                 }
                 break;
@@ -311,8 +304,6 @@ class Prompts {
                     intro = this.ideas[tipo]['intro'];
                     peticion = this.ideas[tipo]['peticion'];
                     texto = this.ideas[tipo]['texto'];
-                    marcas = this.ideas[tipo]['marcas'];
-                    claves = this.ideas[tipo]['claves'];
                     config = this.ideas[tipo]['config'];
                 }
                 break;
@@ -321,9 +312,71 @@ class Prompts {
                     intro = this.propuesta[tipo]['intro'];
                     peticion = this.propuesta[tipo]['peticion'];
                     texto = this.propuesta[tipo]['texto'];
-                    marcas = this.propuesta[tipo]['marcas'];
-                    claves = this.propuesta[tipo]['claves'];
                     config = this.propuesta[tipo]['config'];
+                }
+                break;
+            case "contrato": 
+                if (this.contrato[tipo]) {
+                    intro = this.contrato[tipo]['intro'];
+                    peticion = this.contrato[tipo]['peticion'];
+                    texto = this.contrato[tipo]['texto'];
+                    config = this.contrato[tipo]['config'];
+                }
+                break;
+            case "poema": 
+                if (this.poema[tipo]) {
+                    intro = this.poema[tipo]['intro'];
+                    peticion = this.poema[tipo]['peticion'];
+                    texto = this.poema[tipo]['texto'];
+                    config = this.poema[tipo]['config'];
+                }
+                break;
+            case "curriculum": 
+                if (this.curriculum[tipo]) {
+                    intro = this.curriculum[tipo]['intro'];
+                    peticion = this.curriculum[tipo]['peticion'];
+                    texto = this.curriculum[tipo]['texto'];
+                    config = this.curriculum[tipo]['config'];
+                }
+                break;
+            case "carta": 
+                if (this.carta[tipo]) {
+                    intro = this.carta[tipo]['intro'];
+                    peticion = this.carta[tipo]['peticion'];
+                    texto = this.carta[tipo]['texto'];
+                    config = this.carta[tipo]['config'];
+                }
+                break;
+            case "curso": 
+                if (this.curso[tipo]) {
+                    intro = this.curso[tipo]['intro'];
+                    peticion = this.curso[tipo]['peticion'];
+                    texto = this.curso[tipo]['texto'];
+                    config = this.curso[tipo]['config'];
+                }
+                break;
+            case "historia": 
+                if (this.historia[tipo]) {
+                    intro = this.historia[tipo]['intro'];
+                    peticion = this.historia[tipo]['peticion'];
+                    texto = this.historia[tipo]['texto'];
+                    config = this.historia[tipo]['config'];
+                }
+                break;
+            case "reseña": 
+                if (this.reseña[tipo]) {
+                    intro = this.reseña[tipo]['intro'];
+                    peticion = this.reseña[tipo]['peticion'];
+                    texto = this.reseña[tipo]['texto'];
+                    config = this.reseña[tipo]['config'];
+                }
+                break;
+            case "presupuesto": 
+                if (this.presupuesto[tipo]) {
+                    intro = this.presupuesto[tipo]['intro'];
+                    peticion = this.presupuesto[tipo]['peticion'];
+                    texto = this.presupuesto[tipo]['texto'];
+                    config = this.presupuesto[tipo]['config'];
                 }
                 break;
             default:
@@ -336,8 +389,6 @@ class Prompts {
         jQuery('#' + tarea + '-intro').val(intro);
         jQuery('#' + tarea + '-peticion').val(peticion);
         jQuery('#' + tarea + '-texto').val(texto);
-        jQuery('#' + tarea + '-marcas').val(marcas);
-        jQuery('#' + tarea + '-claves').val(claves);
         jQuery('#' + tarea + '-intro').trigger('input');
         jQuery('#' + tarea + '-peticion').trigger('input');
         jQuery('#' + tarea + '-texto').trigger('input');
@@ -355,6 +406,10 @@ class Prompts {
         var tono = jQuery('#tono').val();
         var lenguaje = jQuery('#lenguaje').val();
         var idioma = jQuery('#idioma').val();
+        var palabras = jQuery('#palabras').val();
+        if (palabras.length >0) {
+            palabras = ', en un máximo de ' + palabras + ' palabras o menos';
+        }
         var prompt = '';
         switch (tarea) {
             case "informe": prompt = this.informe['prompt']; break;
@@ -369,6 +424,14 @@ class Prompts {
             case "instrucciones": prompt = this.instrucciones['prompt']; break;
             case "ideas": prompt = this.ideas['prompt']; break;
             case "propuesta": prompt = this.propuesta['prompt']; break;
+            case "contrato": prompt = this.contrato['prompt']; break;
+            case "poema": prompt = this.poema['prompt']; break;
+            case "curriculum": prompt = this.curriculum['prompt']; break;
+            case "carta": prompt = this.carta['prompt']; break;
+            case "curso": prompt = this.curso['prompt']; break;
+            case "historia": prompt = this.historia['prompt']; break;
+            case "reseña": prompt = this.reseña['prompt']; break;
+            case "presupuesto": prompt = this.presupuesto['prompt']; break;
         }
         let intro = jQuery('#' + tarea + '-intro').val();
         let peticion = jQuery('#' + tarea + '-peticion').val();
@@ -381,6 +444,7 @@ class Prompts {
         prompt = prompt.replace('((tono))', tono);
         prompt = prompt.replace('((lenguaje))', lenguaje);
         prompt = prompt.replace('((idioma))', idioma);
+        prompt = prompt.replace('((palabras))', palabras);
         jQuery('#input-mensaje-usuario').val(prompt);
         jQuery('#input-mensaje-usuario').trigger('input');
         jQuery(window).scrollTop( jQuery('div#pie-prompts' ).position().top);
@@ -395,11 +459,15 @@ class Prompts {
 
     formularioMarcas() {
         var tarea = jQuery('#tarea').val();
-        var lista = jQuery('#' + tarea + '-marcas').val();
         var texto = jQuery('#' + tarea + '-texto').val();
         var plantilla = jQuery('#formulario_marcas');
         var formulario = jQuery('#form-marcas');
-        var campos = lista.split('|');
+        var regex = /\(\((.*?)\)\)/g;
+        var campos = [];
+        var match;
+        while ((match = regex.exec(texto)) !== null) {
+          campos.push(match[1]);
+        }
         formulario.html('');
         campos.forEach( function(campo) {
             let id = campo.toLowerCase().replace(/\s/g, '-');
@@ -450,11 +518,15 @@ class Prompts {
 
     formularioClaves() {
         var tarea = jQuery('#tarea').val();
-        var lista = jQuery('#' + tarea + '-claves').val();
         var texto = jQuery('#' + tarea + '-peticion').val();
         var plantilla = jQuery('#formulario_claves');
         var formulario = jQuery('#form-claves');
-        var campos = lista.split('|');
+        var regex = /\(\((.*?)\)\)/g;
+        var campos = [];
+        var match;
+        while ((match = regex.exec(texto)) !== null) {
+          campos.push(match[1]);
+        }
         formulario.html('');
         campos.forEach( function(campo) {
             let id = campo.toLowerCase().replace(/\s/g, '-');

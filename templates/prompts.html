@@ -38,7 +38,7 @@
                     <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
                     {% endfor %}
                 </select>
-                <span data-bs-toggle="tooltip" title="Estilo: Patrón general de escritura y formato que se emplea en un texto" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+                <span data-bs-toggle="tooltip" title="Estilo: Patrón general de escritura y formato que se aplica en un texto" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
             </div>
         </div>
     </div>
@@ -51,7 +51,7 @@
                     <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
                     {% endfor %}
                 </select>
-                <span data-bs-toggle="tooltip" title="Tono: Actitud o perspectiva de quien escribe hacia el tema que está escribiendo" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+                <span data-bs-toggle="tooltip" title="Tono: Actitud o perspectiva del hablante hacia el tema que está tratando" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
             </div>
         </div>
     </div>
@@ -65,15 +65,24 @@
             </select>
         </div>
     </div>
+    <div class="row mb-1">
+        <label for="palabras" class="col-4 col-form-label">Palabras:</label>
+        <div class="col-8">
+            <select name="palabras" id="palabras" class="form-select w-auto">
+                <option value=""></option>
+                {% for opcion in diccionario.palabras %}
+                <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %}>{{ opcion.etiqueta }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
 </form>
 <hr>
 {% for tarea in datos.tareas %}
 <form action="javascript:void(0)" method="post" id="form-{{tarea.valor}}" class="form-prompt" style="display: none;">
-    <input type="hidden" name="marcas" id="{{tarea.valor}}-marcas">
-    <input type="hidden" name="claves" id="{{tarea.valor}}-claves">
     <div class="row">
         <div class="col-12 mb-3">
-            <h5>{{tarea.etiqueta}}</h5>
+            <h5>Generar {{tarea.etiqueta}}</h5>
             <div class="text-secondary small">{{tarea.descripcion}}</div>
         </div>
         <div class="col-9">
@@ -81,7 +90,7 @@
                 <label for="tipo-{{tarea.valor}}" class="col-form-label">Tipo {{tarea.valor}}:&nbsp;</label>
                 <select name="tipo" id="tipo-{{tarea.valor}}" class="form-select w-auto">
                     {% for prompt in datos.prompts %}{% if prompt.tipo == tarea.valor %}
-                    <option value="{{prompt.valor}}">{{prompt.etiqueta}}</option>
+                    <option value="{{prompt.id}}">{{prompt.etiqueta}}</option>
                     {% endif %}{% endfor %}
                 </select>
             </div>
@@ -372,7 +381,7 @@
         prompts.iniciarFormularios();
         prompts.iniciarTips();
         {% for prompt in datos.prompts %}
-        prompts.{{prompt.tipo}}['{{prompt.valor}}'] = {"intro": "{{prompt.intro}}", "peticion": "{{prompt.peticion}}", "texto": "{{prompt.texto}}", "marcas": "{{prompt.marcas}}", "claves": "{{prompt.claves}}", "config": "{{prompt.config}}"};
+        prompts.{{prompt.tipo}}['{{prompt.id}}'] = {"intro": "{{prompt.intro}}", "peticion": "{{prompt.peticion}}", "texto": "{{prompt.texto}}", "marcas": "{{prompt.marcas}}", "claves": "{{prompt.claves}}", "config": "{{prompt.config}}"};
         {% endfor %}
     });
 </script>
