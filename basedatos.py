@@ -1155,19 +1155,19 @@ class BaseDatos:
             valores = ''
 
             tarea = parametros.get('tarea', None)
-            if tarea:
+            if tarea != None:
                 param.append( tarea )
                 campos = f"{campos}, tarea"
                 valores = f"{valores},?"
 
             etiqueta = parametros.get('etiqueta', None)
-            if etiqueta:
+            if etiqueta != None:
                 param.append( etiqueta )
                 campos = f"{campos}, etiqueta"
                 valores = f"{valores},?"
 
             intro = parametros.get('intro', None)
-            if intro:
+            if intro != None:
                 intro = re.sub(r'\n', '|', intro)
                 intro = re.sub(r'\r', '', intro)
                 param.append( intro )
@@ -1175,7 +1175,7 @@ class BaseDatos:
                 valores = f"{valores},?"
 
             peticion = parametros.get('peticion', None)
-            if peticion:
+            if peticion != None:
                 peticion = re.sub(r'\n', '|', peticion)
                 peticion = re.sub(r'\r', '', peticion)
                 param.append( peticion )
@@ -1183,7 +1183,7 @@ class BaseDatos:
                 valores = f"{valores},?"
 
             texto = parametros.get('texto', None)
-            if texto:
+            if texto != None:
                 texto = re.sub(r'\n', '|', texto)
                 texto = re.sub(r'\r', '', texto)
                 param.append( texto )
@@ -1191,13 +1191,13 @@ class BaseDatos:
                 valores = f"{valores},?"
 
             config = parametros.get('config', None)
-            if config:
+            if config != None:
                 param.append( config )
                 campos = f"{campos}, config"
                 valores = f"{valores},?"
 
             visible = parametros.get('visible', None)
-            if visible:
+            if visible != None:
                 param.append( visible )
                 campos = f"{campos}, visible"
                 valores = f"{valores},?"
@@ -1227,43 +1227,43 @@ class BaseDatos:
             campos = ''
 
             tarea = parametros.get('tarea', None)
-            if tarea:
+            if tarea != None:
                 param.append( tarea )
                 campos = f"{campos}, tarea=?"
 
             etiqueta = parametros.get('etiqueta', None)
-            if etiqueta:
+            if etiqueta != None:
                 param.append( etiqueta )
                 campos = f"{campos}, etiqueta=?"
 
             intro = parametros.get('intro', None)
-            if intro:
+            if intro != None:
                 intro = re.sub(r'\n', '|', intro)
                 intro = re.sub(r'\r', '', intro)
                 param.append( intro )
                 campos = f"{campos}, intro=?"
 
             peticion = parametros.get('peticion', None)
-            if peticion:
+            if peticion != None:
                 peticion = re.sub(r'\n', '|', peticion)
                 peticion = re.sub(r'\r', '', peticion)
                 param.append( peticion )
                 campos = f"{campos}, peticion=?"
 
             texto = parametros.get('texto', None)
-            if texto:
+            if texto != None:
                 texto = re.sub(r'\n', '|', texto)
                 texto = re.sub(r'\r', '', texto)
                 param.append( texto )
                 campos = f"{campos}, texto=?"
 
             config = parametros.get('config', None)
-            if config:
+            if config != None:
                 param.append( config )
                 campos = f"{campos}, config=?"
 
             visible = parametros.get('visible', None)
-            if visible:
+            if visible != None:
                 param.append( visible )
                 campos = f"{campos}, visible=?"
 
