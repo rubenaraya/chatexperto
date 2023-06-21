@@ -520,6 +520,8 @@ class Controlador {
             const plantilla = jQuery('#plantilla_respuesta').html();
             let html = plantilla;
             html = html.replace('((respuesta))', jsonResponse.respuesta);
+            html = html.replace('((id_doc))', jsonResponse.id_doc);
+            html = html.replace('((id_doc))', jsonResponse.id_doc);
             jQuery("#respuesta").html(html).show();
             if ( jsonResponse.respuesta ) {
                 jQuery("#zona_espera").hide();
@@ -1216,8 +1218,8 @@ class Controlador {
 
     generarMetadatos(id) {
         var datos = jQuery( '#form_metadatos' ).serialize();
-        jQuery("#form_editar_metadatos").hide();
         jQuery("#form_editar_botones").hide();
+        jQuery("#form_editar_metadatos").hide();
         jQuery("#form_editar_espera").show();
         const peticion = jQuery.ajax({
             type: "POST",

@@ -15,6 +15,7 @@ class Archivos:
 
     # Función para validar y cargar archivo
     def cargar_archivo( self, archivo ):
+        import re
         from werkzeug.utils import secure_filename
         try:
             ruta = f"{self.config.RUTA.get('ARCHIVOS')}/{self.config.CARPETA}"
@@ -29,7 +30,7 @@ class Archivos:
             if not nombre_base:
                 return self.NOMBRE_NO_VALIDO
 
-            nombre_base = str( nombre_base ).replace( '.', '' )
+            nombre_base = re.sub( r"\.", "", nombre_base )
             nombre_disponible = self._encontrar_nombre_disponible( ruta, nombre_base, extension[1:], True )
             if nombre_disponible is None:
                 return self.ARCHIVO_YA_EXISTE
@@ -187,13 +188,12 @@ class Archivos:
             archivo, extension = os.path.splitext( nombre )
             archivo = unicodedata.normalize( 'NFD', archivo ).encode( 'ascii', 'ignore' ).decode( 'utf-8' )
             archivo = archivo.lower()
-            archivo = archivo.replace( " ", "-" )
-            archivo = archivo.replace( "_", "-" )
-            archivo = archivo.replace( " ", "-" )
-            archivo = archivo.replace( "---", "-" )
-            archivo = archivo.replace( "--", "-" )
+            archivo = re.sub( r" ", "-", archivo )
+            archivo = re.sub( r"_", "-", archivo )
+            archivo = re.sub( r"---", "-", archivo )
+            archivo = re.sub( r"--", "-", archivo )
             archivo = re.sub( r'[\\/:"*?<>|°ºª~!#$%&=¿¡+\[\]{};.,\']', '', archivo )
-            archivo = f"{archivo[:largo]}.{extension}"
+            archivo = f"{archivo[:largo]}{extension}"
             return archivo
         except Exception as e:
             self.archivos_registrar.error( f"{e}" )

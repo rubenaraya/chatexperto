@@ -181,6 +181,7 @@ class BaseDatos:
 
     # Función para agregar un documento a una colección
     def agregar_documento( self, estado=0, parametros={} ):
+        import re
         try:
             param = [ int(estado) ]
             campos = ''
@@ -194,7 +195,7 @@ class BaseDatos:
 
             ruta = parametros.get('ruta', None)
             if ruta:
-                ruta = str(ruta).replace('\\', '/' )
+                ruta = re.sub(r'\\', '/', ruta)
                 param.append( ruta )
                 campos = f"{campos}, ruta"
                 valores = f"{valores},?"
@@ -231,7 +232,8 @@ class BaseDatos:
 
             titulo = parametros.get('titulo', None)
             if titulo:
-                param.append( str(titulo).replace('-', ' ').strip() )
+                titulo = re.sub(r'-', ' ', titulo)
+                param.append( titulo.strip() )
                 campos = f"{campos}, titulo"
                 valores = f"{valores},?"
 
@@ -1356,9 +1358,11 @@ class BaseDatos:
         # Elimina caracteres especiales no deseados
         for char in excluir:
             texto = texto.replace( char, '' )
+            texto = texto.replace( char, '' )
 
         # Quita saltos de línea y reemplaza dobles espacios por espacios simples
-        texto = texto.replace( '\n', ' ' ).replace( '\r', '' )
+        texto = re.sub( r'\n', ' ', texto )
+        texto = re.sub( r'\r', '', texto )
         texto = re.sub( r'\s{2,}', ' ', texto )
 
         # Sanitiza el texto para consultas SQL
@@ -1399,7 +1403,8 @@ class BaseDatos:
         decimales = 2
         minimo = 0
         maximo = float('inf')
-        numero = str( numero ).replace(',', '.').strip()
+        numero = str( numero ).replace(',', '.')
+        numero = numero.replace(',', '.').strip()
 
         # Verifica que solo haya un punto numero.
         if len(re.findall( r'\.', numero )) > 1:

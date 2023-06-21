@@ -409,16 +409,18 @@ class GestorColeccion:
 
     # Función para crear una nueva colección / aplicación
     def crear_coleccion( self, coleccion, nombre, descripcion, api_key, carpetas, chatgpt ):
-        import unicodedata
+        import unicodedata, re
         from archivos import Archivos
         archivos = Archivos(self.config)
         mensaje = f"{self.config.MENSAJES.get('ERROR_COLECCION_NOCREADA')}: {coleccion}"
 
-        coleccion = str( coleccion ).lower().replace(' ', '').strip()
+        coleccion = re.sub( r"  ", "", coleccion )
+        coleccion = coleccion.lower().strip()
         coleccion = unicodedata.normalize( 'NFD', coleccion ).encode( 'ascii', 'ignore' ).decode( 'utf-8' )
         excluir = "!#$%&'()*+,-./:;<=>?@[\]^_`{|}~"
         for c in excluir:
             if c in coleccion:
+                coleccion = coleccion.replace(c, "")
                 coleccion = coleccion.replace(c, "")
 
         if self.config.comprobar_coleccion( nombre_coleccion=coleccion ):
@@ -455,17 +457,19 @@ class GestorColeccion:
 
     # Función para crear una nueva carpeta
     def crear_carpeta( self, nombre_carpeta, etiqueta_carpeta, tipos_archivo=[], modulos=[] ):
-        import unicodedata
+        import unicodedata, re
         from archivos import Archivos
 
         mensaje = f"{self.config.MENSAJES.get('ERROR_CARPETA_NOCREADA')}"
 
         if nombre_carpeta and etiqueta_carpeta and tipos_archivo:
-            nombre_carpeta = str( nombre_carpeta ).lower().replace(' ', '').strip()
+            nombre_carpeta = re.sub( r"  ", "", nombre_carpeta )
+            nombre_carpeta = nombre_carpeta.lower().strip()
             nombre_carpeta = unicodedata.normalize( 'NFD', nombre_carpeta ).encode( 'ascii', 'ignore' ).decode( 'utf-8' )
             excluir = "!#$%&'()*+,-./:;<=>?@[\]^_`{|}~"
             for c in excluir:
                 if c in nombre_carpeta:
+                    nombre_carpeta = nombre_carpeta.replace(c, "")
                     nombre_carpeta = nombre_carpeta.replace(c, "")
 
             etiqueta_carpeta = unicodedata.normalize( 'NFD', etiqueta_carpeta ).encode( 'ascii', 'ignore' ).decode( 'utf-8' )
@@ -867,7 +871,7 @@ class GestorColeccion:
 
     # Función para buscar documentos en índice vectorial
     def buscar_textos_documentos( self, parametros={} ):
-        import string
+        import string, re
         try:
             buscar = parametros.get('buscar', None)
             max_docs = int(parametros.get('max_docs', '10'))
@@ -895,8 +899,10 @@ class GestorColeccion:
                 if documentos:
                     for documento in documentos:
                         metadata = documento.metadata
-                        page_content = str( documento.page_content ).replace('\n', ' ').replace('\n', ' ').strip()
-                        page_content = page_content.replace("  ", " ").replace("  ", " ").replace("  ", " ")
+                        page_content = str( documento.page_content )
+                        page_content = re.sub( r"\n", " ", page_content )
+                        page_content = re.sub( r"  ", " ", page_content )
+                        page_content = page_content.strip()
                         page_content = page_content.lstrip(string.punctuation).rstrip()
                         if len(page_content) > 125:
                             archivo = metadata.get('filename', '')
@@ -916,7 +922,8 @@ class GestorColeccion:
                                 "contenido": page_content
                             }
                             resultados.append(registro)
-                buscar = buscar.replace("'", "").replace('"', '')
+                buscar = re.sub( r"'", "", buscar )
+                buscar = re.sub( r'"', "", buscar )
                 bd = BaseDatos(self.config)
                 extraidos = bd.extraer_documentos( listado=listado, total=max_docs )
                 lista_final = []

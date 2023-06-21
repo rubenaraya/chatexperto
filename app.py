@@ -895,6 +895,7 @@ def funcion_chat( coleccion ):
 @app.route( '/<coleccion>/chat_bot', methods=['POST'] )
 @cross_origin()
 def funcion_chat_bot( coleccion ):
+    import re
     config = Config(coleccion)
 
     # Comprueba la colección
@@ -933,7 +934,8 @@ def funcion_chat_bot( coleccion ):
         # Envía la solicitud al LLM y recibe la respuesta
         gestor.abrir_ejecutor()
         respuesta = gestor.ejecutar_instruccion( peticion=peticion, id_sesion=usuario )
-        respuesta = str( respuesta ).replace( '\n', '' ).strip()
+        respuesta = re.sub( r"\n", "", respuesta )
+        respuesta = respuesta.strip()
 
     # Si se produce un error
     except Exception as e:
@@ -1337,7 +1339,7 @@ def funcion_cargar( coleccion ):
     
     tiempo = round( time.time() - ini_time, None )
     respuesta = f"{mensaje} Tiempo: {tiempo} segundos"
-    return jsonify( {'respuesta': respuesta} ), 200
+    return jsonify( {'respuesta': respuesta, 'id_doc': id_doc } ), 200
 
 ######################################################
 # URL: "/<coleccion>/archivo/<int:uid>" (DELETE) [T]

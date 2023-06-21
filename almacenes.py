@@ -396,19 +396,19 @@ class Almacenes:
                     page_content = re.sub( r"(\w+)-\n(\w+)", "\1\2", page_content )
                     page_content = re.sub( r"(?<!\n\s)\n(?!\s\n)", " ", page_content.strip() )
                     page_content = re.sub( r"\n\s*\n", "\n\n", page_content )
-                    page_content = page_content.replace( "\t", " " )
-                    page_content = page_content.replace( "\\\\", "/" )
-                    page_content = page_content.replace( "  ", " " ).replace( "  ", " " ).replace( "  ", " " ).replace( "  ", " " ).replace( "  ", " " )
-                    page_content = page_content.replace( "…", "." ).replace( "…", "." ).replace( "…", "." ).replace( "…", "." ).replace( "…", "." )
-                    page_content = page_content.replace( "...", "." ).replace( "...", "." ).replace( "...", "." ).replace( "...", "." ).replace( "...", "." )
-                    page_content = page_content.replace( "___", "_" ).replace( "___", "_" ).replace( "___", "_" ).replace( "___", "_" ).replace( "___", "_" )
+                    page_content = re.sub( r"\t", " ", page_content )
+                    page_content = re.sub( r"\\\\", "/", page_content )
+                    page_content = re.sub( r"  ", " ", page_content )
+                    page_content = re.sub( r"…", ".", page_content )
+                    page_content = re.sub( r"...", ".", page_content )
+                    page_content = re.sub( r"___", "_", page_content )
                     doc.page_content = page_content
 
                 if que_procesar in [ "todo", "metadatos" ]:
                     # Efectúa limpieza y asignaciones en Document[metadata]
                     metadata = doc.metadata
                     source = metadata.get('source')
-                    source = str( source ).replace( "\\", "/" )
+                    source = re.sub( r"\\", "/", source )
                     partes = source.split('/')
                     if len(partes) == 1:
                         filename = ''
