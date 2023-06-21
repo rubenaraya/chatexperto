@@ -1105,14 +1105,249 @@ class BaseDatos:
             if conexion:
                 conexion.close()
 
+    # Función para obtener los datos de una plantilla de prompt por id
+    def abrir_plantilla( self, uid ):
+        try:
+            conexion = sqlite3.connect( self._BD.get('COLECCION') )
+            consulta_sql = self._SQL.get( 'SELECT_PLANTILLA' )
+            parametros = [ uid ]
+            bd = conexion.cursor()
+            bd.execute( consulta_sql, parametros )
+            datos = bd.fetchone()
+            conexion.close()
+            if datos:
+                columnas = [desc[0] for desc in bd.description]
+                caso = {columnas[i]: datos[i] for i in range(len(columnas))}
+                return caso
+            else:
+                return None
+        except Exception as e:
+            self.basedatos_registrar.error( f"{e}" )
+            return None
+        finally:
+            if conexion:
+                conexion.close()
+
+    # Función para borrar una plantilla de prompt por id
+    def borrar_plantilla( self, uid ):
+        try:
+            param = [ uid ]
+            consulta_sql = self._SQL.get( 'DELETE_PLANTILLA' )
+            conexion = sqlite3.connect( self._BD.get('COLECCION') )
+            bd = conexion.cursor()
+            bd.execute( consulta_sql, param )
+            conexion.commit()
+            conexion.close()
+            return True
+        except Exception as e:
+            self.basedatos_registrar.error( f"{e}" )
+            return False
+        finally:
+            if conexion:
+                conexion.close()
+
+    # Función para ingresar una nueva plantilla de prompt
+    def ingresar_plantilla( self, parametros={} ):
+        import re
+        try:
+            param = []
+            campos = ''
+            valores = ''
+
+            tarea = parametros.get('tarea', None)
+            if tarea:
+                param.append( tarea )
+                campos = f"{campos}, tarea"
+                valores = f"{valores},?"
+
+            etiqueta = parametros.get('etiqueta', None)
+            if etiqueta:
+                param.append( etiqueta )
+                campos = f"{campos}, etiqueta"
+                valores = f"{valores},?"
+
+            intro = parametros.get('intro', None)
+            if intro:
+                intro = re.sub(r'\n', '|', intro)
+                intro = re.sub(r'\r', '', intro)
+                param.append( intro )
+                campos = f"{campos}, intro"
+                valores = f"{valores},?"
+
+            peticion = parametros.get('peticion', None)
+            if peticion:
+                peticion = re.sub(r'\n', '|', peticion)
+                peticion = re.sub(r'\r', '', peticion)
+                param.append( peticion )
+                campos = f"{campos}, peticion"
+                valores = f"{valores},?"
+
+            texto = parametros.get('texto', None)
+            if texto:
+                texto = re.sub(r'\n', '|', texto)
+                texto = re.sub(r'\r', '', texto)
+                param.append( texto )
+                campos = f"{campos}, texto"
+                valores = f"{valores},?"
+
+            config = parametros.get('config', None)
+            if config:
+                param.append( config )
+                campos = f"{campos}, config"
+                valores = f"{valores},?"
+
+            visible = parametros.get('visible', None)
+            if visible:
+                param.append( visible )
+                campos = f"{campos}, visible"
+                valores = f"{valores},?"
+
+            consulta_sql = self._SQL.get( 'INSERT_PLANTILLA' )
+            consulta_sql = str(consulta_sql).replace('{campos}', campos).replace('{valores}', valores)
+            consulta_sql = re.sub(r'\(,', '(', consulta_sql)
+
+            conexion = sqlite3.connect( self._BD.get('COLECCION') )
+            bd = conexion.cursor()
+            bd.execute( consulta_sql, param )
+            conexion.commit()
+            uid = bd.lastrowid
+            conexion.close()
+            return uid
+        except Exception as e:
+            self.basedatos_registrar.error( f"{e}" )
+            return uid
+        finally:
+            if conexion:
+                conexion.close()
+
+    # Función para actualizar los datos de una plantilla de prompt por id
+    def actualizar_plantilla( self, uid, parametros={} ):
+        try:
+            param = []
+            campos = ''
+
+            tarea = parametros.get('tarea', None)
+            if tarea:
+                param.append( tarea )
+                campos = f"{campos}, tarea=?"
+
+            etiqueta = parametros.get('etiqueta', None)
+            if etiqueta:
+                param.append( etiqueta )
+                campos = f"{campos}, etiqueta=?"
+
+            intro = parametros.get('intro', None)
+            if intro:
+                intro = re.sub(r'\n', '|', intro)
+                intro = re.sub(r'\r', '', intro)
+                param.append( intro )
+                campos = f"{campos}, intro=?"
+
+            peticion = parametros.get('peticion', None)
+            if peticion:
+                peticion = re.sub(r'\n', '|', peticion)
+                peticion = re.sub(r'\r', '', peticion)
+                param.append( peticion )
+                campos = f"{campos}, peticion=?"
+
+            texto = parametros.get('texto', None)
+            if texto:
+                texto = re.sub(r'\n', '|', texto)
+                texto = re.sub(r'\r', '', texto)
+                param.append( texto )
+                campos = f"{campos}, texto=?"
+
+            config = parametros.get('config', None)
+            if config:
+                param.append( config )
+                campos = f"{campos}, config=?"
+
+            visible = parametros.get('visible', None)
+            if visible:
+                param.append( visible )
+                campos = f"{campos}, visible=?"
+
+            param.append( uid )
+            consulta_sql = self._SQL.get( 'UPDATE_PLANTILLA' )
+            consulta_sql = str(consulta_sql).replace( "{campos}", campos )
+
+            conexion = sqlite3.connect( self._BD.get('COLECCION') )
+            bd = conexion.cursor()
+            bd.execute( consulta_sql, param )
+            conexion.commit()
+            conexion.close()
+            return True
+        except Exception as e:
+            self.basedatos_registrar.error( f"{e}" )
+            return False
+        finally:
+            if conexion:
+                conexion.close()
+
+    # Función para obtener una lista de plantillas con filtros
+    def consultar_plantillas( self, parametros={}, pagina=1, casos=100 ):
+        try:
+            conexion = sqlite3.connect( self._BD.get('COLECCION') )
+            consulta_sql = self._SQL.get( 'SELECT_PLANTILLAS' )
+            param = []
+            if parametros:
+                tarea = parametros.get('tarea', None)
+                if tarea:
+                    tarea = self._limpiar_entrada.get( 'texto' )( tarea )
+                    if self._validar_entrada( tarea ):
+                        for texto in tarea:
+                            consulta_sql += " AND tarea=?"
+                            param.append( texto )
+
+                visible = parametros.get('visible', None)
+                if visible:
+                    visible = self._limpiar_entrada.get( 'texto' )( visible )
+                    if self._validar_entrada( visible ):
+                        for texto in visible:
+                            consulta_sql += " AND visible=?"
+                            param.append( texto )
+
+            consulta_total = f"SELECT COUNT(*) FROM ({consulta_sql})"
+            bd = conexion.cursor()
+            bd.execute( consulta_total, param )
+            total_registros = bd.fetchone()[0]
+            total_paginas = ( total_registros + casos - 1 ) // casos
+            consulta_sql += " ORDER BY id DESC LIMIT ? OFFSET ?"
+            param.extend( [casos, (pagina - 1) * casos] )
+            bd.execute( consulta_sql, param )
+            lista = bd.fetchall()
+            conexion.close()
+            resultado = {
+				"total": total_registros,
+				"paginas": total_paginas,
+				"nav": pagina,
+                "max": casos,
+				"resultados": [
+					{
+						"id": row[0],
+						"tarea": row[1],
+						"etiqueta": row[2],
+						"visible": row[3]
+					}
+					for row in lista
+				]
+			}
+            return resultado
+        except Exception as e:
+            self.basedatos_registrar.error( f"{e}" )
+            return None
+        finally:
+            if conexion:
+                conexion.close()
+
 
 ######################################################
 # FUNCIONES PRIVADAS
 ######################################################
 
     def _limpiar_texto( self, texto ):
-        minimo = 3
-        maximo = 25
+        minimo = 1
+        maximo = 250
         excluir = '\\|"\'#$%&/{};:_<>*¿?°ºª~¡!=+[],.'
         texto = str( texto )
         if len( texto ) < minimo:

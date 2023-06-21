@@ -1,6 +1,6 @@
 /* controlador.js
 ******************************************************
-CHAT EXPERTO (Front-end) - Actualizado el: 10/06/2023
+CHAT EXPERTO (Front-end) - Actualizado el: 21/06/2023
 ******************************************************
 Clase: Controlador */
 
@@ -1184,6 +1184,9 @@ class Controlador {
             case 'carpeta':
                 this.borrarCarpeta(id);
                 break;
+            case 'plantilla':
+                this.borrarPlantilla(id);
+                break;
         }
     }
 
@@ -1871,6 +1874,218 @@ class Controlador {
             destino.fadeIn();
         });
         peticion.fail((jqXHR, estado, mensaje) => {
+            control.mostrarError( jqXHR, estado, mensaje );
+        });
+        return false;
+    }
+
+    consultarPlantillas(nav) {
+        if (!nav) {
+            nav = this.nav;
+        }
+        this.nav = nav;
+        jQuery( '#con_nav' ).val(this.nav);
+        this.total = 0;
+        this.paginas = 0;
+        var datos = jQuery( '#form_plantillas' ).serialize();
+        jQuery("#zona_contenido").hide();
+        jQuery("#zona_espera").show();
+        const peticion = jQuery.ajax({
+            type: "GET",
+            url: control.ruta_base + "/plantillas",
+            data: datos,
+            beforeSend: function (xhr) {
+                var token = leerCookie('token');
+                var id_sesion = leerCookie('id_sesion');
+                xhr.setRequestHeader('id_sesion', id_sesion);
+                xhr.setRequestHeader('token', token);
+                xhr.setRequestHeader('app', control.app);
+            }
+        });
+        peticion.done((respuesta) => {
+            var destino = jQuery( '#zona_contenido' );
+            destino.html( respuesta );
+            jQuery("#zona_espera").hide();
+            destino.show();
+        });
+        peticion.fail((jqXHR, estado, mensaje) => {
+            jQuery("#zona_contenido").show();
+            control.mostrarError( jqXHR, estado, mensaje );
+        });
+        return false;
+    }
+
+    borrarPlantilla(id) {
+        const peticion = jQuery.ajax({
+            type: "DELETE",
+            url: control.ruta_base + "/plantilla/" + id,
+            dataType: "json",
+            contentType: "application/json",
+            beforeSend: function (xhr) {
+                var token = leerCookie('token');
+                var id_sesion = leerCookie('id_sesion');
+                xhr.setRequestHeader('id_sesion', id_sesion);
+                xhr.setRequestHeader('token', token);
+                xhr.setRequestHeader('app', control.app);
+            }
+        });
+        peticion.done((respuesta) => {
+            control.mostrarRespuesta( respuesta );
+            control.consultarPlantillas( control.nav );
+        });
+        peticion.fail((jqXHR, estado, mensaje) => {
+            control.mostrarError( jqXHR, estado, mensaje );
+        });
+        return false;
+    }
+
+    editarPlantilla(id) {
+        var caso = jQuery( '#pla_'+ id );
+        caso.removeClass( 'mark' );
+        caso.addClass( 'mark' );
+        const peticion = jQuery.ajax({
+            type: "GET",
+            url: control.ruta_base + "/plantilla/" + id,
+            beforeSend: function (xhr) {
+                var token = leerCookie('token');
+                var id_sesion = leerCookie('id_sesion');
+                xhr.setRequestHeader('id_sesion', id_sesion);
+                xhr.setRequestHeader('token', token);
+                xhr.setRequestHeader('app', control.app);
+            }
+        });
+        peticion.done((respuesta) => {
+            control.abrirModal(respuesta);
+            jQuery('#form_editar_plantilla .auto-resize').on('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+                var maxHeight = 400;
+                if (this.scrollHeight > maxHeight) {
+                    this.style.height = maxHeight + 'px';
+                    this.style.overflowY = 'auto';
+                }
+                if (this.value.length === 0) {
+                    this.style.height = 'auto';
+                }
+            });
+            var c_peticion = jQuery('#peticion').val();
+            var c_intro = jQuery('#intro').val();
+            var c_texto = jQuery('#texto').val();
+            var c_config = jQuery('#config').val();
+            c_intro = c_intro.replace(/\|/g, "\n");
+            c_peticion = c_peticion.replace(/\|/g, "\n");
+            c_texto = c_texto.replace(/\|/g, "\n");
+            jQuery('#intro').val(c_intro);
+            jQuery('#peticion').val(c_peticion);
+            jQuery('#texto').val(c_texto);
+            let datos = c_config.split('|');
+            if (datos.length==3) {
+                jQuery('#lenguaje').val(datos[0]);
+                jQuery('#estilo').val(datos[1]);
+                jQuery('#tono').val(datos[2]);
+            }
+            control.iniciarTips();
+            var modal = document.getElementById('INT_MODAL');
+            modal.addEventListener('shown.bs.modal', function () {
+                jQuery('#intro').trigger('input');
+                jQuery('#peticion').trigger('input');
+                jQuery('#texto').trigger('input');
+            })
+        });
+        peticion.fail((jqXHR, estado, mensaje) => {
+            control.mostrarError( jqXHR, estado, mensaje );
+        });
+        return false;
+    }
+
+    nuevaPlantilla() {
+        const peticion = jQuery.ajax({
+            type: "POST",
+            url: control.ruta_base + "/plantillas",
+            beforeSend: function (xhr) {
+                var token = leerCookie('token');
+                var id_sesion = leerCookie('id_sesion');
+                xhr.setRequestHeader('id_sesion', id_sesion);
+                xhr.setRequestHeader('token', token);
+                xhr.setRequestHeader('app', control.app);
+            }
+        });
+        peticion.done((respuesta) => {
+            control.abrirModal(respuesta);
+            jQuery('#form_editar_plantilla .auto-resize').on('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+                var maxHeight = 400;
+                if (this.scrollHeight > maxHeight) {
+                    this.style.height = maxHeight + 'px';
+                    this.style.overflowY = 'auto';
+                }
+                if (this.value.length === 0) {
+                    this.style.height = 'auto';
+                }
+            });
+            control.iniciarTips();
+        });
+        peticion.fail((jqXHR, estado, mensaje) => {
+            control.mostrarError( jqXHR, estado, mensaje );
+        });
+        return false;
+    }
+
+    iniciarTips() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+          return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+    }
+
+    guardarPlantilla(modo, id) {
+        let lenguaje = jQuery('#lenguaje').val();
+        let estilo = jQuery('#estilo').val();
+        let tono = jQuery('#tono').val();
+        jQuery('#config').val( lenguaje + '|' + estilo + '|' + tono);
+        var datos = jQuery( '#form_editar_plantilla' ).serialize();
+        jQuery("#form_editar_campos").hide();
+        jQuery("#form_editar_botones").hide();
+        jQuery("#form_editar_espera").show();
+        var peticion = null;
+        if (modo=='nueva') {
+            peticion = jQuery.ajax({
+                type: "POST",
+                url: control.ruta_base + "/plantilla",
+                data: datos,
+                beforeSend: function (xhr) {
+                    var token = leerCookie('token');
+                    var id_sesion = leerCookie('id_sesion');
+                    xhr.setRequestHeader('id_sesion', id_sesion);
+                    xhr.setRequestHeader('token', token);
+                    xhr.setRequestHeader('app', control.app);
+                }
+            });
+        } else {
+            peticion = jQuery.ajax({
+                type: "PUT",
+                url: control.ruta_base + "/plantilla/" + id,
+                data: datos,
+                beforeSend: function (xhr) {
+                    var token = leerCookie('token');
+                    var id_sesion = leerCookie('id_sesion');
+                    xhr.setRequestHeader('id_sesion', id_sesion);
+                    xhr.setRequestHeader('token', token);
+                    xhr.setRequestHeader('app', control.app);
+                }
+            });
+        }
+        peticion.done((respuesta) => {
+            jQuery("#form_editar_espera").hide();
+            control.cerrarModal();
+            control.mostrarRespuesta( respuesta );
+            control.abrirMenu('plantillas');
+        });
+        peticion.fail((jqXHR, estado, mensaje) => {
+            jQuery("#form_editar_espera").hide();
+            jQuery("#form_editar_campos").show();
+            jQuery("#form_editar_botones").show();
             control.mostrarError( jqXHR, estado, mensaje );
         });
         return false;

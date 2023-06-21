@@ -534,6 +534,10 @@ class GestorColeccion:
             mensaje = f"{self.config.MENSAJES.get('ERROR_CARPETA_NOBORRADA')}"
         return mensaje
 
+######################################################
+# FUNCIONES PUBLICAS PARA PROMPTS Y PLANTILLAS
+######################################################
+
     # Función para consultar los prompts de la colección
     def consultar_prompts( self ):
         bd = BaseDatos(self.config)
@@ -541,6 +545,62 @@ class GestorColeccion:
         prompts = bd.seleccionar_prompts()
         resultados = { "tareas": tareas, "prompts": prompts }
         return resultados
+
+    # Función para burrar una plantilla de prompt
+    def borrar_plantilla( self, uid ):
+        if uid:
+            try:
+                bd = BaseDatos(self.config)
+                return bd.borrar_plantilla( uid=uid )
+            except Exception as e:
+                self.gestor_registrar.error( f"{e}" )
+        return False
+
+    # Función para agregar una plantilla de prompt
+    def ingresar_plantilla( self, parametros={} ):
+        uid = 0
+        bd = BaseDatos(self.config)
+        if parametros:
+            uid = bd.ingresar_plantilla( parametros=parametros )
+        return uid
+
+    # Función para obtener los datos de una plantilla de prompt
+    def abrir_plantilla( self, uid ):
+        resultados = None
+        if uid:
+            try:
+                bd = BaseDatos(self.config)
+                resultados = bd.abrir_plantilla( uid=uid )
+            except Exception as e:
+                self.gestor_registrar.error( f"{e}" )
+        return resultados
+
+    # Función para obtener una lista de las plantillas de prompt
+    def consultar_plantillas( self, parametros={} ):
+        resultados = None
+        nav = 1
+        max = 100
+        try:
+            if parametros:
+                aux = parametros.get('nav', nav)
+                if aux:
+                    nav = int(aux)
+                aux = parametros.get('max', max)
+                if aux:
+                    max = int(aux)
+            bd = BaseDatos(self.config)
+            resultados = bd.consultar_plantillas( parametros=parametros, pagina=nav, casos=max )
+        except Exception as e:
+            self.gestor_registrar.error( f"{e}" )
+        return resultados
+
+    # Función para actualizar los datos de una plantilla de prompt
+    def actualizar_plantilla( self, uid, parametros={} ):
+        resultado = False
+        bd = BaseDatos(self.config)
+        if parametros:
+            resultado = bd.actualizar_plantilla( uid=uid, parametros=parametros )
+        return resultado
 
 ######################################################
 # FUNCIONES PUBLICAS PARA ARCHIVOS Y DOCUMENTOS
@@ -704,9 +764,6 @@ class GestorColeccion:
 
                 bd = BaseDatos(self.config)
                 resultados = bd.buscar_documentos( parametros=parametros, pagina=nav, casos=max )
-
-            except KeyError as e:
-                self.gestor_registrar.error( f"{e}" )
 
             except Exception as e:
                 self.gestor_registrar.error( f"{e}" )

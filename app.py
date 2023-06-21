@@ -1,6 +1,6 @@
 # app.py
 #######################################################
-# CHAT EXPERTO (Back-end) - Actualizado el: 17/06/2023
+# CHAT EXPERTO (Back-end) - Actualizado el: 21/06/2023
 #######################################################
 """
 Aplicación WEB-REST en Python para implementar un back-end para múltiples servicios de Chat inteligentes que responden preguntas sobre bases de conocimiento personalizadas.
@@ -117,7 +117,7 @@ def global_exception_handler( error ):
 # "/<coleccion>/metadatos/<int:uid>" (GET) [T]
 # "/<coleccion>/metadatos/<int:uid>" (POST) [T]
 ######################################################
-# APLICACION WEB PARA USAR COLECCIONES (24):
+# APLICACION WEB PARA USAR COLECCIONES (31):
 # "/<coleccion>/cargar" (GET) [T]
 # "/<coleccion>/cargar" (POST) [T]
 # "/<coleccion>/miscarpetas" (GET) [T]
@@ -142,6 +142,13 @@ def global_exception_handler( error ):
 # "/<coleccion>/prompts" (GET) [T]
 # "/<coleccion>/prompts" (POST) [T]
 # "/<coleccion>/prompts" (DELETE) [T]
+# "/<coleccion>/guardarchat" (GET) [T]
+# "/<coleccion>/plantillas" (POST) [T]
+# "/<coleccion>/plantillas" (GET) [T]
+# "/<coleccion>/plantilla" (POST)
+# "/<coleccion>/plantilla/<int:uid>" (GET)
+# "/<coleccion>/plantilla/<int:uid>" (PUT)
+# "/<coleccion>/plantilla/<int:uid>" (DELETE)
 
 ######################################################
 # URL: "/<coleccion>" (GET)
@@ -2301,6 +2308,7 @@ def funcion_prompts( coleccion ):
 
 ######################################################
 # URL: "/<coleccion>/prompts" (DELETE) [T]
+# Borra el historial de conversación del usuario con chatGPT
 @app.route( '/<coleccion>/prompts', methods=['DELETE'] )
 def funcion_vaciar( coleccion ):
     roles = ["Editor","Usuario"]
@@ -2325,6 +2333,226 @@ def funcion_vaciar( coleccion ):
     else:
         return jsonify( {'respuesta': config.MENSAJES.get('ERROR_INTERACCIONES_NOBORRADAS')} ), 200
 
+######################################################
+# URL: "/<coleccion>/guardarchat" (GET) [T]
+# Exporta el historial de conversación del usuario con chatGPT
+@app.route( '/<coleccion>/guardarchat', methods=['GET'] )
+def interfaz_guardarchat( coleccion ):
+    roles = ["Editor","Usuario"]
+    config = Config(coleccion)
+
+    # Comprueba la colección
+    if not config.comprobar_coleccion( coleccion ):
+        return jsonify( {'error': config.MENSAJES.get('ERROR_COLECCION_NOEXISTE')} ), 404
+
+    # Valida sesión del usuario para autorizar
+    if not comprobar_sesion( app_key=False, config=config ):
+        return redirect( f"{request.script_root}/{coleccion}/login" )
+
+    if not config.USUARIO.get('roles') in roles:
+        return jsonify( {'error': config.MENSAJES.get('ERROR_ACCESO_DENEGADO')} ), 401
+
+    historial = []
+    config.CARPETA = "chatgpt"
+    gestor = GestorColeccion(config)
+    historial = gestor.obtener_interacciones( id_doc=0 )
+    html = render_template( 'chatgpt.txt', app=config.APP, dir_base=request.script_root, usuario=config.USUARIO, 
+            historial = historial
+        )
+    response = make_response( html )
+    response.headers['Content-Type'] = 'text/plain; charset=utf-8'
+    response.headers['Content-Disposition'] = f"attachment; filename=chatgpt_{config.APP.get('ahora')}.txt"
+    return response
+
+######################################################
+# URL: "/<coleccion>/plantillas" (GET) [T]
+# Muestra una lista HTML con las plantillas de prompts almacenadas en la BD
+@app.route( '/<coleccion>/plantillas', methods=['GET'] )
+def interfaz_consultar_plantillas( coleccion ):
+    roles = ["Editor"]
+    config = Config(coleccion)
+
+    # Comprueba la colección
+    if not config.comprobar_coleccion( coleccion ):
+        return jsonify( {'error': config.MENSAJES.get('ERROR_COLECCION_NOEXISTE')} ), 404
+
+    # Valida sesión del usuario para autorizar
+    if not comprobar_sesion( app_key=False, config=config ):
+        return redirect( f"{request.script_root}/{coleccion}/login" )
+
+    if not config.USUARIO.get('roles') in roles:
+        return jsonify( {'error': config.MENSAJES.get('ERROR_ACCESO_DENEGADO')} ), 401
+
+    # Lee y asigna los parámetros de la consulta
+    visible = obtener_parametro( 'visible' )
+    tarea = obtener_parametro( 'tarea' )
+    parametros = {
+        "visible": visible,
+        "tarea": tarea
+    }
+
+    gestor = GestorColeccion(config)
+    datos = gestor.consultar_plantillas( parametros=parametros )
+    
+    # Entrega la interfaz HTML
+    return render_template( 'plantillas.html', app=config.APP, dir_base=request.script_root, usuario=config.USUARIO, 
+            diccionario = config.cargar_valores( 'diccionario.json' ),
+            pla_visible = visible,
+            pla_tarea = tarea,
+            datos = datos
+        )
+
+######################################################
+# URL: "/<coleccion>/plantillas" (POST) [T]
+# Proporciona una interfaz HTML con un formulario para agregar una plantilla de prompt
+@app.route( '/<coleccion>/plantillas', methods=['POST'] )
+def interfaz_nueva_plantilla( coleccion ):
+    roles = ["Editor"]
+    config = Config(coleccion)
+
+    # Comprueba la colección
+    if not config.comprobar_coleccion( coleccion ):
+        return jsonify( {'error': config.MENSAJES.get('ERROR_COLECCION_NOEXISTE')} ), 404
+
+    # Valida sesión del usuario para autorizar
+    if not comprobar_sesion( app_key=False, config=config ):
+        return redirect( f"{request.script_root}/{coleccion}/login" )
+
+    if not config.USUARIO.get('roles') in roles:
+        return jsonify( {'error': config.MENSAJES.get('ERROR_ACCESO_DENEGADO')} ), 401
+
+    # Entrega la interfaz HTML
+    return render_template( 'plantilla.html', app=config.APP, dir_base=request.script_root, usuario=config.USUARIO, 
+            diccionario = config.cargar_valores( 'prompts.json' ),
+            dic = config.cargar_valores( 'diccionario.json' ),
+            datos = [],
+            modo = "nueva"
+        )
+
+######################################################
+# URL: "/<coleccion>/plantilla/<int:uid>" (GET)
+# Proporciona una interfaz HTML con un formulario para editar una plantilla de prompt
+@app.route( '/<coleccion>/plantilla/<int:uid>', methods=['GET'] )
+def interfaz_abrir_plantilla( coleccion, uid ):
+    roles = ["Editor"]
+    config = Config(coleccion)
+
+    # Comprueba la colección
+    if not config.comprobar_coleccion( coleccion ):
+        return jsonify( {'error': config.MENSAJES.get('ERROR_COLECCION_NOEXISTE')} ), 404
+
+    # Valida sesión del usuario para autorizar
+    if not comprobar_sesion( app_key=False, config=config ):
+        return redirect( f"{request.script_root}/{coleccion}/login" )
+
+    if not config.USUARIO.get('roles') in roles:
+        return jsonify( {'error': config.MENSAJES.get('ERROR_ACCESO_DENEGADO')} ), 401
+
+    gestor = GestorColeccion(config)
+    datos = gestor.abrir_plantilla( uid=uid )
+
+    # Entrega la interfaz HTML
+    return render_template( 'plantilla.html', app=config.APP, dir_base=request.script_root, usuario=config.USUARIO, 
+            diccionario = config.cargar_valores( 'prompts.json' ),
+            dic = config.cargar_valores( 'diccionario.json' ),
+            datos = datos,
+            modo = "editar"
+        )
+
+######################################################
+# URL: "/<coleccion>/plantilla/<int:uid>" (DELETE)
+# Borra una plantilla de prompt de la BD
+@app.route( '/<coleccion>/plantilla/<int:uid>', methods=['DELETE'] )
+def funcion_borrar_plantilla( coleccion, uid ):
+    roles = ["Editor"]
+    config = Config(coleccion)
+
+    # Comprueba la colección
+    if not config.comprobar_coleccion( coleccion ):
+        return jsonify( {'error': config.MENSAJES.get('ERROR_COLECCION_NOEXISTE')} ), 404
+
+    # Valida sesión del usuario para autorizar
+    if not comprobar_sesion( app_key=False, config=config ):
+        return redirect( f"{request.script_root}/{coleccion}/login" )
+
+    if not config.USUARIO.get('roles') in roles:
+        return jsonify( {'error': config.MENSAJES.get('ERROR_ACCESO_DENEGADO')} ), 401
+
+    # Ejecuta la actualización de la BD con el uid
+    gestor = GestorColeccion(config)
+    resultado = gestor.borrar_plantilla( uid=uid )
+ 
+    # Entrega el resultado
+    if resultado:
+        return jsonify( {'respuesta': f"{config.MENSAJES.get('EXITO_ACCION_REALIZADA')}"} ), 200
+    else:
+        return jsonify( {'error': config.MENSAJES.get('ERROR_GENERAL')} ), 500
+
+######################################################
+# URL: "/<coleccion>/plantilla" (POST)
+# Guarda una nueva plantilla de prompt en la BD
+@app.route( '/<coleccion>/plantilla', methods=['POST'] )
+def funcion_ingresar_plantilla( coleccion ):
+    roles = ["Editor"]
+    config = Config(coleccion)
+
+    # Comprueba la colección
+    if not config.comprobar_coleccion( coleccion ):
+        return jsonify( {'error': config.MENSAJES.get('ERROR_COLECCION_NOEXISTE')} ), 404
+
+    # Valida sesión del usuario para autorizar
+    if not comprobar_sesion( app_key=False, config=config ):
+        return redirect( f"{request.script_root}/{coleccion}/login" )
+
+    if not config.USUARIO.get('roles') in roles:
+        return jsonify( {'error': config.MENSAJES.get('ERROR_ACCESO_DENEGADO')} ), 401
+
+    parametros = {}
+    for campo in request.form:
+        parametros[campo] = request.form[campo]
+
+    # Ejecuta la actualización de la BD con el uid
+    gestor = GestorColeccion(config)
+    resultado = gestor.ingresar_plantilla( parametros=parametros )
+ 
+    # Entrega el resultado
+    if resultado:
+        return jsonify( {'respuesta': f"{config.MENSAJES.get('EXITO_ACCION_REALIZADA')}"} ), 200
+    else:
+        return jsonify( {'error': config.MENSAJES.get('ERROR_GENERAL')} ), 500
+
+######################################################
+# URL: "/<coleccion>/plantilla/<int:uid>" (PUT)
+# Actualiza la plantilla de prompt en la BD
+@app.route( '/<coleccion>/plantilla/<int:uid>', methods=['PUT'] )
+def funcion_actualizar_plantilla( coleccion, uid ):
+    roles = ["Editor"]
+    config = Config(coleccion)
+
+    # Comprueba la colección
+    if not config.comprobar_coleccion( coleccion ):
+        return jsonify( {'error': config.MENSAJES.get('ERROR_COLECCION_NOEXISTE')} ), 404
+
+    # Valida sesión del usuario para autorizar
+    if not comprobar_sesion( app_key=False, config=config ):
+        return redirect( f"{request.script_root}/{coleccion}/login" )
+
+    if not config.USUARIO.get('roles') in roles:
+        return jsonify( {'error': config.MENSAJES.get('ERROR_ACCESO_DENEGADO')} ), 401
+
+    parametros = {}
+    for campo in request.form:
+        parametros[campo] = request.form[campo]
+
+    # Ejecuta la actualización de la BD con el uid
+    gestor = GestorColeccion(config)
+    resultado = gestor.actualizar_plantilla( uid=uid, parametros=parametros )
+ 
+    # Entrega el resultado
+    if resultado:
+        return jsonify( {'respuesta': f"{config.MENSAJES.get('EXITO_ACCION_REALIZADA')}"} ), 200
+    else:
+        return jsonify( {'error': config.MENSAJES.get('ERROR_GENERAL')} ), 500
 
 
 ######################################################
@@ -2349,11 +2577,6 @@ def obtener_parametro( nombre='' ):
         return ''
     if not valor:
         valor = ''
-        """
-        valor = request.args.get( nombre )
-        if not valor:
-            valor = ''
-        """
     return valor
 
 # Función para validar la APP Key en las peticiones recibidas

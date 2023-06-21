@@ -1,0 +1,77 @@
+{% if usuario.roles == 'Editor' %}
+<div class="row mb-3">
+    <div class="col-12 pe-1 text-end">
+        <button type="button" title="Prompts para ChatGPT" class="btn btn-light btn-sm text-dark border" onclick="control.abrirMenu('prompts')"><i class="bi bi-card-text"></i>Prompts</button>
+    </div>
+</div>
+<h3 class="text-center mb-2"><i class="bi bi-tools"></i> Plantillas de Prompts</h3>
+<div class="row">
+    <div class="col-12 text-center mb-4">
+        <button type="button" title="Nueva Plantilla" class="btn btn-success btn-sm" onclick="control.nuevaPlantilla()"><i class="bi bi-plus-square"></i> Nueva Plantilla</button>
+    </div>
+</div>
+<form id="form_plantillas" method="post" onsubmit="return control.consultarPlantillas(1)">
+    <input type="hidden" name="nav" id="con_nav">
+    <div class="row mb-3">
+        <div class="col">
+            <div class="input-group mb-2">
+                <select name="visible" id="con_visible" class="form-select w-auto">
+                    <option value=""></option>
+                    {% for visible in diccionario.visibilidad %}
+                    <option value="{{visible.valor}}" {% if pla_visible|string == visible.valor|string %}selected{% endif %}>{{visible.etiqueta}}</option>
+                    {% endfor %}
+                </select>
+                <select name="tarea" id="con_tarea" class="form-select w-auto">
+                    <option value=""></option>
+                    {% for tarea in diccionario.tareas %}
+                    <option value="{{tarea.valor}}" {% if pla_tarea == tarea.valor %}selected{% endif %}>{{tarea.etiqueta}}</option>
+                    {% endfor %}
+                </select>
+                <button class="btn btn-success" type="submit"><i class="bi bi-search h5"></i></button>
+            </div>
+        </div>
+    </div>
+</form>
+{% if datos %}
+{% if datos.total >0 %}
+<div class="row mt-2 mb-2">
+    <div class="col text-center text-secondary small">
+        {{datos.total}} plantillas:
+    </div>
+</div>
+{% for plantilla in datos.resultados %}
+<div class="row mb-4 pt-2 pb-2 shadow" id="pla_{{plantilla.id}}">
+    <div class="col-10">
+        {% for tarea in diccionario.tareas %}{% if tarea.valor == plantilla.tarea %}
+        {{tarea.etiqueta}}:&nbsp;
+        {% endif %}{% endfor %} 
+        {{plantilla.etiqueta}}<br>
+        <small>{% for estado in diccionario.visibilidad %}{% if estado.valor|string == plantilla.visible|string %}<span class="badge bg-{{estado.color}}">{{estado.etiqueta}}</span>{% endif %}{% endfor %}</small>
+    </div>
+    <div class="col-2 text-end">
+        <div class="input-group mt-1 mb-1">
+            <button type="button" class="btn btn-light btn-sm border dropdown-toggle" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="javascript:void(0)" onclick="control.editarPlantilla('{{plantilla.id}}')" title="Editar"><i class="bi bi-pencil-square"></i> Editar</a></li>
+                <li><hr class="dropdown-divider"></hr></li>
+                <li><a class="dropdown-item" href="javascript:void(0)" onclick="control.confirmarAccion('plantilla','{{plantilla.id}}')" title="Borrar"><i class="bi bi-trash"></i> Borrar</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% else %}
+    <div class="row mb-5 mt-5">
+        <div class="col-12">
+            <div class="alert alert-warning text-primary text-center">No hay Plantillas de prompts</div>
+        </div>
+    </div>
+{% endif %}
+{% else %}
+<div class="row mb-5 mt-5">
+    <div class="col-12">
+        <div class="alert alert-warning text-primary text-center">No hay Plantillas de prompts</div>
+    </div>
+</div>
+{% endif %}
+{% endif %}

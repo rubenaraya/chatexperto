@@ -31,6 +31,11 @@
     "DELETE_INTERACCIONES": "DELETE FROM interacciones WHERE coleccion=?",
     "SELECT_DOC_RECIENTES": "SELECT id, archivo, tipo, peso, carpeta, titulo, fechaing, autores, codigo, descargas FROM documentos WHERE carpeta IN ({}) AND estado > 1 ORDER BY fechaing DESC, id DESC",
     "SELECT_DOC_POPULARES": "SELECT id, archivo, tipo, peso, carpeta, titulo, fechaing, autores, codigo, descargas FROM documentos WHERE carpeta IN ({}) AND estado > 1 AND descargas > 0 ORDER BY descargas DESC, id DESC",
-    "SELECT_TAREAS": "SELECT id, valor, etiqueta, descripcion FROM tareas WHERE (SELECT COUNT(*) FROM prompts WHERE prompts.tipo=tareas.valor)>0 ORDER BY valor",
-    "SELECT_PROMPTS": "SELECT id, tipo, etiqueta, intro, peticion, texto, config FROM prompts WHERE visible='1' ORDER BY tipo, etiqueta"
+    "SELECT_TAREAS": "SELECT id, valor, etiqueta, descripcion FROM tareas WHERE (SELECT COUNT(*) FROM prompts WHERE prompts.tarea=tareas.valor)>0 ORDER BY valor",
+    "SELECT_PROMPTS": "SELECT id, tarea, etiqueta, intro, peticion, texto, config FROM prompts WHERE visible='1' ORDER BY tarea, etiqueta",
+    "INSERT_PLANTILLA": "INSERT INTO prompts ({campos}) VALUES ({valores})",
+    "SELECT_PLANTILLA": "SELECT id, tarea, etiqueta, intro, peticion, texto, config, visible FROM prompts WHERE id=?",
+    "SELECT_PLANTILLAS": "SELECT id, tarea, etiqueta, visible FROM prompts WHERE 1",
+    "UPDATE_PLANTILLA": "UPDATE prompts SET id=id{campos} WHERE id=?",
+    "DELETE_PLANTILLA": "DELETE FROM prompts WHERE id=?"
 }

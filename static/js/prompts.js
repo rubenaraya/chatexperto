@@ -1,6 +1,6 @@
 /* prompts.js
 ******************************************************
-CHAT EXPERTO (Front-end) - Actualizado el: 18/06/2023
+CHAT EXPERTO (Front-end) - Actualizado el: 19/06/2023
 ******************************************************
 Clase: Prompts */
 
@@ -85,8 +85,10 @@ class Prompts {
         var mensajes_conversacion = jQuery("div#chat-mensajes-conversacion");
         var caja_enviar_mensaje = jQuery("div#chat-enviar-mensaje");
         var pie_chat = jQuery('div#pie-prompts' );
+        var advertencia = jQuery('div#prompt-advertencia' );
 		let consulta = input_mensaje_usuario.val();
 		if ( consulta.length < 10 ) { return; }
+		advertencia.hide();
 		caja_enviar_mensaje.hide();
 		imagen_espera.show();
         jQuery(window).scrollTop( pie_chat.position().top);
@@ -445,16 +447,10 @@ class Prompts {
         prompt = prompt.replace('((lenguaje))', lenguaje);
         prompt = prompt.replace('((idioma))', idioma);
         prompt = prompt.replace('((palabras))', palabras);
+        jQuery('div#prompt-advertencia' ).show();
         jQuery('#input-mensaje-usuario').val(prompt);
         jQuery('#input-mensaje-usuario').trigger('input');
         jQuery(window).scrollTop( jQuery('div#pie-prompts' ).position().top);
-    }
-
-    iniciarTips() {
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-          return new bootstrap.Tooltip(tooltipTriggerEl)
-        });
     }
 
     formularioMarcas() {
@@ -568,6 +564,11 @@ class Prompts {
         });
         jQuery('#' + tarea + '-peticion').val(texto);
         control.cerrarModal();
+    }
+
+    guardarChat() {
+        let url = control.ruta_base + "/guardarchat";
+        window.open( url, '_blank' );
     }
 
 }

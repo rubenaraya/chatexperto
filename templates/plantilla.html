@@ -1,0 +1,153 @@
+{% if usuario.roles == 'Editor' %}
+{% if datos %}
+{% set pla_tarea = datos.tarea %}
+{% set pla_etiqueta = datos.etiqueta %}
+{% set pla_intro = datos.intro %}
+{% set pla_peticion = datos.peticion %}
+{% set pla_texto = datos.texto %}
+{% set pla_config = datos.config %}
+{% set pla_id = datos.id %}
+{% set pla_visible = datos.visible %}
+{% set pla_config = datos.config %}
+{% else %}
+{% set pla_tarea = '' %}
+{% set pla_etiqueta = '' %}
+{% set pla_intro = '' %}
+{% set pla_peticion = '' %}
+{% set pla_texto = '' %}
+{% set pla_config = '' %}
+{% set pla_id = '' %}
+{% set pla_visible = '' %}
+{% set pla_config = '' %}
+{% endif %}
+{% set pla_estilo = '' %}
+{% set pla_tono = '' %}
+{% set pla_lenguaje = '' %}
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <form id="form_editar_plantilla" method="post" onsubmit="return control.guardarPlantilla('{{modo}}','{{pla_id}}')">
+            <input type="hidden" name="config" id="config" value="{{pla_config}}">
+            <div class="modal-header">
+                <h5 class="modal-title" id="titulo_ventana"><i class="bi bi-pencil-square"></i>
+                    {% if modo == 'editar' %}
+                    Editar Plantilla de prompt
+                    {% else %}
+                    Nueva Plantilla de prompt
+                    {% endif %}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div id="form_editar_campos">
+                    <div class="row mb-1">
+                        <label for="tarea" class="col-3 col-form-label">Tarea:</label>
+                        <div class="col-9">
+                            <div class="input-group">
+                                <select name="tarea" id="tarea" class="form-select w-auto">
+                                    {% for tarea in dic.tareas %}
+                                    <option value="{{tarea.valor}}" {% if tarea.valor == pla_tarea %}selected{% endif %}>{{tarea.etiqueta}}</option>
+                                    {% endfor %}
+                                </select>
+                                <span data-bs-toggle="tooltip" title="Tarea: Categoría a la que corresponde el contenido que generará el prompt" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label for="etiqueta" class="col-3 col-form-label">Etiqueta:</label>
+                        <div class="col-9">
+                            <input type="text" id="etiqueta" name="etiqueta" class="form-control" placeholder="Título para mostrar" value="{{pla_etiqueta}}" required>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label for="visible" class="col-3 col-form-label">Estado:</label>
+                        <div class="col-9">
+                            <select name="visible" id="visible" class="form-select w-auto">
+                                {% for estado in dic.visibilidad %}
+                                <option value="{{estado.valor}}" class="bg-{{estado.color}} text-white" {% if estado.valor|string == pla_visible|string %}selected{% endif %}>{{estado.etiqueta}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-12 mt-1 mb-1 text-center">Detalles del Prompt:</div>
+                        <div class="col-12 mt-1">
+                            <div class="form-floating">
+                                <textarea id="intro" name="intro" placeholder="Instrucción de encuadre" maxlength="1000" class="form-control auto-resize">{{pla_intro}}</textarea>
+                                <label for="intro">Instrucción de encuadre (max: 1.000 caracteres)</label>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-2 mb-1 text-center small text-secondary">Puedes colocar marcas de reemplazo entre paréntesis dobles (()) en Petición y Texto base. En las marcas debes usar sólo MINUSCULAS y guiones en vez de espacios.</div>
+                        <div class="col-12 mt-1">
+                            <div class="form-floating">
+                                <textarea id="peticion" name="peticion" placeholder="Petición detallada" maxlength="1000" class="form-control auto-resize">{{pla_peticion}}</textarea>
+                                <label for="peticion">Petición detallada (max: 1.000 caracteres)</label>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-1 mb-1">
+                            <div class="form-floating">
+                                <textarea id="texto" name="texto" placeholder="Texto base con datos" maxlength="4000" class="form-control auto-resize">{{pla_texto}}</textarea>
+                                <label for="texto">Texto base con datos (max: 4.000 caracteres)</label>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-1 mb-2 text-center small text-secondary">NOTA: No coloques datos personales ni información sensible en los detalles de los prompts. Puedes usar marcas de reemplazo manual entre corchetes "[" y "]" en su lugar.</div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-12 mt-1 mb-1 text-center">Configuración de la respuesta:</div>
+                    </div>
+                    <div class="row mb-1">
+                        <label for="lenguaje" class="col-3 col-form-label">Lenguaje:</label>
+                        <div class="col-9">
+                            <div class="input-group">
+                                <select name="lenguaje" id="lenguaje" class="form-select w-auto">
+                                    {% for opcion in diccionario.lenguajes %}
+                                    <option value="{{ opcion.valor }}" {% if pla_lenguaje == opcion.valor %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
+                                    {% endfor %}
+                                </select>
+                                <span data-bs-toggle="tooltip" title="Lenguaje: Conjunto de palabras y frases que se usan para comunicar un mensaje" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label for="estilo" class="col-3 col-form-label">Estilo:</label>
+                        <div class="col-9">
+                            <div class="input-group">
+                                <select name="estilo" id="estilo" class="form-select w-auto">
+                                    {% for opcion in diccionario.estilos %}
+                                    <option value="{{ opcion.valor }}" {% if pla_estilo == opcion.valor %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
+                                    {% endfor %}
+                                </select>
+                                <span data-bs-toggle="tooltip" title="Estilo: Patrón general de escritura y formato que se aplica en un texto" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label for="tono" class="col-3 col-form-label">Tono:</label>
+                        <div class="col-9">
+                            <div class="input-group">
+                                <select name="tono" id="tono" class="form-select w-auto">
+                                    {% for opcion in diccionario.tonos %}
+                                    <option value="{{ opcion.valor }}" {% if pla_tono == opcion.valor %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
+                                    {% endfor %}
+                                </select>
+                                <span data-bs-toggle="tooltip" title="Tono: Actitud o perspectiva de quien habla hacia el tema que está tratando" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="form_editar_espera" style="display: none;">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <img src="{{dir_base}}/{{app.coleccion}}/pwa/espere.gif" style="margin: 0 auto;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" id="form_editar_botones">
+                {{etiqueta}}
+                <button type="button" class="btn btn-secondary" id="cerrar_ventana" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-primary" id="guardar_plntilla"><i class="bi bi-check-square"></i> Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}

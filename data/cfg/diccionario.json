@@ -109,5 +109,31 @@
         {"valor": "asistente", "etiqueta": "Asistente", "marcado": "1"},
         {"valor": "biblioteca", "etiqueta": "Biblioteca"},
         {"valor": "tutor", "etiqueta": "Tutor"}
+    ],
+    "visibilidad": [
+        {"valor": "1", "etiqueta": "Visible", "color": "success"},
+        {"valor": "0", "etiqueta": "Invisible", "color": "danger"}
+    ],
+    "tareas": [
+        {"valor": "articulo", "etiqueta": "Artículo"},
+        {"valor": "aviso", "etiqueta": "Aviso"},
+        {"valor": "carta", "etiqueta": "Carta"},
+        {"valor": "contrato", "etiqueta": "Contrato"},
+        {"valor": "correo", "etiqueta": "Correo"},
+        {"valor": "curriculum", "etiqueta": "Curriculum"},
+        {"valor": "curso", "etiqueta": "Curso"},
+        {"valor": "guion", "etiqueta": "Guión"},
+        {"valor": "historia", "etiqueta": "Historia"},
+        {"valor": "ideas", "etiqueta": "Ideas"},
+        {"valor": "informe", "etiqueta": "Informe"},
+        {"valor": "instrucciones", "etiqueta": "Instrucciones"},
+        {"valor": "noticia", "etiqueta": "Noticia"},
+        {"valor": "poema", "etiqueta": "Poema"},
+        {"valor": "preguntas", "etiqueta": "Preguntas"},
+        {"valor": "presentacion", "etiqueta": "Presentación"},
+        {"valor": "presupuesto", "etiqueta": "Presupuesto"},
+        {"valor": "propuesta", "etiqueta": "Propuesta"},
+        {"valor": "reseña", "etiqueta": "Reseña"},
+        {"valor": "texto", "etiqueta": "Texto"}
     ]
 }

@@ -1,0 +1,6 @@
+Historial de conversación con chatGPT - {{app.fecha}} {{app.hora}}
+{% if historial|length > 0 %}{% for interaccion in historial %}
+--------------------------------------------------
+Petición: {{interaccion.peticion}}
+Respuesta: {{interaccion.respuesta}}
+{% endfor %}{% endif %}
