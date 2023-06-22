@@ -27,40 +27,46 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
-                
-                {% if usuario.roles == 'Admin' %}
-                <ul class="navbar-nav" style="font-size: 0.9rem;">
+                {% if app.coleccion == 'admin' %}
+                    <ul class="navbar-nav" style="font-size: 0.9rem;">
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-admin" href="javascript:void(0)" onclick="control.abrirMenu('admin')" title="Aplicaciones"><i class="bi bi-star"></i> Apps</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-admin" href="javascript:void(0)" onclick="control.abrirMenu('usuarios')" title="Usuarios"><i class="bi bi-person-circle"></i> Usuarios</a>
+                        </li>
+                    </ul>
+                {% else %}
+                    {% if usuario.roles == 'Admin' %}
+                    <ul class="navbar-nav" style="font-size: 0.9rem;">
 
-                    {% for menu in menus %}
-                    {% if menu.roles == 'Admin' and menu.mostrar == 'SI' %}
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-admin" href="javascript:void(0)" onclick="control.abrirMenu('{{menu._uid}}')" title="{{menu.titulo}}"><i class="bi {{menu.icono}}"></i> {{menu.menu}}</a>
-                    </li>
+                        {% for menu in menus %}
+                        {% if menu.roles == 'Admin' and menu.mostrar == 'SI' %}
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-admin" href="javascript:void(0)" onclick="control.abrirMenu('{{menu._uid}}')" title="{{menu.titulo}}"><i class="bi {{menu.icono}}"></i> {{menu.menu}}</a>
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+                    </ul>
                     {% endif %}
-                    {% endfor %}
+                    {% if usuario.roles == 'Usuario' or usuario.roles == 'Editor' %}
+                    <ul class="navbar-nav" style="font-size: 1rem">
+                        {% for menu in menus %}
+                        {% if menu.roles == 'Editor' and usuario.roles == 'Editor' and menu.mostrar == 'SI' %}
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-usuario" href="javascript:void(0)" onclick="control.abrirMenu('{{menu._uid}}')" title="{{menu.titulo}}"><i class="bi {{menu.icono}}"></i> {{menu.menu}}</a>
+                        </li>
+                        {% endif %}
+                        {% if menu.roles == 'Usuario' and menu.mostrar == 'SI' %}
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-usuario" href="javascript:void(0)" onclick="control.abrirMenu('{{menu._uid}}')" title="{{menu.titulo}}"><i class="bi {{menu.icono}}"></i> {{menu.menu}}</a>
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
 
-                </ul>
                 {% endif %}
-
-                {% if usuario.roles == 'Usuario' or usuario.roles == 'Editor' %}
-                <ul class="navbar-nav" style="font-size: 1rem">
-
-                    {% for menu in menus %}
-                    {% if menu.roles == 'Editor' and usuario.roles == 'Editor' and menu.mostrar == 'SI' %}
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-usuario" href="javascript:void(0)" onclick="control.abrirMenu('{{menu._uid}}')" title="{{menu.titulo}}"><i class="bi {{menu.icono}}"></i> {{menu.menu}}</a>
-                    </li>
-                    {% endif %}
-                    {% if menu.roles == 'Usuario' and menu.mostrar == 'SI' %}
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-usuario" href="javascript:void(0)" onclick="control.abrirMenu('{{menu._uid}}')" title="{{menu.titulo}}"><i class="bi {{menu.icono}}"></i> {{menu.menu}}</a>
-                    </li>
-                    {% endif %}
-                    {% endfor %}
-
-                </ul>
-                {% endif %}
-
             </div>
 
             <div class="input-group mt-1 mb-1 float-end w-auto">
