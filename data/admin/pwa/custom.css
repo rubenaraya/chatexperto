@@ -219,3 +219,9 @@
 #drop-area.drag-over .drop-message {
     color: #333;
 }
+
+@media (max-width: 768px) {
+    .navbar-nav .nav-link {
+      font-size: 1.2rem;
+    }
+}

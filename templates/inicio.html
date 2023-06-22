@@ -25,7 +25,6 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
             <div class="collapse navbar-collapse" id="navbarNav">
                 {% if app.coleccion == 'admin' %}
                     <ul class="navbar-nav" style="font-size: 0.9rem;">
@@ -39,7 +38,6 @@
                 {% else %}
                     {% if usuario.roles == 'Admin' %}
                     <ul class="navbar-nav" style="font-size: 0.9rem;">
-
                         {% for menu in menus %}
                         {% if menu.roles == 'Admin' and menu.mostrar == 'SI' %}
                         <li class="nav-item">
@@ -50,7 +48,7 @@
                     </ul>
                     {% endif %}
                     {% if usuario.roles == 'Usuario' or usuario.roles == 'Editor' %}
-                    <ul class="navbar-nav" style="font-size: 1rem">
+                    <ul class="navbar-nav" style="font-size: 0.9rem">
                         {% for menu in menus %}
                         {% if menu.roles == 'Editor' and usuario.roles == 'Editor' and menu.mostrar == 'SI' %}
                         <li class="nav-item">
@@ -65,10 +63,8 @@
                         {% endfor %}
                     </ul>
                     {% endif %}
-
                 {% endif %}
             </div>
-
             <div class="input-group mt-1 mb-1 float-end w-auto">
                 <button type="button" data-bs-toggle="dropdown" style="border: 0; margin: 0 2px 0 0; padding: 1px 0 0 0; background-color: white;">
                     <img src="{{dir_base}}/{{app.coleccion}}/pwa/icon-128x128.png?v={{app.ahora}}" alt="{{nombre_app}}" class="rounded" style="width: 32px;">
@@ -82,7 +78,6 @@
                     <li><a class="dropdown-item" href="javascript:void(0)" onclick="control.cerrarSesion()" title="Cerrar sesión"><i class="bi bi-power"></i> Cerrar sesión</a></li>
                 </ul>
             </div>
-
         </div>
     </nav>
     <div class="container">
@@ -92,12 +87,10 @@
         </div>
         <div class="alert alert-danger mt-2 mb-2 p-2 text-center" id="mensaje_error" style="display: none;">
         </div>
-
         <div class="alert alert-warning mt-2 mb-2 p-2 text-center" id="mensaje_solucion_10" style="display: none;">
             Se requiere <strong>Generar el Indice</strong> de esta Carpeta de conocimiento para consultarla<br>
             <button type="button" title="Generar Indice" class="btn btn-danger mt-3 mb-5" onclick="control.generarIndice()"><i class="bi bi-server"></i>Generar Indice</button>
         </div>
-
         <div id="zona_contenido">
             <div class="row">
                 <div class="col-12 text-center">
