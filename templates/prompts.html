@@ -140,8 +140,8 @@
         </div>
         <div class="col-12 mt-1">
             <div class="form-floating">
-                <textarea id="{{tarea.valor}}-texto" name="texto" maxlength="4000" class="form-control auto-resize"></textarea>
-                <label for="{{tarea.valor}}-texto">Texto base con datos para {{tarea.valor}} (max: 4.000 caracteres)</label>
+                <textarea id="{{tarea.valor}}-texto" name="texto" maxlength="7000" class="form-control auto-resize"></textarea>
+                <label for="{{tarea.valor}}-texto">Texto base con datos para {{tarea.valor}} (max: 7.000 caracteres)</label>
             </div>
         </div>
     </div>
@@ -258,7 +258,7 @@
                     </div>
                     <div class="chat-enviar-mensaje" id="chat-enviar-mensaje">
                         <div class="form-floating w-100">
-                            <textarea class="form-control auto-resize" id="input-mensaje-usuario" rows="1" name="mensaje" minlength="20" maxlength="7000" placeholder="Escribe o pega aquí tu Prompt"></textarea>
+                            <textarea class="form-control auto-resize" id="input-mensaje-usuario" rows="1" name="mensaje" minlength="20" maxlength="10000" placeholder="Escribe o pega aquí tu Prompt"></textarea>
                             <label for="input-mensaje-usuario">Escribe o pega aquí tu Prompt</label>
                         </div>
                         <button type="button" id="boton-enviar-mensaje" class="btn btn-primary pe-2" title="Enviar" onclick="prompts.enviarConsulta()" style="height:2.6rem"><i class="bi bi-send"></i></button>

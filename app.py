@@ -1,6 +1,6 @@
 # app.py
 #######################################################
-# CHAT EXPERTO (Back-end) - Actualizado el: 22/06/2023
+# CHAT EXPERTO (Back-end) - Actualizado el: 23/06/2023
 #######################################################
 """
 Aplicación WEB-REST en Python para implementar un back-end para múltiples servicios de Chat inteligentes que responden preguntas sobre bases de conocimiento personalizadas.
@@ -1754,7 +1754,7 @@ def funcion_chatdoc( coleccion ):
         return jsonify( {'respuesta': config.MENSAJES.get('CHAT_PREGUNTA_VACIA'), 'peticion': peticion} ), 200
     if len( peticion ) < 4:
         return jsonify( {'respuesta': config.MENSAJES.get('CHAT_PREGUNTA_MUYCORTA'), 'peticion': peticion} ), 200
-    if len( peticion ) > 1000:
+    if len( peticion ) > 5000:
         return jsonify( {'respuesta': config.MENSAJES.get('CHAT_PREGUNTA_MUYLARGA'), 'peticion': peticion} ), 200
 
     # Recupera datos
@@ -2256,7 +2256,7 @@ def funcion_prompts( coleccion ):
         return jsonify( {'respuesta': config.MENSAJES.get('CHAT_PREGUNTA_VACIA'), 'peticion': mensaje} ), 200
     if len( mensaje ) < 20:
         return jsonify( {'respuesta': config.MENSAJES.get('CHAT_PREGUNTA_MUYCORTA'), 'peticion': mensaje} ), 200
-    if len( mensaje ) > 7000:
+    if len( mensaje ) > 10000:
         return jsonify( {'respuesta': config.MENSAJES.get('CHAT_PREGUNTA_MUYLARGA'), 'peticion': mensaje} ), 200
 
     # Recupera parametros
