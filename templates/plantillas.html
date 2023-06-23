@@ -23,7 +23,7 @@
                 </select>
                 <select name="tarea" id="con_tarea" class="form-select w-auto">
                     <option value=""></option>
-                    {% for tarea in diccionario.tareas %}
+                    {% for tarea in tareas %}
                     <option value="{{tarea.valor}}" {% if pla_tarea == tarea.valor %}selected{% endif %}>{{tarea.etiqueta}}</option>
                     {% endfor %}
                 </select>
@@ -42,7 +42,7 @@
 {% for plantilla in datos.resultados %}
 <div class="row mb-4 pt-2 pb-2 shadow" id="pla_{{plantilla.id}}">
     <div class="col-10">
-        {% for tarea in diccionario.tareas %}{% if tarea.valor == plantilla.tarea %}
+        {% for tarea in tareas %}{% if tarea.valor == plantilla.tarea %}
         {{tarea.etiqueta}}:&nbsp;
         {% endif %}{% endfor %} 
         {{plantilla.etiqueta}}<br>

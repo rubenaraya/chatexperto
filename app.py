@@ -2396,12 +2396,14 @@ def interfaz_consultar_plantillas( coleccion ):
 
     gestor = GestorColeccion(config)
     datos = gestor.consultar_plantillas( parametros=parametros )
-    
+    tareas = gestor.consultar_tareas()
+
     # Entrega la interfaz HTML
     return render_template( 'plantillas.html', app=config.APP, dir_base=request.script_root, usuario=config.USUARIO, 
-            diccionario = config.cargar_valores( 'diccionario.json' ),
+            diccionario = config.cargar_valores( 'prompts.json' ),
             pla_visible = visible,
             pla_tarea = tarea,
+            tareas = tareas,
             datos = datos
         )
 
@@ -2424,11 +2426,14 @@ def interfaz_nueva_plantilla( coleccion ):
     if not config.USUARIO.get('roles') in roles:
         return jsonify( {'error': config.MENSAJES.get('ERROR_ACCESO_DENEGADO')} ), 401
 
+    gestor = GestorColeccion(config)
+    tareas = gestor.consultar_tareas()
+
     # Entrega la interfaz HTML
     return render_template( 'plantilla.html', app=config.APP, dir_base=request.script_root, usuario=config.USUARIO, 
             diccionario = config.cargar_valores( 'prompts.json' ),
-            dic = config.cargar_valores( 'diccionario.json' ),
             datos = [],
+            tareas = tareas,
             modo = "nueva"
         )
 
@@ -2453,12 +2458,13 @@ def interfaz_abrir_plantilla( coleccion, uid ):
 
     gestor = GestorColeccion(config)
     datos = gestor.abrir_plantilla( uid=uid )
+    tareas = gestor.consultar_tareas()
 
     # Entrega la interfaz HTML
     return render_template( 'plantilla.html', app=config.APP, dir_base=request.script_root, usuario=config.USUARIO, 
             diccionario = config.cargar_valores( 'prompts.json' ),
-            dic = config.cargar_valores( 'diccionario.json' ),
             datos = datos,
+            tareas = tareas,
             modo = "editar"
         )
 

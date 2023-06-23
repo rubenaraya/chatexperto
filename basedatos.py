@@ -1292,6 +1292,31 @@ class BaseDatos:
             if conexion:
                 conexion.close()
 
+    # Función para obtener una lista de tareas de prompts
+    def consultar_tareas( self ):
+        try:
+            conexion = sqlite3.connect( self._BD.get('COLECCION') )
+            consulta_sql = self._SQL.get( 'SELECT_LISTA_TAREAS' )
+            bd = conexion.cursor()
+            bd.execute( consulta_sql )
+            lista = bd.fetchall()
+            conexion.close()
+            resultado = [
+                {
+                    "id": row[0],
+                    "valor": row[1],
+                    "etiqueta": row[2]
+                }
+                for row in lista
+            ]
+            return resultado
+        except Exception as e:
+            self.basedatos_registrar.error( f"{e}" )
+            return None
+        finally:
+            if conexion:
+                conexion.close()
+
     # Función para obtener una lista de plantillas con filtros
     def consultar_plantillas( self, parametros={}, pagina=1, casos=100 ):
         try:

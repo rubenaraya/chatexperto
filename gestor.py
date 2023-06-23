@@ -598,6 +598,16 @@ class GestorColeccion:
             self.gestor_registrar.error( f"{e}" )
         return resultados
 
+    # Función para obtener una lista de tareas de prompts
+    def consultar_tareas( self ):
+        resultados = None
+        try:
+            bd = BaseDatos(self.config)
+            resultados = bd.consultar_tareas()
+        except Exception as e:
+            self.gestor_registrar.error( f"{e}" )
+        return resultados
+
     # Función para actualizar los datos de una plantilla de prompt
     def actualizar_plantilla( self, uid, parametros={} ):
         resultado = False
@@ -980,6 +990,31 @@ class GestorColeccion:
         carpetas = self._lista_carpetas( modulo=modulo )
         resultados = bd.documentos_destacados( total=int(total), carpetas=carpetas )
         return resultados
+
+    # Función para subir un archivo de audio y guardarlo
+    def subir_audio( self, archivo ):
+        from archivos import Archivos
+        try:
+            if archivo:
+                archivos = Archivos(self.config)
+                resultado = "ERROR"
+                cargar = archivos.cargar_audio( archivo=archivo )
+                if len(cargar) > 1:
+                    mensaje = self.config.MENSAJES.get('EXITO_ARCHIVO_SUBIDO')
+                    resultado = "EXITO"
+                elif cargar == archivos.NOMBRE_NO_VALIDO:
+                    mensaje = self.config.MENSAJES.get('ERROR_NOMBRE_NOVALIDO')
+                elif cargar == archivos.TIPO_NO_PERMITIDO:
+                    mensaje = self.config.MENSAJES.get('ERROR_ARCHIVO_NOPERMITIDO')
+                else:
+                    mensaje = self.config.MENSAJES.get('ERROR_ARCHIVO_NOSUBIDO')
+                respuesta = { "resultado": resultado, "mensaje": mensaje }
+                return respuesta
+
+        except Exception as e:
+            self.gestor_registrar.error( f"{e}" )
+
+        return None
 
 
 ######################################################

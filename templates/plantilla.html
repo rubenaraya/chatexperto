@@ -44,7 +44,7 @@
                         <div class="col-9">
                             <div class="input-group">
                                 <select name="tarea" id="tarea" class="form-select w-auto">
-                                    {% for tarea in dic.tareas %}
+                                    {% for tarea in tareas %}
                                     <option value="{{tarea.valor}}" {% if tarea.valor == pla_tarea %}selected{% endif %}>{{tarea.etiqueta}}</option>
                                     {% endfor %}
                                 </select>
@@ -62,7 +62,7 @@
                         <label for="visible" class="col-3 col-form-label">Estado:</label>
                         <div class="col-9">
                             <select name="visible" id="visible" class="form-select w-auto">
-                                {% for estado in dic.visibilidad %}
+                                {% for estado in diccionario.visibilidad %}
                                 <option value="{{estado.valor}}" class="bg-{{estado.color}} text-white" {% if estado.valor|string == pla_visible|string %}selected{% endif %}>{{estado.etiqueta}}</option>
                                 {% endfor %}
                             </select>
@@ -85,8 +85,8 @@
                         </div>
                         <div class="col-12 mt-1 mb-1">
                             <div class="form-floating">
-                                <textarea id="texto" name="texto" placeholder="Texto base con datos" maxlength="4000" class="form-control auto-resize">{{pla_texto}}</textarea>
-                                <label for="texto">Texto base con datos (max: 4.000 caracteres)</label>
+                                <textarea id="texto" name="texto" placeholder="Texto base con datos" maxlength="7000" class="form-control auto-resize">{{pla_texto}}</textarea>
+                                <label for="texto">Texto base con datos (max: 7.000 caracteres)</label>
                             </div>
                         </div>
                         <div class="col-12 mt-1 mb-2 text-center small text-secondary">NOTA: No coloques datos personales ni información sensible en los detalles de los prompts. Puedes usar marcas de reemplazo manual entre corchetes "[" y "]" en su lugar.</div>
