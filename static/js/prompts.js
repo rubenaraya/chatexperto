@@ -7,6 +7,10 @@ Clase: Prompts */
 class Prompts {
 
     constructor() {
+        this.chunks = [];
+        this.mediaRecorder = null;
+        this.tiempo_grabacion = 180;
+        this.archivo_audio = 'audio-guardado';
         this.informe = [];
         this.articulo = [];
         this.noticia = [];
@@ -169,6 +173,7 @@ class Prompts {
     }
 
     limpiarPrompt() {
+        jQuery('#prompt-advertencia').hide();
         jQuery('#input-mensaje-usuario').val('');
         jQuery('#input-mensaje-usuario').trigger('input');
         jQuery('#input-mensaje-usuario').focus();
@@ -569,6 +574,74 @@ class Prompts {
     guardarChat() {
         let url = control.ruta_base + "/guardarchat";
         window.open( url, '_blank' );
+    }
+
+    grabarAudio() {
+        if (jQuery('#grabar_audio').hasClass('recording')) {
+            jQuery('#grabar_audio').removeClass('recording');
+            jQuery('#grabar_audio').text('Iniciar grabación');
+            this.detenerGrabacion();
+        } else {
+            jQuery('#grabar_audio').addClass('recording');
+            jQuery('#grabar_audio').text('Detener grabación');
+            this.chunks = [];
+            this.comenzarGrabacion();
+            setTimeout(() => {
+                this.detenerGrabacionAuto();
+            }, this.tiempo_grabacion * 1000);
+        }
+    }
+
+    comenzarGrabacion() {
+        navigator.mediaDevices.getUserMedia({ audio: true })
+        .then((stream) => {
+            this.mediaRecorder = new MediaRecorder(stream);
+            this.mediaRecorder.start();
+            this.mediaRecorder.addEventListener('dataavailable', (e) => {
+                this.chunks.push(e.data);
+            });
+        })
+        .catch((err) => {
+            console.error('Error al acceder al dispositivo de audio: ', err);
+        });
+    }
+
+    detenerGrabacion() {
+        this.mediaRecorder.stop();
+    }
+
+    reproducirGrabacion() {
+        const blob = new Blob(this.chunks, { type: 'audio/mp3' });
+        const audioURL = URL.createObjectURL(blob);
+        jQuery('#reproducir_audio').attr('src', audioURL);
+    }
+
+    detenerGrabacionAuto() {
+        if (jQuery('#grabar_audio').hasClass('recording')) {
+            jQuery('#grabar_audio').removeClass('recording');
+            jQuery('#grabar_audio').text('Iniciar grabación');
+            this.detenerGrabacion();
+        }
+    }
+
+    enviarAudio() {
+        this.reproducirGrabacion();
+        const blob = new Blob(this.chunks, { type: 'audio/mp3' });
+        const formData = new FormData();
+        formData.append('audio', blob, this.archivo_audio + '.mp3');
+        jQuery.ajax({
+            url: '/audio',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: (response) => {
+                console.log('Archivo de audio enviado con éxito.');
+            },
+            error: (error) => {
+                console.error('Error al enviar el archivo de audio: ', error);
+            }
+        });
     }
 
 }

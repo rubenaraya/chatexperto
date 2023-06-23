@@ -123,7 +123,7 @@
         </div>
         <div class="col-6 text-end mt-3">
             <button type="button" title="Copiar petición" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.copiarCampo('{{tarea.valor}}-peticion')"><i class="bi bi-clipboard h5"></i></button>
-            <button type="button" title="Reemplazar claves" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.formularioClaves()"><i class="bi bi-list-ul h5"></i></button>
+            <button type="button" title="Reemplazar marcas" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.formularioClaves()"><i class="bi bi-list-ul h5"></i></button>
         </div>
         <div class="col-12 mt-1">
             <div class="form-floating">
@@ -295,8 +295,8 @@
         <div class="col-12">
             <div class="chat-respuesta texto-ajustable">
                 <i class="bi bi-chat-left-text-fill"></i> <span class="texto-copiable">((respuesta))</span>
-                <i class="bi bi-clipboard boton-copiar float-end text-dark" style="cursor: pointer;" title="Copiar"></i>
-                <i class="bi bi-check icono-copiado float-end h4 text-success" style="display: none;"></i>
+                <i class="bi bi-clipboard boton-copiar float-end text-dark h5" style="cursor: pointer;" title="Copiar"></i>
+                <i class="bi bi-check icono-copiado float-end h5 text-success" style="display: none;"></i>
             </div>
         </div>
     </div>
@@ -335,7 +335,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="titulo_ventana"><i class="bi bi-list-ul"></i> Reemplazar marcas en texto</h5>
+                <h5 class="modal-title" id="titulo_ventana"><i class="bi bi-list-ul"></i> Reemplazar marcas en texto base</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
@@ -367,7 +367,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="titulo_ventana"><i class="bi bi-list-ul"></i> Reemplazar claves en petición</h5>
+                <h5 class="modal-title" id="titulo_ventana"><i class="bi bi-list-ul"></i> Reemplazar marcas en petición</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
