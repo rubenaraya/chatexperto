@@ -1,6 +1,6 @@
 # app.py
 #######################################################
-# CHAT EXPERTO (Back-end) - Actualizado el: 21/06/2023
+# CHAT EXPERTO (Back-end) - Actualizado el: 22/06/2023
 #######################################################
 """
 Aplicación WEB-REST en Python para implementar un back-end para múltiples servicios de Chat inteligentes que responden preguntas sobre bases de conocimiento personalizadas.
@@ -117,7 +117,7 @@ def global_exception_handler( error ):
 # "/<coleccion>/metadatos/<int:uid>" (GET) [T]
 # "/<coleccion>/metadatos/<int:uid>" (POST) [T]
 ######################################################
-# APLICACION WEB PARA USAR COLECCIONES (31):
+# APLICACION WEB PARA USAR COLECCIONES (32):
 # "/<coleccion>/cargar" (GET) [T]
 # "/<coleccion>/cargar" (POST) [T]
 # "/<coleccion>/miscarpetas" (GET) [T]
@@ -149,6 +149,7 @@ def global_exception_handler( error ):
 # "/<coleccion>/plantilla/<int:uid>" (GET)
 # "/<coleccion>/plantilla/<int:uid>" (PUT)
 # "/<coleccion>/plantilla/<int:uid>" (DELETE)
+# "/<coleccion>/audio" (POST)
 
 ######################################################
 # URL: "/<coleccion>" (GET)
@@ -2275,7 +2276,7 @@ def funcion_prompts( coleccion ):
         ini_time = time.time()
         gestor.CFG['clase_interaccion'] = "Peticion"
         gestor.abrir_ejecutor()
-        respuesta = gestor.ejecutar_instruccion( peticion=mensaje, id_sesion=config.USUARIO.get('email') )
+        respuesta = gestor.ejecutar_instruccion( peticion=mensaje, id_sesion=f"{config.USUARIO.get('email')}-0" )
         if not respuesta:
             return jsonify( {'error': config.MENSAJES.get('ERROR_RESPUESTA_LLM')} ), 500
         
@@ -2555,6 +2556,42 @@ def funcion_actualizar_plantilla( coleccion, uid ):
         return jsonify( {'respuesta': f"{config.MENSAJES.get('EXITO_ACCION_REALIZADA')}"} ), 200
     else:
         return jsonify( {'error': config.MENSAJES.get('ERROR_GENERAL')} ), 500
+
+######################################################
+# URL: "/<coleccion>/audio" (POST) [T]
+# Recibe el audio cargado por el usuario y lo procesa
+@app.route( '/<coleccion>/audio', methods=['POST'] )
+def funcion_audio( coleccion ):
+    roles = ["Editor"]
+    config = Config(coleccion)
+
+    # Comprueba la colección
+    if not config.comprobar_coleccion( coleccion ):
+        return jsonify( {'error': config.MENSAJES.get('ERROR_COLECCION_NOEXISTE')} ), 404
+
+    # Valida sesión del usuario para autorizar
+    if not comprobar_sesion( app_key=False, config=config ):
+        return jsonify( {'error': config.MENSAJES.get('ERROR_ACCESO_DENEGADO')} ), 401
+
+    if not config.USUARIO.get('roles') in roles:
+        return jsonify( {'error': config.MENSAJES.get('ERROR_ACCESO_DENEGADO')} ), 401
+
+    if 'audio' not in request.files:
+        return jsonify( {'error': config.MENSAJES.get('ERROR_DATOS_INCOMPLETOS')} ), 400
+
+    mensaje = ''
+    gestor = GestorColeccion(config)
+    audio = request.files[ 'audio' ]
+    subir = gestor.subir_audio( archivo=audio )
+    if subir:
+        resultado = subir.get('resultado')
+        mensaje = f"{subir.get('mensaje')}. "
+        if resultado == 'ERROR':
+            return jsonify( {'error': mensaje} ), 400
+    else:
+        return jsonify( {'error': config.MENSAJES.get('ERROR_ARCHIVO_NOSUBIDO')} ), 400
+
+    return jsonify( {'respuesta': mensaje} ), 200
 
 
 ######################################################
