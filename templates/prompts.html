@@ -58,7 +58,7 @@
         </div>
         <div class="col-9">
             <div class="pe-1 input-group">
-                <label for="tarea-{{tarea.valor}}" class="col-form-label">Tipo {{tarea.valor}}:&nbsp;</label>
+                <label for="tarea-{{tarea.valor}}" class="col-form-label">Tipo:&nbsp;</label>
                 <select name="tarea" id="tarea-{{tarea.valor}}" class="form-select w-auto">
                     {% for prompt in datos.prompts %}{% if prompt.tarea == tarea.valor %}
                     <option value="{{prompt.id}}">{{prompt.etiqueta}}</option>
@@ -102,7 +102,7 @@
         <div class="col-12 mt-1">
             <div class="form-floating">
                 <textarea id="{{tarea.valor}}-texto" name="texto" maxlength="7000" class="form-control auto-resize"></textarea>
-                <label for="{{tarea.valor}}-texto">Texto base con datos para {{tarea.valor}} (max: 7.000 caracteres)</label>
+                <label for="{{tarea.valor}}-texto">Texto base con datos (max: 7.000 caracteres)</label>
             </div>
         </div>
     </div>
