@@ -56,6 +56,8 @@
             <h5>Generar {{tarea.etiqueta}}</h5>
             <div class="text-secondary small">{{tarea.descripcion}}</div>
         </div>
+    </div>
+    <div class="row mark pt-2 pb-2">
         <div class="col-9">
             <div class="pe-1 input-group">
                 <label for="tarea-{{tarea.valor}}" class="col-form-label">Tipo:&nbsp;</label>
@@ -70,7 +72,15 @@
             <button type="button" title="Limpiar campos" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.limpiarCampos('{{tarea.valor}}')"><i class="bi bi-eraser-fill h5"></i></button>
             <button type="button" title="Usar Plantilla" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.usarPlantilla('tarea-{{tarea.valor}}')"><i class="bi bi-box-arrow-in-down-left h5"></i></button>
         </div>
-        <div class="col-12 mt-3">
+    </div>
+    <div class="row">
+        <div class="col-12 text-secondary mt-2">
+            <div class="input-group">
+                Instrucción de encuadre: &nbsp;
+                <span data-bs-toggle="tooltip" title="Quiero que seas un… Quiero que actúes como un… Tu función será… Me ayudarás a…" class="ms-1"><i class="bi bi-question-circle h5"></i></span>
+            </div>
+        </div>
+        <div class="col-12 mt-1">
             <div class="form-floating">
                 <textarea id="{{tarea.valor}}-intro" name="intro" maxlength="1000" class="form-control auto-resize"></textarea>
                 <label for="{{tarea.valor}}-intro">Instrucción de encuadre</label>
@@ -80,7 +90,10 @@
             Reemplaza todos los textos entre ((paréntesis dobles))
         </div>
         <div class="col-6 text-secondary mt-3">
-            Petición detallada:
+            <div class="input-group">
+                Petición detallada: &nbsp;
+                <span data-bs-toggle="tooltip" title="Mi solicitud es: Escribe un… Hazme un… Crea un… Sugiéreme…" class="ms-1"><i class="bi bi-question-circle h5"></i></span>
+            </div>
         </div>
         <div class="col-6 text-end mt-3">
             <button type="button" title="Copiar petición" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.copiarCampo('{{tarea.valor}}-peticion')"><i class="bi bi-clipboard h5"></i></button>
@@ -93,7 +106,10 @@
             </div>
         </div>
         <div class="col-6 text-secondary mt-3">
-            Texto base:
+            <div class="input-group">
+                Texto base: &nbsp;
+                <span data-bs-toggle="tooltip" title="Lluvia de ideas, datos o instrucciones para crear el contenido" class="ms-1"><i class="bi bi-question-circle h5"></i></span>
+            </div>
         </div>
         <div class="col-6 text-end mt-3">
             <button type="button" title="Copiar texto" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.copiarCampo('{{tarea.valor}}-texto')"><i class="bi bi-clipboard h5"></i></button>
@@ -112,7 +128,7 @@
 <div class="row mb-1 mt-2">
     <label for="lenguaje" class="col-4 col-form-label">Lenguaje:</label>
     <div class="col-8">
-        <div class=" input-group">
+        <div class="input-group">
             <select name="lenguaje" id="lenguaje" class="form-select w-auto">
                 {% for opcion in diccionario.lenguajes %}
                 <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
@@ -125,7 +141,7 @@
 <div class="row mb-1">
     <label for="estilo" class="col-4 col-form-label">Estilo:</label>
     <div class="col-8">
-        <div class=" input-group">
+        <div class="input-group">
             <select name="estilo" id="estilo" class="form-select w-auto">
                 {% for opcion in diccionario.estilos %}
                 <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
@@ -138,7 +154,7 @@
 <div class="row mb-1">
     <label for="tono" class="col-4 col-form-label">Tono:</label>
     <div class="col-8">
-        <div class=" input-group">
+        <div class="input-group">
             <select name="tono" id="tono" class="form-select w-auto">
                 {% for opcion in diccionario.tonos %}
                 <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
