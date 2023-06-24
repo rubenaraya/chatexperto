@@ -27,45 +27,6 @@
         </div>
     </div>
     <div class="row mb-1">
-        <label for="lenguaje" class="col-4 col-form-label">Lenguaje:</label>
-        <div class="col-8">
-            <div class=" input-group">
-                <select name="lenguaje" id="lenguaje" class="form-select w-auto">
-                    {% for opcion in diccionario.lenguajes %}
-                    <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
-                    {% endfor %}
-                </select>
-                <span data-bs-toggle="tooltip" title="Lenguaje: Conjunto de palabras y frases que se usan para comunicar un mensaje" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
-            </div>
-        </div>
-    </div>
-    <div class="row mb-1">
-        <label for="estilo" class="col-4 col-form-label">Estilo:</label>
-        <div class="col-8">
-            <div class=" input-group">
-                <select name="estilo" id="estilo" class="form-select w-auto">
-                    {% for opcion in diccionario.estilos %}
-                    <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
-                    {% endfor %}
-                </select>
-                <span data-bs-toggle="tooltip" title="Estilo: Patrón general de escritura y formato que se aplica en un texto" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
-            </div>
-        </div>
-    </div>
-    <div class="row mb-1">
-        <label for="tono" class="col-4 col-form-label">Tono:</label>
-        <div class="col-8">
-            <div class=" input-group">
-                <select name="tono" id="tono" class="form-select w-auto">
-                    {% for opcion in diccionario.tonos %}
-                    <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
-                    {% endfor %}
-                </select>
-                <span data-bs-toggle="tooltip" title="Tono: Actitud o perspectiva de quien habla hacia el tema que está tratando" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
-            </div>
-        </div>
-    </div>
-    <div class="row mb-1">
         <label for="idioma" class="col-4 col-form-label">Idioma:</label>
         <div class="col-8">
             <select name="idioma" id="idioma" class="form-select w-auto">
@@ -147,6 +108,46 @@
     </div>
 </form>
 {% endfor %}
+
+<div class="row mb-1 mt-2">
+    <label for="lenguaje" class="col-4 col-form-label">Lenguaje:</label>
+    <div class="col-8">
+        <div class=" input-group">
+            <select name="lenguaje" id="lenguaje" class="form-select w-auto">
+                {% for opcion in diccionario.lenguajes %}
+                <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
+                {% endfor %}
+            </select>
+            <span data-bs-toggle="tooltip" title="Lenguaje: Conjunto de palabras y frases que se usan para comunicar un mensaje" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+        </div>
+    </div>
+</div>
+<div class="row mb-1">
+    <label for="estilo" class="col-4 col-form-label">Estilo:</label>
+    <div class="col-8">
+        <div class=" input-group">
+            <select name="estilo" id="estilo" class="form-select w-auto">
+                {% for opcion in diccionario.estilos %}
+                <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
+                {% endfor %}
+            </select>
+            <span data-bs-toggle="tooltip" title="Estilo: Patrón general de escritura y formato que se aplica en un texto" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+        </div>
+    </div>
+</div>
+<div class="row mb-1">
+    <label for="tono" class="col-4 col-form-label">Tono:</label>
+    <div class="col-8">
+        <div class=" input-group">
+            <select name="tono" id="tono" class="form-select w-auto">
+                {% for opcion in diccionario.tonos %}
+                <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
+                {% endfor %}
+            </select>
+            <span data-bs-toggle="tooltip" title="Tono: Actitud o perspectiva de quien habla hacia el tema que está tratando" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+        </div>
+    </div>
+</div>
 
 <div class="row mb-4 mt-3">
     <div class="col-12 text-center">
