@@ -1248,6 +1248,8 @@ class BaseDatos:
             if intro != None:
                 intro = re.sub(r'\n', '|', intro)
                 intro = re.sub(r'\r', '', intro)
+                intro = re.sub(r'"', "`", intro)
+                intro = re.sub(r"'", "`", intro)
                 param.append( intro )
                 campos = f"{campos}, intro=?"
 
@@ -1255,6 +1257,8 @@ class BaseDatos:
             if peticion != None:
                 peticion = re.sub(r'\n', '|', peticion)
                 peticion = re.sub(r'\r', '', peticion)
+                peticion = re.sub(r'"', "`", peticion)
+                peticion = re.sub(r"'", "`", peticion)
                 param.append( peticion )
                 campos = f"{campos}, peticion=?"
 
@@ -1262,6 +1266,8 @@ class BaseDatos:
             if texto != None:
                 texto = re.sub(r'\n', '|', texto)
                 texto = re.sub(r'\r', '', texto)
+                texto = re.sub(r'"', "`", texto)
+                texto = re.sub(r"'", "`", texto)
                 param.append( texto )
                 campos = f"{campos}, texto=?"
 
