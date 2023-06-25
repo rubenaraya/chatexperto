@@ -29,22 +29,28 @@
     <div class="row mb-1">
         <label for="idioma" class="col-4 col-form-label">Idioma:</label>
         <div class="col-8">
-            <select name="idioma" id="idioma" class="form-select w-auto">
-                {% for opcion in diccionario.idiomas %}
-                <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %}>{{ opcion.etiqueta }}</option>
-                {% endfor %}
-            </select>
+            <div class="input-group">
+                <select name="idioma" id="idioma" class="form-select w-auto">
+                    {% for opcion in diccionario.idiomas %}
+                    <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %}>{{ opcion.etiqueta }}</option>
+                    {% endfor %}
+                </select>
+                <span data-bs-toggle="tooltip" title="Idioma en el que se desea que GPT entregue la respuesta" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+            </div>
         </div>
     </div>
     <div class="row mb-1">
         <label for="palabras" class="col-4 col-form-label">Palabras:</label>
         <div class="col-8">
-            <select name="palabras" id="palabras" class="form-select w-auto">
-                <option value=""></option>
-                {% for opcion in diccionario.palabras %}
-                <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %}>{{ opcion.etiqueta }}</option>
-                {% endfor %}
-            </select>
+            <div class="input-group">
+                <select name="palabras" id="palabras" class="form-select w-auto">
+                    <option value=""></option>
+                    {% for opcion in diccionario.palabras %}
+                    <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %}>{{ opcion.etiqueta }}</option>
+                    {% endfor %}
+                </select>
+                <span data-bs-toggle="tooltip" title="Límite de palabras para la longitud de la respuesta (opcional)" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+            </div>
         </div>
     </div>
 </form>
@@ -237,31 +243,40 @@
                 <div class="row mb-2">
                     <label for="longitud" class="col-4 col-form-label">Longitud:</label>
                     <div class="col-8">
-                        <select name="longitud" id="longitud" class="form-select w-auto">
-                            {% for opcion in diccionario.longitudes %}
-                            <option value="{{opcion.valor}}" {% if opcion.marcado == '1' %}selected{% endif %}>{{opcion.etiqueta}}</option>
-                            {% endfor %}
-                        </select>
+                        <div class="input-group">
+                            <select name="longitud" id="longitud" class="form-select w-auto">
+                                {% for opcion in diccionario.longitudes %}
+                                <option value="{{opcion.valor}}" {% if opcion.marcado == '1' %}selected{% endif %}>{{opcion.etiqueta}}</option>
+                                {% endfor %}
+                            </select>
+                            <span data-bs-toggle="tooltip" title="Nº máximo de Tokens para usar en la solicitud a la API de GPT" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+                        </div>
                     </div>
                 </div>
                 <div class="row mb-2">
                     <label for="expresion" class="col-4 col-form-label">Expresión:</label>
                     <div class="col-8">
-                        <select name="expresion" id="expresion" class="form-select w-auto">
-                            {% for opcion in diccionario.expresiones %}
-                            <option value="{{opcion.valor}}" {% if opcion.marcado == '1' %}selected{% endif %}>{{opcion.etiqueta}}</option>
-                            {% endfor %}
-                        </select>
+                        <div class="input-group">
+                            <select name="expresion" id="expresion" class="form-select w-auto">
+                                {% for opcion in diccionario.expresiones %}
+                                <option value="{{opcion.valor}}" {% if opcion.marcado == '1' %}selected{% endif %}>{{opcion.etiqueta}}</option>
+                                {% endfor %}
+                            </select>
+                            <span data-bs-toggle="tooltip" title="Temperatura para calibrar la diversidad en las respuestas de GPT" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+                        </div>
                     </div>
                 </div>
                 <div class="row mb-0">
                     <label for="modelo" class="col-4 col-form-label">Modelo:</label>
                     <div class="col-8">
-                        <select name="modelo" id="modelo" class="form-select w-auto">
-                            {% for opcion in diccionario.modelos %}
-                            <option value="{{opcion.valor}}" {% if opcion.marcado == '1' %}selected{% endif %}>{{opcion.etiqueta}}</option>
-                            {% endfor %}
-                        </select>
+                        <div class="input-group">
+                            <select name="modelo" id="modelo" class="form-select w-auto">
+                                {% for opcion in diccionario.modelos %}
+                                <option value="{{opcion.valor}}" {% if opcion.marcado == '1' %}selected{% endif %}>{{opcion.etiqueta}}</option>
+                                {% endfor %}
+                            </select>
+                            <span data-bs-toggle="tooltip" title="Modelo de lenguaje específico para generar la respuesta de GPT" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+                        </div>
                     </div>
                 </div>
             </div>

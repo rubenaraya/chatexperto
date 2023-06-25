@@ -2282,8 +2282,8 @@ def funcion_prompts( coleccion ):
         
         respuesta = str( respuesta ).strip()
         tiempo = round( time.time() - ini_time, None )
-        if '"""' in mensaje:
-            mensaje = mensaje[:mensaje.index('"""')]
+        #if '"""' in mensaje:
+        #    mensaje = mensaje[:mensaje.index('"""')]
         mensaje = re.sub(r'\n', ' ', mensaje)
         resultado = gestor.procesar_respuesta(
             respuesta = respuesta,
