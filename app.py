@@ -1177,7 +1177,14 @@ def funcion_admin( coleccion ):
 
     # Crea instancia del Gestor de la Colección
     gestor = GestorColeccion(config)
-    resultado = gestor.crear_coleccion( coleccion=coleccion, nombre=nombre, descripcion=descripcion, api_key=api_key )
+    resultado = gestor.crear_coleccion(
+        coleccion = coleccion,
+        nombre = nombre,
+        descripcion = descripcion,
+        api_key = api_key,
+        carpetas = carpetas,
+        chatgpt=chatgpt
+    )
 
     return jsonify( {'respuesta': resultado} ), 200
 
