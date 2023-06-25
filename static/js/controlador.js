@@ -1372,6 +1372,7 @@ class Controlador {
 				mensajes_conversacion.append(html);
 			}
 			jQuery(window).scrollTop( pie_chat.position().top);
+            control.activarCopiar();
         });
         peticion.fail((jqXHR, estado, mensaje) => {
             mensaje = control.mostrarError( jqXHR, estado, mensaje );

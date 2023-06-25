@@ -13,6 +13,16 @@
 <div id="form_subir">
     <form action="{{dir_base}}/{{coleccion}}/cargar" method="post" enctype="multipart/form-data" onsubmit="event.preventDefault(); control.cargarArchivo(this)">
         <div class="row mb-3">
+            <label for="carpeta" class="col-md-4 col-form-label">Guardar en carpeta:</label>
+            <div class="col-md-8">
+                <select name="carpeta" id="carpeta" class="form-select w-auto" required>
+                    {% for opcion in opciones_carpetas %}
+                    <option value="{{ opcion.carpeta }}">{{ opcion.etiqueta }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="row mb-3">
             <div class="col">
                 <div id="drop-area">
                     <span class="drop-message">Arrastra y suelta un archivo aquí, o<br>
@@ -44,16 +54,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <label for="carpeta" class="col-md-4 col-form-label">Guardar en carpeta:</label>
-            <div class="col-md-8">
-                <select name="carpeta" id="carpeta" class="form-select w-auto" required>
-                    {% for opcion in opciones_carpetas %}
-                    <option value="{{ opcion.carpeta }}">{{ opcion.etiqueta }}</option>
-                    {% endfor %}
-                </select>
             </div>
         </div>
         <div class="row mb-3">

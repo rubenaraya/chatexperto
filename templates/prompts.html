@@ -173,7 +173,10 @@
 
 <div class="row mb-4 mt-3">
     <div class="col-12 text-center">
-        <button type="button" title="Generar el Prompt" class="btn btn-success mx-auto form-prompt" id="generar_prompt" onclick="prompts.generarPrompt()" style="display: none;">Generar el Prompt</button>
+        <div class="input-group">
+            <button type="button" title="Guardar como plantilla" class="btn btn-secondary mx-auto form-prompt" id="guardar_como" onclick="prompts.guardarComo()" style="display: none;">Guardar como plantilla</button>
+            <button type="button" title="Generar el Prompt" class="btn btn-success mx-auto form-prompt" id="generar_prompt" onclick="prompts.generarPrompt()" style="display: none;">Generar el Prompt</button>
+        </div>
     </div>
 </div>
 <div class="card mt-2 mb-4">

@@ -80,6 +80,7 @@ class Prompts {
         if (tarea.length > 0) {
             jQuery('#form-' + tarea).fadeIn();
             jQuery('#generar_prompt').fadeIn();
+            jQuery('#guardar_como').fadeIn();
         }
     }
 
