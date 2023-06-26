@@ -1,6 +1,6 @@
 # app.py
 #######################################################
-# CHAT EXPERTO (Back-end) - Actualizado el: 23/06/2023
+# CHAT EXPERTO (Back-end) - Actualizado el: 26/06/2023
 #######################################################
 """
 Aplicación WEB-REST en Python para implementar un back-end para múltiples servicios de Chat inteligentes que responden preguntas sobre bases de conocimiento personalizadas.
@@ -2433,13 +2433,20 @@ def interfaz_nueva_plantilla( coleccion ):
     if not config.USUARIO.get('roles') in roles:
         return jsonify( {'error': config.MENSAJES.get('ERROR_ACCESO_DENEGADO')} ), 401
 
+    datos = {
+        "intro": obtener_parametro( 'intro' ),
+        "peticion": obtener_parametro( 'peticion' ),
+        "texto": obtener_parametro( 'texto' ),
+        "config": obtener_parametro( 'config' ),
+        "tarea": obtener_parametro( 'tarea' )
+    }
     gestor = GestorColeccion(config)
     tareas = gestor.consultar_tareas()
 
     # Entrega la interfaz HTML
     return render_template( 'plantilla.html', app=config.APP, dir_base=request.script_root, usuario=config.USUARIO, 
             diccionario = config.cargar_valores( 'prompts.json' ),
-            datos = [],
+            datos = datos,
             tareas = tareas,
             modo = "nueva"
         )
@@ -2466,7 +2473,7 @@ def interfaz_abrir_plantilla( coleccion, uid ):
     gestor = GestorColeccion(config)
     datos = gestor.abrir_plantilla( uid=uid )
     tareas = gestor.consultar_tareas()
-
+    
     # Entrega la interfaz HTML
     return render_template( 'plantilla.html', app=config.APP, dir_base=request.script_root, usuario=config.USUARIO, 
             diccionario = config.cargar_valores( 'prompts.json' ),

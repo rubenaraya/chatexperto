@@ -1,6 +1,6 @@
 /* controlador.js
 ******************************************************
-CHAT EXPERTO (Front-end) - Actualizado el: 21/06/2023
+CHAT EXPERTO (Front-end) - Actualizado el: 26/06/2023
 ******************************************************
 Clase: Controlador */
 
@@ -1356,11 +1356,15 @@ class Controlador {
 			input_mensaje_usuario.focus();
 			if (response && response.peticion && response.respuesta) {
 				let html = jQuery("div#chat-plantilla-respuesta").html();
-				html = html.replace('((respuesta))', response.respuesta);
+                let respuesta = response.respuesta;
+                respuesta = respuesta.replace(/\n/g, "<br>");
+				html = html.replace('((respuesta))', respuesta);
 				mensajes_conversacion.append(html);
 			} else if (response && response.respuesta) {
 				let html = jQuery("div#chat-plantilla-respuesta").html();
-				html = html.replace('((respuesta))', response.respuesta);
+                let respuesta = response.respuesta;
+                respuesta = respuesta.replace(/\n/g, "<br>");
+                html = html.replace('((respuesta))', respuesta);
 				mensajes_conversacion.append(html);
 			} else if (response && response.error) {
 				let html = jQuery("div#chat-plantilla-error").html();
@@ -1981,11 +1985,11 @@ class Controlador {
             jQuery('#intro').val(c_intro);
             jQuery('#peticion').val(c_peticion);
             jQuery('#texto').val(c_texto);
-            let datos = c_config.split('|');
-            if (datos.length==3) {
-                jQuery('#lenguaje').val(datos[0]);
-                jQuery('#estilo').val(datos[1]);
-                jQuery('#tono').val(datos[2]);
+            let config = c_config.split('|');
+            if (config.length==3) {
+                jQuery('#lenguaje').val(config[0]);
+                jQuery('#estilo').val(config[1]);
+                jQuery('#tono').val(config[2]);
             }
             control.iniciarTips();
             var modal = document.getElementById('INT_MODAL');
@@ -1993,7 +1997,7 @@ class Controlador {
                 jQuery('#intro').trigger('input');
                 jQuery('#peticion').trigger('input');
                 jQuery('#texto').trigger('input');
-            })
+            });
         });
         peticion.fail((jqXHR, estado, mensaje) => {
             control.mostrarError( jqXHR, estado, mensaje );
@@ -2001,7 +2005,7 @@ class Controlador {
         return false;
     }
 
-    nuevaPlantilla() {
+    nuevaPlantilla(datos) {
         const peticion = jQuery.ajax({
             type: "POST",
             url: control.ruta_base + "/plantillas",
@@ -2011,7 +2015,8 @@ class Controlador {
                 xhr.setRequestHeader('id_sesion', id_sesion);
                 xhr.setRequestHeader('token', token);
                 xhr.setRequestHeader('app', control.app);
-            }
+            },
+            data: datos
         });
         peticion.done((respuesta) => {
             control.abrirModal(respuesta);
@@ -2028,6 +2033,19 @@ class Controlador {
                 }
             });
             control.iniciarTips();
+            var modal = document.getElementById('INT_MODAL');
+            modal.addEventListener('shown.bs.modal', function () {
+                let c_config = jQuery('#config').val();
+                let config = c_config.split('|');
+                if (config.length==3) {
+                    jQuery("#form_editar_campos select[name='lenguaje']").val(config[0]);
+                    jQuery("#form_editar_campos select[name='estilo']").val(config[1]);
+                    jQuery("#form_editar_campos select[name='tono']").val(config[2]);
+                }
+                jQuery('#intro').trigger('input');
+                jQuery('#peticion').trigger('input');
+                jQuery('#texto').trigger('input');
+            });
         });
         peticion.fail((jqXHR, estado, mensaje) => {
             control.mostrarError( jqXHR, estado, mensaje );
@@ -2043,10 +2061,10 @@ class Controlador {
     }
 
     guardarPlantilla(modo, id) {
-        let lenguaje = jQuery('#lenguaje').val();
-        let estilo = jQuery('#estilo').val();
-        let tono = jQuery('#tono').val();
-        jQuery('#config').val( lenguaje + '|' + estilo + '|' + tono);
+        let lenguaje = jQuery("#form_editar_campos select[name='lenguaje']").val();
+        let estilo = jQuery("#form_editar_campos select[name='estilo']").val();
+        let tono = jQuery("#form_editar_campos select[name='tono']").val();
+        jQuery("#form_editar_plantilla input[name='config']").val( lenguaje + '|' + estilo + '|' + tono);
         var datos = jQuery( '#form_editar_plantilla' ).serialize();
         jQuery("#form_editar_campos").hide();
         jQuery("#form_editar_botones").hide();
@@ -2083,7 +2101,10 @@ class Controlador {
             jQuery("#form_editar_espera").hide();
             control.cerrarModal();
             control.mostrarRespuesta( respuesta );
-            control.abrirMenu('plantillas');
+            var plantillas = jQuery("#seccion_plantillas");
+            if (plantillas.length) {
+                control.abrirMenu('plantillas');
+            }
         });
         peticion.fail((jqXHR, estado, mensaje) => {
             jQuery("#form_editar_espera").hide();

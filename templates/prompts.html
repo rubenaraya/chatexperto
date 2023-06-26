@@ -11,312 +11,310 @@
 
 {% include 'apikey.html' %}
 
-<form action="javascript:void(0)" method="post" id="form-base">
-    <div class="row mb-1">
-        <label for="tarea" class="col-4 col-form-label">Tarea:</label>
-        <div class="col-8">
-            <div class=" input-group">
-                <select name="tarea" id="tarea" class="form-select w-auto" onchange="prompts.elegirTarea()">
-                    <option value="">ELEGIR...</option>
-                    {% for opcion in datos.tareas %}
-                    <option value="{{opcion.valor}}">{{opcion.etiqueta}}</option>
-                    {% endfor %}
-                </select>
-                <span data-bs-toggle="tooltip" title="Tarea: Categoría de contenido que se genera con un prompt para chatGPT" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
-            </div>
-        </div>
-    </div>
-    <div class="row mb-1">
-        <label for="idioma" class="col-4 col-form-label">Idioma:</label>
-        <div class="col-8">
-            <div class="input-group">
-                <select name="idioma" id="idioma" class="form-select w-auto">
-                    {% for opcion in diccionario.idiomas %}
-                    <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %}>{{ opcion.etiqueta }}</option>
-                    {% endfor %}
-                </select>
-                <span data-bs-toggle="tooltip" title="Idioma en el que se desea que GPT entregue la respuesta" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
-            </div>
-        </div>
-    </div>
-    <div class="row mb-1">
-        <label for="palabras" class="col-4 col-form-label">Palabras:</label>
-        <div class="col-8">
-            <div class="input-group">
-                <select name="palabras" id="palabras" class="form-select w-auto">
-                    <option value=""></option>
-                    {% for opcion in diccionario.palabras %}
-                    <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %}>{{ opcion.etiqueta }}</option>
-                    {% endfor %}
-                </select>
-                <span data-bs-toggle="tooltip" title="Límite de palabras para la longitud de la respuesta (opcional)" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
-            </div>
-        </div>
-    </div>
-</form>
-<hr>
-{% for tarea in datos.tareas %}
-<form action="javascript:void(0)" method="post" id="form-{{tarea.valor}}" class="form-prompt" style="display: none;">
-    <div class="row">
-        <div class="col-12 mb-3">
-            <h5>Generar {{tarea.etiqueta}}</h5>
-            <div class="text-secondary small">{{tarea.descripcion}}</div>
-        </div>
-    </div>
-    <div class="row mark pt-2 pb-2">
-        <div class="col-9">
-            <div class="pe-1 input-group">
-                <label for="tarea-{{tarea.valor}}" class="col-form-label">Tipo:&nbsp;</label>
-                <select name="tarea" id="tarea-{{tarea.valor}}" class="form-select w-auto">
-                    {% for prompt in datos.prompts %}{% if prompt.tarea == tarea.valor %}
-                    <option value="{{prompt.id}}">{{prompt.etiqueta}}</option>
-                    {% endif %}{% endfor %}
-                </select>
-            </div>
-        </div>
-        <div class="col-3 text-end">
-            <button type="button" title="Limpiar campos" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.limpiarCampos('{{tarea.valor}}')"><i class="bi bi-eraser-fill h5"></i></button>
-            <button type="button" title="Usar Plantilla" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.usarPlantilla('tarea-{{tarea.valor}}')"><i class="bi bi-box-arrow-in-down-left h5"></i></button>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-12 text-secondary mt-2">
-            <div class="input-group">
-                Instrucción de encuadre: &nbsp;
-                <span data-bs-toggle="tooltip" title="Quiero que seas un… Quiero que actúes como un… Tu función será… Me ayudarás a…" class="ms-1"><i class="bi bi-question-circle h5"></i></span>
-            </div>
-        </div>
-        <div class="col-12 mt-1">
-            <div class="form-floating">
-                <textarea id="{{tarea.valor}}-intro" name="intro" maxlength="1000" class="form-control auto-resize"></textarea>
-                <label for="{{tarea.valor}}-intro">Instrucción de encuadre</label>
-            </div>
-        </div>
-        <div class="col-12 text-dark small mt-3 text-center">
-            Reemplaza todos los textos entre ((paréntesis dobles))
-        </div>
-        <div class="col-6 text-secondary mt-3">
-            <div class="input-group">
-                Petición detallada: &nbsp;
-                <span data-bs-toggle="tooltip" title="Mi solicitud es: Escribe un… Hazme un… Crea un… Sugiéreme…" class="ms-1"><i class="bi bi-question-circle h5"></i></span>
-            </div>
-        </div>
-        <div class="col-6 text-end mt-3">
-            <button type="button" title="Copiar petición" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.copiarCampo('{{tarea.valor}}-peticion')"><i class="bi bi-clipboard h5"></i></button>
-            <button type="button" title="Reemplazar marcas" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.formularioClaves()"><i class="bi bi-list-ul h5"></i></button>
-        </div>
-        <div class="col-12 mt-1">
-            <div class="form-floating">
-                <textarea id="{{tarea.valor}}-peticion" name="peticion" maxlength="1000" class="form-control auto-resize"></textarea>
-                <label for="{{tarea.valor}}-peticion">Petición detallada (max: 1.000 caracteres)</label>
-            </div>
-        </div>
-        <div class="col-6 text-secondary mt-3">
-            <div class="input-group">
-                Texto base: &nbsp;
-                <span data-bs-toggle="tooltip" title="Lluvia de ideas, datos o instrucciones para crear el contenido" class="ms-1"><i class="bi bi-question-circle h5"></i></span>
-            </div>
-        </div>
-        <div class="col-6 text-end mt-3">
-            <button type="button" title="Copiar texto" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.copiarCampo('{{tarea.valor}}-texto')"><i class="bi bi-clipboard h5"></i></button>
-            <button type="button" title="Reemplazar marcas" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.formularioMarcas()"><i class="bi bi-list-ul h5"></i></button>
-        </div>
-        <div class="col-12 mt-1">
-            <div class="form-floating">
-                <textarea id="{{tarea.valor}}-texto" name="texto" maxlength="7000" class="form-control auto-resize"></textarea>
-                <label for="{{tarea.valor}}-texto">Texto base con datos (max: 7.000 caracteres)</label>
-            </div>
-        </div>
-    </div>
-</form>
-{% endfor %}
-
-<div class="row mb-1 mt-2">
-    <label for="lenguaje" class="col-4 col-form-label">Lenguaje:</label>
-    <div class="col-8">
-        <div class="input-group">
-            <select name="lenguaje" id="lenguaje" class="form-select w-auto">
-                {% for opcion in diccionario.lenguajes %}
-                <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
-                {% endfor %}
-            </select>
-            <span data-bs-toggle="tooltip" title="Lenguaje: Conjunto de palabras y frases que se usan para comunicar un mensaje" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
-        </div>
-    </div>
-</div>
-<div class="row mb-1">
-    <label for="estilo" class="col-4 col-form-label">Estilo:</label>
-    <div class="col-8">
-        <div class="input-group">
-            <select name="estilo" id="estilo" class="form-select w-auto">
-                {% for opcion in diccionario.estilos %}
-                <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
-                {% endfor %}
-            </select>
-            <span data-bs-toggle="tooltip" title="Estilo: Patrón general de escritura y formato que se aplica en un texto" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
-        </div>
-    </div>
-</div>
-<div class="row mb-1">
-    <label for="tono" class="col-4 col-form-label">Tono:</label>
-    <div class="col-8">
-        <div class="input-group">
-            <select name="tono" id="tono" class="form-select w-auto">
-                {% for opcion in diccionario.tonos %}
-                <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
-                {% endfor %}
-            </select>
-            <span data-bs-toggle="tooltip" title="Tono: Actitud o perspectiva de quien habla hacia el tema que está tratando" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
-        </div>
-    </div>
-</div>
-
-<div class="row mb-4 mt-3">
-    <div class="col-12 text-center">
-        <div class="input-group">
-            <button type="button" title="Guardar como plantilla" class="btn btn-secondary mx-auto form-prompt" id="guardar_como" onclick="prompts.guardarComo()" style="display: none;">Guardar como plantilla</button>
-            <button type="button" title="Generar el Prompt" class="btn btn-success mx-auto form-prompt" id="generar_prompt" onclick="prompts.generarPrompt()" style="display: none;">Generar el Prompt</button>
-        </div>
-    </div>
-</div>
-<div class="card mt-2 mb-4">
-    <div class="card-header titulo_seccion pt-1 pb-1 ps-0 pe-0">
+<div id="seccion_prompts">
+    <form action="javascript:void(0)" method="post" id="form-base">
         <div class="row mb-1">
-            <div class="col-5 h5">
-                <img src="{{dir_base}}/static/img/chatgpt.png" style="width: 24px">
-                 <strong>ChatGPT</strong>
-            </div>
-            <div class="col-7">
-                <div class="pe-0 input-group float-end">
-                    <button data-bs-toggle="collapse" data-bs-target="#div_opciones" type="button" title="Configurar respuesta" class="btn btn-light btn-sm text-dark border pe-1"><i class="bi bi-gear h5"></i></button>
-                    <button type="button" title="Aumentar texto" class="btn btn-light btn-sm text-dark border pe-1 ms-1" onclick="control.ajustarTextos('+')"><i class="bi bi-plus-circle h5"></i></button>
-                    <button type="button" title="Disminuir texto" class="btn btn-light btn-sm text-dark border pe-1" onclick="control.ajustarTextos('-')"><i class="bi bi-dash-circle h5"></i></button>
-                    <button type="button" title="Exportar conversación" class="btn btn-light btn-sm text-dark border ms-1 pe-1" onclick="prompts.guardarChat()"><i class="bi bi-save h5"></i></button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="card-body pt-2 pb-2 ps-0 pe-0">
-        {% if historial|length > 0 %}
-        <div class="row mt-2" id="titulo_historial">
+            <label for="tarea" class="col-4 col-form-label">Categoría:</label>
             <div class="col-8">
-                <i><a href="javascript:void(0)" class="text-primary text-decoration-none" data-bs-toggle="collapse" data-bs-target="#historial" title="Historial de conversación"><i class="bi bi-chat-text"></i> Historial de conversación ({{historial|length}})</a></i>
+                <div class=" input-group">
+                    <select name="tarea" id="tarea" class="form-select w-auto" onchange="prompts.elegirTarea()">
+                        <option value="">ELEGIR...</option>
+                        {% for opcion in datos.tareas %}
+                        <option value="{{opcion.valor}}">{{opcion.etiqueta}}</option>
+                        {% endfor %}
+                    </select>
+                    <span data-bs-toggle="tooltip" title="Categoría: tipo de tarea para generar contenido con un prompt para chatGPT" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+                </div>
             </div>
         </div>
-        <div id="historial" class="row collapse">
-            <div class="col-12 text-end pe-1 pt-0 pb-0">
-                <button type="button" title="Vaciar historial" class="btn btn-light btn-sm text-dark border ms-1 pt-0 pb-0" onclick="prompts.confirmarVaciado()"><i class="bi bi-eraser-fill h5"></i><span class="small">Vaciar</span></button>
-            </div>
-            <div class="col-12">
-                {% for interaccion in historial %}
-                <div class="row chat-marco-mensaje">
-                    <div class="col-0 col-sm-1"></div>
-                    <div class="col-12 co-sm-11">
-                        <div class="chat-consulta texto-ajustable"><i class="bi bi-person-square"></i> {{interaccion.peticion}}</div>
-                    </div>
+        <div class="row mb-1">
+            <label for="idioma" class="col-4 col-form-label">Idioma:</label>
+            <div class="col-8">
+                <div class="input-group">
+                    <select name="idioma" id="idioma" class="form-select w-auto">
+                        {% for opcion in diccionario.idiomas %}
+                        <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %}>{{ opcion.etiqueta }}</option>
+                        {% endfor %}
+                    </select>
+                    <span data-bs-toggle="tooltip" title="Idioma en el que se desea que GPT entregue la respuesta" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
                 </div>
-                <div class="row chat-marco-mensaje">
-                    <div class="col-12">
-                        <div class="chat-respuesta texto-ajustable" id="resp_{{interaccion.id}}"
-                        {% if interaccion.evaluacion == 1 %} style="background-color: #bdecb6;"{% endif %}{% if interaccion.evaluacion == 2 %} style="background-color: #ebc1c8;"{% endif %}>
-                            <i class="bi bi-chat-left-text-fill"></i> 
-                            <span class="texto-copiable">{% for linea in interaccion.respuesta.splitlines() %}
-                            {{ linea }}<br>
-                            {% endfor %}</span>
-                            <i class="bi bi-clipboard boton-copiar float-end text-dark" style="cursor: pointer;" title="Copiar"></i>
-                            <i class="bi bi-check icono-copiado float-end h4 text-success" style="display: none;"></i>
-                            <a href="javascript:control.evaluarInteraccion({{interaccion.id}},1)" title="Me gusta" class="text-decoration-none text-dark"><i class="bi bi-hand-thumbs-up float-start ms-2 me-2"></i></a>
-                            <a href="javascript:control.evaluarInteraccion({{interaccion.id}},2)" title="No me gusta" class="text-decoration-none text-dark"><i class="bi bi-hand-thumbs-down float-start ms-2 me-2"></i></a>
-                        </div>
-                    </div>
-                    <div class="col-0 col-sm-2 col-md-3"></div>
-                </div>
-                {% endfor %}
             </div>
         </div>
-        {% endif %}
-        <div id="chat-mensajes-conversacion"></div>
-        <form action="javascript:void(0)" method="post" id="form-chat-enviar">
-            <div id="div_opciones" class="collapse">
-                <div class="row mb-1">
-                    <div class="col">
-                        <hr><div>Configuración de la respuesta:</div>
-                    </div>
-                </div>
-                <div class="row mb-2">
-                    <label for="longitud" class="col-4 col-form-label">Longitud:</label>
-                    <div class="col-8">
-                        <div class="input-group">
-                            <select name="longitud" id="longitud" class="form-select w-auto">
-                                {% for opcion in diccionario.longitudes %}
-                                <option value="{{opcion.valor}}" {% if opcion.marcado == '1' %}selected{% endif %}>{{opcion.etiqueta}}</option>
-                                {% endfor %}
-                            </select>
-                            <span data-bs-toggle="tooltip" title="Nº máximo de Tokens para usar en la solicitud a la API de GPT" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mb-2">
-                    <label for="expresion" class="col-4 col-form-label">Expresión:</label>
-                    <div class="col-8">
-                        <div class="input-group">
-                            <select name="expresion" id="expresion" class="form-select w-auto">
-                                {% for opcion in diccionario.expresiones %}
-                                <option value="{{opcion.valor}}" {% if opcion.marcado == '1' %}selected{% endif %}>{{opcion.etiqueta}}</option>
-                                {% endfor %}
-                            </select>
-                            <span data-bs-toggle="tooltip" title="Temperatura para calibrar la diversidad en las respuestas de GPT" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mb-0">
-                    <label for="modelo" class="col-4 col-form-label">Modelo:</label>
-                    <div class="col-8">
-                        <div class="input-group">
-                            <select name="modelo" id="modelo" class="form-select w-auto">
-                                {% for opcion in diccionario.modelos %}
-                                <option value="{{opcion.valor}}" {% if opcion.marcado == '1' %}selected{% endif %}>{{opcion.etiqueta}}</option>
-                                {% endfor %}
-                            </select>
-                            <span data-bs-toggle="tooltip" title="Modelo de lenguaje específico para generar la respuesta de GPT" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
-                        </div>
-                    </div>
+        <div class="row mb-1">
+            <label for="palabras" class="col-4 col-form-label">Palabras:</label>
+            <div class="col-8">
+                <div class="input-group">
+                    <select name="palabras" id="palabras" class="form-select w-auto">
+                        <option value=""></option>
+                        {% for opcion in diccionario.palabras %}
+                        <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %}>{{ opcion.etiqueta }}</option>
+                        {% endfor %}
+                    </select>
+                    <span data-bs-toggle="tooltip" title="Límite de palabras para la longitud de la respuesta (opcional)" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="row mt-1 mb-1" id="prompt-advertencia" style="display: none;">
-                        <div class="col-12 text-danger text-center">
-                            ¡ Revisa el Prompt antes de enviarlo !
-                        </div>
-                        <div class="col-12 mt-1 mb-2 text-center small text-secondary">NOTA: No expongas datos personales ni información sensible en los prompts. Puedes usar marcas de reemplazo manual entre corchetes "[" y "]" en su lugar.</div>
-                    </div>
-                    <div class="chat-enviar-mensaje" id="chat-enviar-mensaje">
-                        <div class="form-floating w-100">
-                            <textarea class="form-control auto-resize" id="input-mensaje-usuario" rows="1" name="mensaje" minlength="20" maxlength="10000" placeholder="Escribe o pega aquí tu Prompt"></textarea>
-                            <label for="input-mensaje-usuario">Escribe o pega aquí tu Prompt</label>
-                        </div>
-                        <button type="button" id="boton-enviar-mensaje" class="btn btn-primary pe-2" title="Enviar" onclick="prompts.enviarConsulta()" style="height:2.6rem"><i class="bi bi-send"></i></button>
-                    </div>
-                    <div class="row mt-2 mb-2">
-                        <div class="col-5 small"><span id="num_caracteres">0</span> caracteres</div>
-                        <div class="col-7 pe-0 text-end">
-                            <button data-bs-toggle="collapse" data-bs-target="#div_opciones" type="button" title="Configurar respuesta" class="btn btn-light text-dark border ps-2 pe-1"><i class="bi bi-gear h5"></i></button>
-                            <button type="button" title="Copiar prompt" class="btn btn-light text-dark border ps-2 pe-1" onclick="prompts.copiarCampo('input-mensaje-usuario')"><i class="bi bi-clipboard h5"></i></button>
-                            <button type="button" title="Limpiar prompt" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.limpiarPrompt()"><i class="bi bi-x-square h5"></i></button>
-                            <button type="button" title="Volver arriba" class="btn btn-light text-dark border ps-2 pe-1" onclick="control.desplazarPosicion('+')"><i class="bi bi-arrow-up-circle h5"></i></button>
-                        </div>
-                    </div>
-                    <div id="chat-imagen-espera" style="display: none;">
-                        <img src="{{dir_base}}/{{app.coleccion}}/pwa/espere.gif" style="margin: 0 auto;">
-                    </div>
-                    <div id="chat-pie"></div>
+        </div>
+    </form>
+    <hr>
+    {% for tarea in datos.tareas %}
+    <form action="javascript:void(0)" method="post" id="form-{{tarea.valor}}" class="form-prompt" style="display: none;">
+        <div class="row">
+            <div class="col-12 mb-3">
+                <h5>Generar {{tarea.etiqueta}}</h5>
+                <div class="text-secondary small">{{tarea.descripcion}}</div>
+            </div>
+        </div>
+        <div class="row mark pt-2 pb-2">
+            <div class="col-9">
+                <div class="pe-1 input-group">
+                    <label for="tarea-{{tarea.valor}}" class="col-form-label">Tipo:&nbsp;</label>
+                    <select name="tarea" id="tarea-{{tarea.valor}}" class="form-select w-auto">
+                        {% for prompt in datos.prompts %}{% if prompt.tarea == tarea.valor %}
+                        <option value="{{prompt.id}}">{{prompt.etiqueta}}</option>
+                        {% endif %}{% endfor %}
+                    </select>
                 </div>
             </div>
-        </form>
+            <div class="col-3 text-end">
+                <button type="button" title="Limpiar campos" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.limpiarCampos('{{tarea.valor}}')"><i class="bi bi-eraser-fill h5"></i></button>
+                <button type="button" title="Usar Plantilla" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.usarPlantilla('tarea-{{tarea.valor}}')"><i class="bi bi-box-arrow-in-down-left h5"></i></button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 text-secondary mt-2">
+                <div class="input-group">
+                    Instrucción de encuadre: &nbsp;
+                    <span data-bs-toggle="tooltip" title="Quiero que seas un… Quiero que actúes como un… Tu función es… Me ayudarás a…" class="ms-1"><i class="bi bi-question-circle h5"></i></span>
+                </div>
+            </div>
+            <div class="col-12 mt-1">
+                <div class="form-floating">
+                    <textarea id="{{tarea.valor}}-intro" name="intro" maxlength="1000" class="form-control auto-resize"></textarea>
+                    <label for="{{tarea.valor}}-intro">Instrucción de encuadre</label>
+                </div>
+            </div>
+            <div class="col-12 text-dark small mt-3 text-center">
+                Reemplaza todos los textos entre ((paréntesis dobles))
+            </div>
+            <div class="col-6 text-secondary mt-3">
+                <div class="input-group">
+                    Petición detallada: &nbsp;
+                    <span data-bs-toggle="tooltip" title="Mi solicitud es: Escribe un… Hazme un… Crea un… Sugiéreme…" class="ms-1"><i class="bi bi-question-circle h5"></i></span>
+                </div>
+            </div>
+            <div class="col-6 text-end mt-3">
+                <button type="button" title="Copiar petición" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.copiarCampo('{{tarea.valor}}-peticion')"><i class="bi bi-clipboard h5"></i></button>
+                <button type="button" title="Reemplazar marcas" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.formularioClaves()"><i class="bi bi-list-ul h5"></i></button>
+            </div>
+            <div class="col-12 mt-1">
+                <div class="form-floating">
+                    <textarea id="{{tarea.valor}}-peticion" name="peticion" maxlength="1000" class="form-control auto-resize"></textarea>
+                    <label for="{{tarea.valor}}-peticion">Petición detallada (max: 1.000 caracteres)</label>
+                </div>
+            </div>
+            <div class="col-6 text-secondary mt-3">
+                <div class="input-group">
+                    Texto base: &nbsp;
+                    <span data-bs-toggle="tooltip" title="Lluvia de ideas, datos o instrucciones para crear el contenido" class="ms-1"><i class="bi bi-question-circle h5"></i></span>
+                </div>
+            </div>
+            <div class="col-6 text-end mt-3">
+                <button type="button" title="Copiar texto" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.copiarCampo('{{tarea.valor}}-texto')"><i class="bi bi-clipboard h5"></i></button>
+                <button type="button" title="Reemplazar marcas" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.formularioMarcas()"><i class="bi bi-list-ul h5"></i></button>
+            </div>
+            <div class="col-12 mt-1">
+                <div class="form-floating">
+                    <textarea id="{{tarea.valor}}-texto" name="texto" maxlength="7000" class="form-control auto-resize"></textarea>
+                    <label for="{{tarea.valor}}-texto">Texto base con datos (max: 7.000 caracteres)</label>
+                </div>
+            </div>
+        </div>
+    </form>
+    {% endfor %}
+    <div class="row mb-1 mt-2">
+        <label for="lenguaje" class="col-4 col-form-label">Lenguaje:</label>
+        <div class="col-8">
+            <div class="input-group">
+                <select name="lenguaje" id="lenguaje" class="form-select w-auto">
+                    {% for opcion in diccionario.lenguajes %}
+                    <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
+                    {% endfor %}
+                </select>
+                <span data-bs-toggle="tooltip" title="Lenguaje: Conjunto de palabras y frases que se usan para comunicar un mensaje" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+            </div>
+        </div>
     </div>
+    <div class="row mb-1">
+        <label for="estilo" class="col-4 col-form-label">Estilo:</label>
+        <div class="col-8">
+            <div class="input-group">
+                <select name="estilo" id="estilo" class="form-select w-auto">
+                    {% for opcion in diccionario.estilos %}
+                    <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
+                    {% endfor %}
+                </select>
+                <span data-bs-toggle="tooltip" title="Estilo: Patrón general de escritura y formato que se aplica en un texto" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-1">
+        <label for="tono" class="col-4 col-form-label">Tono:</label>
+        <div class="col-8">
+            <div class="input-group">
+                <select name="tono" id="tono" class="form-select w-auto">
+                    {% for opcion in diccionario.tonos %}
+                    <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
+                    {% endfor %}
+                </select>
+                <span data-bs-toggle="tooltip" title="Tono: Actitud o perspectiva de quien habla hacia el tema que está tratando" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-4 mt-3">
+        <div class="col-12 text-center">
+            <button type="button" title="Guardar como plantilla" class="btn btn-secondary form-prompt mx-auto" id="guardar_como" onclick="prompts.guardarComo()" style="display: none;">Guardar como plantilla</button>
+            <button type="button" title="Generar el Prompt" class="btn btn-success form-prompt mx-auto" id="generar_prompt" onclick="prompts.generarPrompt()" style="display: none;">Generar el Prompt</button>
+        </div>
+    </div>
+    <div class="card mt-2 mb-4">
+        <div class="card-header titulo_seccion pt-1 pb-1 ps-0 pe-0">
+            <div class="row mb-1">
+                <div class="col-5 h5">
+                    <img src="{{dir_base}}/static/img/chatgpt.png" style="width: 24px">
+                    <strong>ChatGPT</strong>
+                </div>
+                <div class="col-7">
+                    <div class="pe-0 input-group float-end">
+                        <button data-bs-toggle="collapse" data-bs-target="#div_opciones" type="button" title="Configurar respuesta" class="btn btn-light btn-sm text-dark border pe-1"><i class="bi bi-gear h5"></i></button>
+                        <button type="button" title="Aumentar texto" class="btn btn-light btn-sm text-dark border pe-1 ms-1" onclick="control.ajustarTextos('+')"><i class="bi bi-plus-circle h5"></i></button>
+                        <button type="button" title="Disminuir texto" class="btn btn-light btn-sm text-dark border pe-1" onclick="control.ajustarTextos('-')"><i class="bi bi-dash-circle h5"></i></button>
+                        <button type="button" title="Exportar conversación" class="btn btn-light btn-sm text-dark border ms-1 pe-1" onclick="prompts.guardarChat()"><i class="bi bi-save h5"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body pt-2 pb-2 ps-0 pe-0">
+            {% if historial|length > 0 %}
+            <div class="row mt-2" id="titulo_historial">
+                <div class="col-8">
+                    <i><a href="javascript:void(0)" class="text-primary text-decoration-none" data-bs-toggle="collapse" data-bs-target="#historial" title="Historial de conversación"><i class="bi bi-chat-text"></i> Historial de conversación ({{historial|length}})</a></i>
+                </div>
+            </div>
+            <div id="historial" class="row collapse">
+                <div class="col-12 text-end pe-1 pt-0 pb-0">
+                    <button type="button" title="Vaciar historial" class="btn btn-light btn-sm text-dark border ms-1 pt-0 pb-0" onclick="prompts.confirmarVaciado()"><i class="bi bi-eraser-fill h5"></i><span class="small">Vaciar</span></button>
+                </div>
+                <div class="col-12">
+                    {% for interaccion in historial %}
+                    <div class="row chat-marco-mensaje">
+                        <div class="col-0 col-sm-1"></div>
+                        <div class="col-12 co-sm-11">
+                            <div class="chat-consulta texto-ajustable"><i class="bi bi-person-square"></i> {{interaccion.peticion}}</div>
+                        </div>
+                    </div>
+                    <div class="row chat-marco-mensaje">
+                        <div class="col-12">
+                            <div class="chat-respuesta texto-ajustable" id="resp_{{interaccion.id}}"
+                            {% if interaccion.evaluacion == 1 %} style="background-color: #bdecb6;"{% endif %}{% if interaccion.evaluacion == 2 %} style="background-color: #ebc1c8;"{% endif %}>
+                                <i class="bi bi-chat-left-text-fill"></i> 
+                                <span class="texto-copiable">{% for linea in interaccion.respuesta.splitlines() %}
+                                {{ linea }}<br>
+                                {% endfor %}</span>
+                                <i class="bi bi-clipboard boton-copiar float-end text-dark" style="cursor: pointer;" title="Copiar"></i>
+                                <i class="bi bi-check icono-copiado float-end h4 text-success" style="display: none;"></i>
+                                <a href="javascript:control.evaluarInteraccion({{interaccion.id}},1)" title="Me gusta" class="text-decoration-none text-dark"><i class="bi bi-hand-thumbs-up float-start ms-2 me-2"></i></a>
+                                <a href="javascript:control.evaluarInteraccion({{interaccion.id}},2)" title="No me gusta" class="text-decoration-none text-dark"><i class="bi bi-hand-thumbs-down float-start ms-2 me-2"></i></a>
+                            </div>
+                        </div>
+                        <div class="col-0 col-sm-2 col-md-3"></div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            <div id="chat-mensajes-conversacion"></div>
+            <form action="javascript:void(0)" method="post" id="form-chat-enviar">
+                <div id="div_opciones" class="collapse">
+                    <div class="row mb-1">
+                        <div class="col">
+                            <hr><div>Configuración de la respuesta:</div>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <label for="longitud" class="col-4 col-form-label">Longitud:</label>
+                        <div class="col-8">
+                            <div class="input-group">
+                                <select name="longitud" id="longitud" class="form-select w-auto">
+                                    {% for opcion in diccionario.longitudes %}
+                                    <option value="{{opcion.valor}}" {% if opcion.marcado == '1' %}selected{% endif %}>{{opcion.etiqueta}}</option>
+                                    {% endfor %}
+                                </select>
+                                <span data-bs-toggle="tooltip" title="Nº máximo de Tokens para usar en la solicitud a la API de GPT" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <label for="expresion" class="col-4 col-form-label">Expresión:</label>
+                        <div class="col-8">
+                            <div class="input-group">
+                                <select name="expresion" id="expresion" class="form-select w-auto">
+                                    {% for opcion in diccionario.expresiones %}
+                                    <option value="{{opcion.valor}}" {% if opcion.marcado == '1' %}selected{% endif %}>{{opcion.etiqueta}}</option>
+                                    {% endfor %}
+                                </select>
+                                <span data-bs-toggle="tooltip" title="Temperatura para calibrar la diversidad en las respuestas de GPT" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-0">
+                        <label for="modelo" class="col-4 col-form-label">Modelo:</label>
+                        <div class="col-8">
+                            <div class="input-group">
+                                <select name="modelo" id="modelo" class="form-select w-auto">
+                                    {% for opcion in diccionario.modelos %}
+                                    <option value="{{opcion.valor}}" {% if opcion.marcado == '1' %}selected{% endif %}>{{opcion.etiqueta}}</option>
+                                    {% endfor %}
+                                </select>
+                                <span data-bs-toggle="tooltip" title="Modelo de lenguaje específico para generar la respuesta de GPT" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="row mt-1 mb-1" id="prompt-advertencia" style="display: none;">
+                            <div class="col-12 text-danger text-center">
+                                ¡ Revisa el Prompt antes de enviarlo !
+                            </div>
+                            <div class="col-12 mt-1 mb-2 text-center small text-secondary">NOTA: No expongas datos personales ni información sensible en los prompts. Puedes usar marcas de reemplazo manual entre corchetes "[" y "]" en su lugar.</div>
+                        </div>
+                        <div class="chat-enviar-mensaje" id="chat-enviar-mensaje">
+                            <div class="form-floating w-100">
+                                <textarea class="form-control auto-resize" id="input-mensaje-usuario" rows="1" name="mensaje" minlength="20" maxlength="10000" placeholder="Escribe o pega aquí tu Prompt"></textarea>
+                                <label for="input-mensaje-usuario">Escribe o pega aquí tu Prompt</label>
+                            </div>
+                            <button type="button" id="boton-enviar-mensaje" class="btn btn-primary pe-2" title="Enviar" onclick="prompts.enviarConsulta()" style="height:2.6rem"><i class="bi bi-send"></i></button>
+                        </div>
+                        <div class="row mt-2 mb-2">
+                            <div class="col-5 small"><span id="num_caracteres">0</span> caracteres</div>
+                            <div class="col-7 pe-0 text-end">
+                                <button data-bs-toggle="collapse" data-bs-target="#div_opciones" type="button" title="Configurar respuesta" class="btn btn-light text-dark border ps-2 pe-1"><i class="bi bi-gear h5"></i></button>
+                                <button type="button" title="Copiar prompt" class="btn btn-light text-dark border ps-2 pe-1" onclick="prompts.copiarCampo('input-mensaje-usuario')"><i class="bi bi-clipboard h5"></i></button>
+                                <button type="button" title="Limpiar prompt" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.limpiarPrompt()"><i class="bi bi-x-square h5"></i></button>
+                                <button type="button" title="Volver arriba" class="btn btn-light text-dark border ps-2 pe-1" onclick="control.desplazarPosicion('+')"><i class="bi bi-arrow-up-circle h5"></i></button>
+                            </div>
+                        </div>
+                        <div id="chat-imagen-espera" style="display: none;">
+                            <img src="{{dir_base}}/{{app.coleccion}}/pwa/espere.gif" style="margin: 0 auto;">
+                        </div>
+                        <div id="chat-pie"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="pie-prompts"></div>
 </div>
-<div id="pie-prompts"></div>
 <div id="chat-plantilla-consulta" style="display: none;">
     <div class="row chat-marco-mensaje">
         <div class="col-0 col-sm-1"></div>
@@ -435,9 +433,9 @@
         control.activarCopiar();
         prompts.iniciarFormularios();
         control.iniciarTips();
-        {% for prompt in datos.prompts %}
-        prompts.{{prompt.tarea}}['{{prompt.id}}'] = {"intro": "{{prompt.intro}}", "peticion": "{{prompt.peticion}}", "texto": "{{prompt.texto}}", "config": "{{prompt.config}}"};
-        {% endfor %}
+        //{% for prompt in datos.prompts %}
+        prompts.misprompts['{{prompt.id}}'] = {"intro": "{{prompt.intro}}", "peticion": "{{prompt.peticion}}", "texto": "{{prompt.texto}}", "config": "{{prompt.config}}"};
+        //{% endfor %}
     });
 </script>
 {% endif %}

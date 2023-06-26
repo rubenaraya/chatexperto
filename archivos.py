@@ -173,6 +173,36 @@ class Archivos:
 
         return lista
 
+    # Función para validar y cargar archivo de audio
+    def cargar_audio( self, archivo ):
+        import re
+        from werkzeug.utils import secure_filename
+        try:
+            ruta = f"{self.config.RUTA.get('ARCHIVOS')}/{self.config.CARPETA}"
+
+            # Evalua si archivo cumple requisitos
+            filename = secure_filename( archivo.filename )
+            if not self._es_tipo_permitido( filename ):
+                return self.TIPO_NO_PERMITIDO
+
+            # Evalua el nombre del archivo
+            nombre_base, extension = os.path.splitext( self._limpiar_nombre_archivo( filename, 200 ) )
+            if not nombre_base:
+                return self.NOMBRE_NO_VALIDO
+
+            nombre_base = re.sub( r"\.", "", nombre_base )
+            nombre_disponible = self._encontrar_nombre_disponible( ruta, nombre_base, extension[1:], True )
+            if nombre_disponible is None:
+                return self.ARCHIVO_YA_EXISTE
+
+            # Guarda el archivo en la ubicacion indicada
+            archivo.save( f"{ruta}/{nombre_disponible}" )
+            return nombre_disponible
+
+        except Exception as e:
+            self.archivos_registrar.error( f"{e}" )
+            return "0"
+
 ######################################################
 # FUNCIONES PRIVADAS
 ######################################################

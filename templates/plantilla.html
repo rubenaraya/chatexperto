@@ -40,7 +40,13 @@
             <div class="modal-body">
                 <div id="form_editar_campos">
                     <div class="row mb-1">
-                        <label for="tarea" class="col-3 col-form-label">Tarea:</label>
+                        <label for="etiqueta" class="col-3 col-form-label">Etiqueta:</label>
+                        <div class="col-9">
+                            <input type="text" id="etiqueta" name="etiqueta" class="form-control" placeholder="Título para mostrar" value="{{pla_etiqueta}}" required>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label for="tarea" class="col-3 col-form-label">Categoría:</label>
                         <div class="col-9">
                             <div class="input-group">
                                 <select name="tarea" id="tarea" class="form-select w-auto">
@@ -48,14 +54,8 @@
                                     <option value="{{tarea.valor}}" {% if tarea.valor == pla_tarea %}selected{% endif %}>{{tarea.etiqueta}}</option>
                                     {% endfor %}
                                 </select>
-                                <span data-bs-toggle="tooltip" title="Tarea: Categoría a la que corresponde el contenido que generará el prompt" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+                                <span data-bs-toggle="tooltip" title="Categoría: tipo de tarea a que corresponde el contenido que generará el prompt" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
                             </div>
-                        </div>
-                    </div>
-                    <div class="row mb-1">
-                        <label for="etiqueta" class="col-3 col-form-label">Etiqueta:</label>
-                        <div class="col-9">
-                            <input type="text" id="etiqueta" name="etiqueta" class="form-control" placeholder="Título para mostrar" value="{{pla_etiqueta}}" required>
                         </div>
                     </div>
                     <div class="row mb-1">
@@ -70,6 +70,12 @@
                     </div>
                     <div class="row mb-1">
                         <div class="col-12 mt-1 mb-1 text-center">Detalles del Prompt:</div>
+                        <div class="col-12 text-secondary mt-2">
+                            <div class="input-group">
+                                Instrucción de encuadre: &nbsp;
+                                <span data-bs-toggle="tooltip" title="Quiero que seas un… Quiero que actúes como un… Tu función es… Me ayudarás a…" class="ms-1"><i class="bi bi-question-circle h5"></i></span>
+                            </div>
+                        </div>
                         <div class="col-12 mt-1">
                             <div class="form-floating">
                                 <textarea id="intro" name="intro" placeholder="Instrucción de encuadre" maxlength="1000" class="form-control auto-resize">{{pla_intro}}</textarea>
@@ -77,10 +83,22 @@
                             </div>
                         </div>
                         <div class="col-12 mt-2 mb-1 text-center small text-secondary"><hr>Puedes colocar marcas de reemplazo entre paréntesis dobles (()) en Petición y Texto base. En las marcas debes usar sólo MINUSCULAS y guiones en vez de espacios.</div>
+                        <div class="col-12 text-secondary mt-2">
+                            <div class="input-group">
+                                Petición detallada: &nbsp;
+                                <span data-bs-toggle="tooltip" title="Mi solicitud es: Escribe un… Hazme un… Crea un… Sugiéreme…" class="ms-1"><i class="bi bi-question-circle h5"></i></span>
+                            </div>
+                        </div>
                         <div class="col-12 mt-1">
                             <div class="form-floating">
                                 <textarea id="peticion" name="peticion" placeholder="Petición detallada" maxlength="1000" class="form-control auto-resize">{{pla_peticion}}</textarea>
                                 <label for="peticion">Petición detallada (max: 1.000 caracteres)</label>
+                            </div>
+                        </div>
+                        <div class="col-12 text-secondary mt-2">
+                            <div class="input-group">
+                                Texto base: &nbsp;
+                                <span data-bs-toggle="tooltip" title="Lluvia de ideas, datos o instrucciones para crear el contenido" class="ms-1"><i class="bi bi-question-circle h5"></i></span>
                             </div>
                         </div>
                         <div class="col-12 mt-1 mb-1">
@@ -145,7 +163,7 @@
             <div class="modal-footer" id="form_editar_botones">
                 {{etiqueta}}
                 <button type="button" class="btn btn-secondary" id="cerrar_ventana" data-bs-dismiss="modal">Cerrar</button>
-                <button type="submit" class="btn btn-primary" id="guardar_plntilla"><i class="bi bi-check-square"></i> Guardar</button>
+                <button type="submit" class="btn btn-primary" id="guardar_plantilla"><i class="bi bi-check-square"></i> Guardar</button>
             </div>
         </form>
     </div>

@@ -1,6 +1,6 @@
 /* prompts.js
 ******************************************************
-CHAT EXPERTO (Front-end) - Actualizado el: 19/06/2023
+CHAT EXPERTO (Front-end) - Actualizado el: 26/06/2023
 ******************************************************
 Clase: Prompts */
 
@@ -11,46 +11,8 @@ class Prompts {
         this.mediaRecorder = null;
         this.tiempo_grabacion = 180;
         this.archivo_audio = 'audio-guardado';
-        this.informe = [];
-        this.articulo = [];
-        this.noticia = [];
-        this.presentacion = [];
-        this.guion = [];
-        this.aviso = [];
-        this.correo = [];
-        this.preguntas = [];
-        this.texto = [];
-        this.instrucciones = [];
-        this.ideas = [];
-        this.propuesta = [];
-        this.contrato = [];
-        this.poema = [];
-        this.curriculum = [];
-        this.carta = [];
-        this.curso = [];
-        this.historia = [];
-        this.reseña = [];
-        this.presupuesto = [];
-        this.informe['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.articulo['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.noticia['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.presentacion['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.guion['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.aviso['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.correo['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.preguntas['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.texto['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.instrucciones['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.ideas['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.propuesta['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.contrato['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.poema['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.curriculum['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.carta['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.curso['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.historia['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.reseña['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
-        this.presupuesto['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.misprompts = [];
+        this.misprompts['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
     }
 
     iniciarFormularios() {
@@ -226,170 +188,13 @@ class Prompts {
         var intro = '';
         var texto = '';
         var config = '';
-        switch (tarea) {
-            case "informe":
-                if (this.informe[tipo]) {
-                    intro = this.informe[tipo]['intro'];
-                    peticion = this.informe[tipo]['peticion'];
-                    texto = this.informe[tipo]['texto'];
-                    config = this.informe[tipo]['config'];
-                }
-                break;
-            case "articulo": 
-                if (this.articulo[tipo]) {
-                    intro = this.articulo[tipo]['intro'];
-                    peticion = this.articulo[tipo]['peticion'];
-                    texto = this.articulo[tipo]['texto'];
-                    config = this.articulo[tipo]['config'];
-                }
-                break;
-            case "noticia": 
-                if (this.noticia[tipo]) {
-                    intro = this.noticia[tipo]['intro'];
-                    peticion = this.noticia[tipo]['peticion'];
-                    texto = this.noticia[tipo]['texto'];
-                    config = this.noticia[tipo]['config'];
-                }
-                break;
-            case "presentacion": 
-                if (this.presentacion[tipo]) {
-                    intro = this.presentacion[tipo]['intro'];
-                    peticion = this.presentacion[tipo]['peticion'];
-                    texto = this.presentacion[tipo]['texto'];
-                    config = this.presentacion[tipo]['config'];
-                }
-                break;
-            case "guion": 
-                if (this.guion[tipo]) {
-                    intro = this.guion[tipo]['intro'];
-                    peticion = this.guion[tipo]['peticion'];
-                    texto = this.guion[tipo]['texto'];
-                    config = this.guion[tipo]['config'];
-                }
-                break;
-            case "aviso": 
-                if (this.aviso[tipo]) {
-                    intro = this.aviso[tipo]['intro'];
-                    peticion = this.aviso[tipo]['peticion'];
-                    texto = this.aviso[tipo]['texto'];
-                    config = this.aviso[tipo]['config'];
-                }
-                break;
-            case "correo": 
-                if (this.correo[tipo]) {
-                    intro = this.correo[tipo]['intro'];
-                    peticion = this.correo[tipo]['peticion'];
-                    texto = this.correo[tipo]['texto'];
-                    config = this.correo[tipo]['config'];
-                }
-                break;
-            case "preguntas": 
-                if (this.preguntas[tipo]) {
-                    intro = this.preguntas[tipo]['intro'];
-                    peticion = this.preguntas[tipo]['peticion'];
-                    texto = this.preguntas[tipo]['texto'];
-                    config = this.preguntas[tipo]['config'];
-                }
-                break;
-            case "texto": 
-                if (this.texto[tipo]) {
-                    intro = this.texto[tipo]['intro'];
-                    peticion = this.texto[tipo]['peticion'];
-                    texto = this.texto[tipo]['texto'];
-                    config = this.texto[tipo]['config'];
-                }
-                break;
-            case "instrucciones": 
-                if (this.instrucciones[tipo]) {
-                    intro = this.instrucciones[tipo]['intro'];
-                    peticion = this.instrucciones[tipo]['peticion'];
-                    texto = this.instrucciones[tipo]['texto'];
-                    config = this.instrucciones[tipo]['config'];
-                }
-                break;
-            case "ideas": 
-                if (this.ideas[tipo]) {
-                    intro = this.ideas[tipo]['intro'];
-                    peticion = this.ideas[tipo]['peticion'];
-                    texto = this.ideas[tipo]['texto'];
-                    config = this.ideas[tipo]['config'];
-                }
-                break;
-            case "propuesta": 
-                if (this.propuesta[tipo]) {
-                    intro = this.propuesta[tipo]['intro'];
-                    peticion = this.propuesta[tipo]['peticion'];
-                    texto = this.propuesta[tipo]['texto'];
-                    config = this.propuesta[tipo]['config'];
-                }
-                break;
-            case "contrato": 
-                if (this.contrato[tipo]) {
-                    intro = this.contrato[tipo]['intro'];
-                    peticion = this.contrato[tipo]['peticion'];
-                    texto = this.contrato[tipo]['texto'];
-                    config = this.contrato[tipo]['config'];
-                }
-                break;
-            case "poema": 
-                if (this.poema[tipo]) {
-                    intro = this.poema[tipo]['intro'];
-                    peticion = this.poema[tipo]['peticion'];
-                    texto = this.poema[tipo]['texto'];
-                    config = this.poema[tipo]['config'];
-                }
-                break;
-            case "curriculum": 
-                if (this.curriculum[tipo]) {
-                    intro = this.curriculum[tipo]['intro'];
-                    peticion = this.curriculum[tipo]['peticion'];
-                    texto = this.curriculum[tipo]['texto'];
-                    config = this.curriculum[tipo]['config'];
-                }
-                break;
-            case "carta": 
-                if (this.carta[tipo]) {
-                    intro = this.carta[tipo]['intro'];
-                    peticion = this.carta[tipo]['peticion'];
-                    texto = this.carta[tipo]['texto'];
-                    config = this.carta[tipo]['config'];
-                }
-                break;
-            case "curso": 
-                if (this.curso[tipo]) {
-                    intro = this.curso[tipo]['intro'];
-                    peticion = this.curso[tipo]['peticion'];
-                    texto = this.curso[tipo]['texto'];
-                    config = this.curso[tipo]['config'];
-                }
-                break;
-            case "historia": 
-                if (this.historia[tipo]) {
-                    intro = this.historia[tipo]['intro'];
-                    peticion = this.historia[tipo]['peticion'];
-                    texto = this.historia[tipo]['texto'];
-                    config = this.historia[tipo]['config'];
-                }
-                break;
-            case "reseña": 
-                if (this.reseña[tipo]) {
-                    intro = this.reseña[tipo]['intro'];
-                    peticion = this.reseña[tipo]['peticion'];
-                    texto = this.reseña[tipo]['texto'];
-                    config = this.reseña[tipo]['config'];
-                }
-                break;
-            case "presupuesto": 
-                if (this.presupuesto[tipo]) {
-                    intro = this.presupuesto[tipo]['intro'];
-                    peticion = this.presupuesto[tipo]['peticion'];
-                    texto = this.presupuesto[tipo]['texto'];
-                    config = this.presupuesto[tipo]['config'];
-                }
-                break;
-            default:
-                control.verMensaje('No se encontró la plantilla: ' + tipo, 'error');
-                break;
+        if (this.misprompts[tipo]) {
+            intro = this.misprompts[tipo]['intro'];
+            peticion = this.misprompts[tipo]['peticion'];
+            texto = this.misprompts[tipo]['texto'];
+            config = this.misprompts[tipo]['config'];
+        } else {
+            control.verMensaje('No se encontró la plantilla: ' + tipo, 'error');
         }
         intro = intro.replace(/\|/g, "\n");
         peticion = peticion.replace(/\|/g, "\n");
@@ -418,29 +223,7 @@ class Prompts {
         if (palabras.length >0) {
             palabras = ', en un máximo de ' + palabras + ' palabras o menos';
         }
-        var prompt = '';
-        switch (tarea) {
-            case "informe": prompt = this.informe['prompt']; break;
-            case "articulo": prompt = this.articulo['prompt']; break;
-            case "noticia": prompt = this.noticia['prompt']; break;
-            case "presentacion": prompt = this.presentacion['prompt']; break;
-            case "guion": prompt = this.guion['prompt']; break;
-            case "aviso": prompt = this.aviso['prompt']; break;
-            case "correo": prompt = this.correo['prompt']; break;
-            case "preguntas": prompt = this.preguntas['prompt']; break;
-            case "texto": prompt = this.texto['prompt']; break;
-            case "instrucciones": prompt = this.instrucciones['prompt']; break;
-            case "ideas": prompt = this.ideas['prompt']; break;
-            case "propuesta": prompt = this.propuesta['prompt']; break;
-            case "contrato": prompt = this.contrato['prompt']; break;
-            case "poema": prompt = this.poema['prompt']; break;
-            case "curriculum": prompt = this.curriculum['prompt']; break;
-            case "carta": prompt = this.carta['prompt']; break;
-            case "curso": prompt = this.curso['prompt']; break;
-            case "historia": prompt = this.historia['prompt']; break;
-            case "reseña": prompt = this.reseña['prompt']; break;
-            case "presupuesto": prompt = this.presupuesto['prompt']; break;
-        }
+        var prompt = this.misprompts['prompt'];
         let intro = jQuery('#' + tarea + '-intro').val();
         let peticion = jQuery('#' + tarea + '-peticion').val();
         let texto = jQuery('#' + tarea + '-texto').val();
@@ -575,6 +358,24 @@ class Prompts {
     guardarChat() {
         let url = control.ruta_base + "/guardarchat";
         window.open( url, '_blank' );
+    }
+
+    guardarComo() {
+        let tarea = jQuery('#tarea').val();
+        let estilo = jQuery('#estilo').val();
+        let tono = jQuery('#tono').val();
+        let lenguaje = jQuery('#lenguaje').val();
+        let intro = jQuery('#' + tarea + '-intro').val();
+        let peticion = jQuery('#' + tarea + '-peticion').val();
+        let texto = jQuery('#' + tarea + '-texto').val();
+        const datos = { 
+            "tarea": tarea, 
+            "config": lenguaje + '|' + estilo + '|' + tono, 
+            "intro": intro, 
+            "peticion": peticion, 
+            "texto": texto
+        };
+        control.nuevaPlantilla(datos);
     }
 
     grabarAudio() {
