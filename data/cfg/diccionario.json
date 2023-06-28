@@ -107,7 +107,6 @@
     ],
     "modulos": [
         {"valor": "asistente", "etiqueta": "Asistente", "marcado": "1"},
-        {"valor": "biblioteca", "etiqueta": "Biblioteca"},
-        {"valor": "tutor", "etiqueta": "Tutor"}
+        {"valor": "biblioteca", "etiqueta": "Biblioteca"}
     ]
 }

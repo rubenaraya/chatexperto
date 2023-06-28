@@ -464,6 +464,7 @@ class GestorColeccion:
 
         if nombre_carpeta and etiqueta_carpeta and tipos_archivo:
             nombre_carpeta = re.sub( r"  ", "", nombre_carpeta )
+            nombre_carpeta = re.sub( r" ", "", nombre_carpeta )
             nombre_carpeta = nombre_carpeta.lower().strip()
             nombre_carpeta = unicodedata.normalize( 'NFD', nombre_carpeta ).encode( 'ascii', 'ignore' ).decode( 'utf-8' )
             excluir = "!#$%&'()*+,-./:;<=>?@[\]^_`{|}~"
@@ -501,7 +502,7 @@ class GestorColeccion:
                         "procesar_documentos": "Basico",
                         "que_procesar": "metadatos",
                         "dividir_documentos": "Recursivo",
-                        "trozo": "500",
+                        "trozo": "1000",
                         "num_docs": "5",
                         "chain_type": "stuff"
                     }
