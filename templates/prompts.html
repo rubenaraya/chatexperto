@@ -27,33 +27,6 @@
                 </div>
             </div>
         </div>
-        <div class="row mb-1">
-            <label for="idioma" class="col-4 col-form-label">Idioma:</label>
-            <div class="col-8">
-                <div class="input-group">
-                    <select name="idioma" id="idioma" class="form-select w-auto">
-                        {% for opcion in diccionario.idiomas %}
-                        <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %}>{{ opcion.etiqueta }}</option>
-                        {% endfor %}
-                    </select>
-                    <span data-bs-toggle="tooltip" title="Idioma en el que se desea que GPT entregue la respuesta" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
-                </div>
-            </div>
-        </div>
-        <div class="row mb-1">
-            <label for="palabras" class="col-4 col-form-label">Palabras:</label>
-            <div class="col-8">
-                <div class="input-group">
-                    <select name="palabras" id="palabras" class="form-select w-auto">
-                        <option value=""></option>
-                        {% for opcion in diccionario.palabras %}
-                        <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %}>{{ opcion.etiqueta }}</option>
-                        {% endfor %}
-                    </select>
-                    <span data-bs-toggle="tooltip" title="Límite de palabras para la longitud de la respuesta (opcional)" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
-                </div>
-            </div>
-        </div>
     </form>
     <hr>
     {% for tarea in datos.tareas %}
@@ -81,16 +54,21 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-12 text-secondary mt-2">
+            <div class="col-10 text-secondary mt-2">
                 <div class="input-group">
                     Instrucción de encuadre: &nbsp;
                     <span data-bs-toggle="tooltip" title="Quiero que seas un… Quiero que actúes como un… Tu función es… Me ayudarás a…" class="ms-1"><i class="bi bi-question-circle h5"></i></span>
                 </div>
             </div>
-            <div class="col-12 mt-1">
-                <div class="form-floating">
-                    <textarea id="{{tarea.valor}}-intro" name="intro" maxlength="1000" class="form-control auto-resize"></textarea>
-                    <label for="{{tarea.valor}}-intro">Instrucción de encuadre</label>
+            <div class="col-2 mt-2 text-end">
+                <button data-bs-toggle="collapse" data-bs-target="#div_intro" type="button" title="Ver detalles" class="btn btn-light btn-sm text-dark border pe-1"><i class="bi bi-chevron-down h5"></i></button>
+            </div>
+            <div id="div_intro" class="collapse">
+                <div class="col-12 mt-1">
+                    <div class="form-floating">
+                        <textarea id="{{tarea.valor}}-intro" name="intro" maxlength="1000" style="min-height: 110px;" class="form-control auto-resize"></textarea>
+                        <label for="{{tarea.valor}}-intro">Instrucción de encuadre</label>
+                    </div>
                 </div>
             </div>
             <div class="col-12 text-dark small mt-3 text-center">
@@ -119,7 +97,7 @@
                 </div>
             </div>
             <div class="col-6 text-end mt-3">
-                <button type="button" title="Copiar texto" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.copiarCampo('{{tarea.valor}}-texto')"><i class="bi bi-clipboard h5"></i></button>
+                <button type="button" title="Copiar texto base" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.copiarCampo('{{tarea.valor}}-texto')"><i class="bi bi-clipboard h5"></i></button>
                 <button type="button" title="Reemplazar marcas" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.formularioMarcas()"><i class="bi bi-list-ul h5"></i></button>
             </div>
             <div class="col-12 mt-1">
@@ -131,53 +109,56 @@
         </div>
     </form>
     {% endfor %}
-    <div class="row mb-1 mt-2">
-        <label for="lenguaje" class="col-4 col-form-label">Lenguaje:</label>
-        <div class="col-8">
-            <div class="input-group">
-                <select name="lenguaje" id="lenguaje" class="form-select w-auto">
-                    {% for opcion in diccionario.lenguajes %}
-                    <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
-                    {% endfor %}
-                </select>
-                <span data-bs-toggle="tooltip" title="Lenguaje: Conjunto de palabras y frases que se usan para comunicar un mensaje" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+    <div id="config_prompt" class="form-prompt" style="display: none;">
+        <div class="row mb-1 mt-2">
+            <label for="lenguaje" class="col-4 col-form-label">Lenguaje:</label>
+            <div class="col-8">
+                <div class="input-group">
+                    <select name="lenguaje" id="lenguaje" class="form-select w-auto">
+                        {% for opcion in diccionario.lenguajes %}
+                        <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
+                        {% endfor %}
+                    </select>
+                    <span data-bs-toggle="tooltip" title="Lenguaje: Conjunto de palabras y frases que se usan para comunicar un mensaje" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row mb-1">
-        <label for="estilo" class="col-4 col-form-label">Estilo:</label>
-        <div class="col-8">
-            <div class="input-group">
-                <select name="estilo" id="estilo" class="form-select w-auto">
-                    {% for opcion in diccionario.estilos %}
-                    <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
-                    {% endfor %}
-                </select>
-                <span data-bs-toggle="tooltip" title="Estilo: Patrón general de escritura y formato que se aplica en un texto" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+        <div class="row mb-1">
+            <label for="estilo" class="col-4 col-form-label">Estilo:</label>
+            <div class="col-8">
+                <div class="input-group">
+                    <select name="estilo" id="estilo" class="form-select w-auto">
+                        {% for opcion in diccionario.estilos %}
+                        <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
+                        {% endfor %}
+                    </select>
+                    <span data-bs-toggle="tooltip" title="Estilo: Patrón general de escritura y formato que se aplica en un texto" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row mb-1">
-        <label for="tono" class="col-4 col-form-label">Tono:</label>
-        <div class="col-8">
-            <div class="input-group">
-                <select name="tono" id="tono" class="form-select w-auto">
-                    {% for opcion in diccionario.tonos %}
-                    <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
-                    {% endfor %}
-                </select>
-                <span data-bs-toggle="tooltip" title="Tono: Actitud o perspectiva de quien habla hacia el tema que está tratando" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+        <div class="row mb-1">
+            <label for="tono" class="col-4 col-form-label">Tono:</label>
+            <div class="col-8">
+                <div class="input-group">
+                    <select name="tono" id="tono" class="form-select w-auto">
+                        {% for opcion in diccionario.tonos %}
+                        <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
+                        {% endfor %}
+                    </select>
+                    <span data-bs-toggle="tooltip" title="Tono: Actitud o perspectiva de quien habla hacia el tema que está tratando" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+                </div>
             </div>
         </div>
     </div>
     <div class="row mb-4 mt-3">
-        <div class="col-12 text-center">
-            <button type="button" title="Guardar como plantilla" class="btn btn-secondary form-prompt mx-auto" id="guardar_como" onclick="prompts.guardarComo()" style="display: none;">Guardar como plantilla</button>
-            <button type="button" title="Generar el Prompt" class="btn btn-success form-prompt mx-auto" id="generar_prompt" onclick="prompts.generarPrompt()" style="display: none;">Generar el Prompt</button>
+        <div class="col-12 text-center form-prompt" id="generar_prompt" style="display: none;">
+            <button type="button" title="Generar el Prompt" class="btn btn-success mx-auto mb-2" onclick="prompts.generarPrompt()">Generar el Prompt</button><br>
+            <button type="button" title="Guardar Prompt como plantilla" class="btn btn-light btn-sm text-dark border mx-auto" onclick="prompts.guardarComo()">Guardar Prompt como plantilla</button>
         </div>
     </div>
     <div class="card mt-2 mb-4">
         <div class="card-header titulo_seccion pt-1 pb-1 ps-0 pe-0">
+            {% if app.chatgpt == 'si' %}
             <div class="row mb-1">
                 <div class="col-5 h5">
                     <img src="{{dir_base}}/static/img/chatgpt.png" style="width: 24px">
@@ -192,6 +173,7 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
         </div>
         <div class="card-body pt-2 pb-2 ps-0 pe-0">
             {% if historial|length > 0 %}
@@ -241,6 +223,19 @@
                         </div>
                     </div>
                     <div class="row mb-2">
+                        <label for="idioma" class="col-4 col-form-label">Idioma:</label>
+                        <div class="col-8">
+                            <div class="input-group">
+                                <select name="idioma" id="idioma" class="form-select w-auto">
+                                    {% for opcion in diccionario.idiomas %}
+                                    <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %}>{{ opcion.etiqueta }}</option>
+                                    {% endfor %}
+                                </select>
+                                <span data-bs-toggle="tooltip" title="Idioma en el que se desea que GPT entregue la respuesta" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
                         <label for="longitud" class="col-4 col-form-label">Longitud:</label>
                         <div class="col-8">
                             <div class="input-group">
@@ -250,6 +245,20 @@
                                     {% endfor %}
                                 </select>
                                 <span data-bs-toggle="tooltip" title="Nº máximo de Tokens para usar en la solicitud a la API de GPT" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <label for="palabras" class="col-4 col-form-label">Palabras:</label>
+                        <div class="col-8">
+                            <div class="input-group">
+                                <select name="palabras" id="palabras" class="form-select w-auto">
+                                    <option value=""></option>
+                                    {% for opcion in diccionario.palabras %}
+                                    <option value="{{ opcion.valor }}" {% if opcion.marcado == '1' %}selected{% endif %}>{{ opcion.etiqueta }}</option>
+                                    {% endfor %}
+                                </select>
+                                <span data-bs-toggle="tooltip" title="Límite de palabras para la longitud de la respuesta (opcional)" class="mt-2 ms-1"><i class="bi bi-question-circle h5"></i></span>
                             </div>
                         </div>
                     </div>
@@ -290,15 +299,19 @@
                         </div>
                         <div class="chat-enviar-mensaje" id="chat-enviar-mensaje">
                             <div class="form-floating w-100">
-                                <textarea class="form-control auto-resize" id="input-mensaje-usuario" rows="1" name="mensaje" minlength="20" maxlength="10000" placeholder="Escribe o pega aquí tu Prompt"></textarea>
-                                <label for="input-mensaje-usuario">Escribe o pega aquí tu Prompt</label>
+                                <textarea class="form-control auto-resize" id="input-mensaje-usuario" rows="1" name="mensaje" minlength="20" maxlength="10000" placeholder="Aquí se escribe tu Prompt"></textarea>
+                                <label for="input-mensaje-usuario">Aquí se escribe tu Prompt</label>
                             </div>
+                            {% if app.chatgpt == 'si' %}
                             <button type="button" id="boton-enviar-mensaje" class="btn btn-primary pe-2" title="Enviar" onclick="prompts.enviarConsulta()" style="height:2.6rem"><i class="bi bi-send"></i></button>
+                            {% endif %}
                         </div>
                         <div class="row mt-2 mb-2">
                             <div class="col-5 small"><span id="num_caracteres">0</span> caracteres</div>
                             <div class="col-7 pe-0 text-end">
+                                {% if app.chatgpt == 'si' %}
                                 <button data-bs-toggle="collapse" data-bs-target="#div_opciones" type="button" title="Configurar respuesta" class="btn btn-light text-dark border ps-2 pe-1"><i class="bi bi-gear h5"></i></button>
+                                {% endif %}
                                 <button type="button" title="Copiar prompt" class="btn btn-light text-dark border ps-2 pe-1" onclick="prompts.copiarCampo('input-mensaje-usuario')"><i class="bi bi-clipboard h5"></i></button>
                                 <button type="button" title="Limpiar prompt" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.limpiarPrompt()"><i class="bi bi-x-square h5"></i></button>
                                 <button type="button" title="Volver arriba" class="btn btn-light text-dark border ps-2 pe-1" onclick="control.desplazarPosicion('+')"><i class="bi bi-arrow-up-circle h5"></i></button>

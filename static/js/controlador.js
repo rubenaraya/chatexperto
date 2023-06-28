@@ -522,6 +522,7 @@ class Controlador {
             html = html.replace('((respuesta))', jsonResponse.respuesta);
             html = html.replace('((id_doc))', jsonResponse.id_doc);
             html = html.replace('((id_doc))', jsonResponse.id_doc);
+            html = html.replace('((carpeta))', control.carpeta);
             jQuery("#respuesta").html(html).show();
             if ( jsonResponse.respuesta ) {
                 jQuery("#zona_espera").hide();
@@ -1993,11 +1994,13 @@ class Controlador {
             }
             control.iniciarTips();
             var modal = document.getElementById('INT_MODAL');
-            modal.addEventListener('shown.bs.modal', function () {
-                jQuery('#intro').trigger('input');
-                jQuery('#peticion').trigger('input');
-                jQuery('#texto').trigger('input');
-            });
+            if (jQuery('#config').length) {
+                modal.addEventListener('shown.bs.modal', function () {
+                    jQuery('#intro').trigger('input');
+                    jQuery('#peticion').trigger('input');
+                    jQuery('#texto').trigger('input');
+                });
+            }
         });
         peticion.fail((jqXHR, estado, mensaje) => {
             control.mostrarError( jqXHR, estado, mensaje );
@@ -2035,16 +2038,18 @@ class Controlador {
             control.iniciarTips();
             var modal = document.getElementById('INT_MODAL');
             modal.addEventListener('shown.bs.modal', function () {
-                let c_config = jQuery('#config').val();
-                let config = c_config.split('|');
-                if (config.length==3) {
-                    jQuery("#form_editar_campos select[name='lenguaje']").val(config[0]);
-                    jQuery("#form_editar_campos select[name='estilo']").val(config[1]);
-                    jQuery("#form_editar_campos select[name='tono']").val(config[2]);
+                if (jQuery('#config').length) {
+                    let c_config = jQuery('#config').val();
+                    let config = c_config.split('|');
+                    if (config.length==3) {
+                        jQuery("#form_editar_campos select[name='lenguaje']").val(config[0]);
+                        jQuery("#form_editar_campos select[name='estilo']").val(config[1]);
+                        jQuery("#form_editar_campos select[name='tono']").val(config[2]);
+                    }
+                    jQuery('#intro').trigger('input');
+                    jQuery('#peticion').trigger('input');
+                    jQuery('#texto').trigger('input');
                 }
-                jQuery('#intro').trigger('input');
-                jQuery('#peticion').trigger('input');
-                jQuery('#texto').trigger('input');
             });
         });
         peticion.fail((jqXHR, estado, mensaje) => {
@@ -2113,6 +2118,9 @@ class Controlador {
             control.mostrarError( jqXHR, estado, mensaje );
         });
         return false;
+    }
+
+    subirAudio() {
     }
 
 }

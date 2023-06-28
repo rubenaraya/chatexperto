@@ -9,6 +9,7 @@ class Archivos:
         self.archivos_registrar = configurar_logger( "archivos", "archivos.log" )
         self.config = config
 
+        self.TIPOS_AUDIO = ["mp3","m4a","wav"]
         self.TIPO_NO_PERMITIDO = '2'
         self.NOMBRE_NO_VALIDO = '3'
         self.ARCHIVO_YA_EXISTE = '4'
@@ -174,30 +175,22 @@ class Archivos:
         return lista
 
     # Función para validar y cargar archivo de audio
-    def cargar_audio( self, archivo ):
-        import re
+    def cargar_audio( self, archivo, ruta, nombre ):
         from werkzeug.utils import secure_filename
         try:
-            ruta = f"{self.config.RUTA.get('ARCHIVOS')}/{self.config.CARPETA}"
+            ruta_destino = self.obtener_ruta(ruta)
 
             # Evalua si archivo cumple requisitos
             filename = secure_filename( archivo.filename )
-            if not self._es_tipo_permitido( filename ):
+            if not self._es_audio_permitido( filename ):
                 return self.TIPO_NO_PERMITIDO
 
-            # Evalua el nombre del archivo
-            nombre_base, extension = os.path.splitext( self._limpiar_nombre_archivo( filename, 200 ) )
-            if not nombre_base:
-                return self.NOMBRE_NO_VALIDO
-
-            nombre_base = re.sub( r"\.", "", nombre_base )
-            nombre_disponible = self._encontrar_nombre_disponible( ruta, nombre_base, extension[1:], True )
-            if nombre_disponible is None:
-                return self.ARCHIVO_YA_EXISTE
+            original, extension = os.path.splitext( self._limpiar_nombre_archivo( filename, 200 ) )
+            ruta_final = f"{ruta_destino}/{nombre}{extension}"
 
             # Guarda el archivo en la ubicacion indicada
-            archivo.save( f"{ruta}/{nombre_disponible}" )
-            return nombre_disponible
+            archivo.save( ruta_final )
+            return ruta_final
 
         except Exception as e:
             self.archivos_registrar.error( f"{e}" )
@@ -210,6 +203,10 @@ class Archivos:
     # Funcion para evaluar tipo de archivo
     def _es_tipo_permitido( self, archivo='' ):
         return '.' in archivo and archivo.rsplit( '.', 1 )[1].lower() in self.config.TIPOS_ARCHIVO
+
+    # Funcion para evaluar tipo de archivo
+    def _es_audio_permitido( self, archivo='' ):
+        return '.' in archivo and archivo.rsplit( '.', 1 )[1].lower() in self.TIPOS_AUDIO
 
     # Funcion para limpiar el nombre del archivo
     def _limpiar_nombre_archivo( self, nombre='', largo=200 ):

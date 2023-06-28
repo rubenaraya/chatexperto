@@ -105,6 +105,13 @@
         "roles": "Usuario",
         "mostrar": "SI"
     },{
+        "_uid": "prompts",
+        "menu": "Prompts",
+        "titulo": "Prompts para ChatGPT",
+        "icono": "bi-card-text",
+        "roles": "Usuario",
+        "mostrar": "SI"
+    },{
         "_uid": "tutor",
         "menu": "Tutor",
         "titulo": "Tutor virtual",

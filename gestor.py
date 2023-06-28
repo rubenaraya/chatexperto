@@ -992,13 +992,13 @@ class GestorColeccion:
         return resultados
 
     # Función para subir un archivo de audio y guardarlo
-    def subir_audio( self, archivo ):
+    def subir_audio( self, archivo, ruta, nombre ):
         from archivos import Archivos
         try:
             if archivo:
                 archivos = Archivos(self.config)
                 resultado = "ERROR"
-                cargar = archivos.cargar_audio( archivo=archivo )
+                cargar = archivos.cargar_audio( archivo=archivo, ruta=ruta, nombre=nombre )
                 if len(cargar) > 1:
                     mensaje = self.config.MENSAJES.get('EXITO_ARCHIVO_SUBIDO')
                     resultado = "EXITO"

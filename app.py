@@ -2600,9 +2600,10 @@ def funcion_audio( coleccion ):
         return jsonify( {'error': config.MENSAJES.get('ERROR_DATOS_INCOMPLETOS')} ), 400
 
     mensaje = ''
+    nombre = config.USUARIO.get('id')
     gestor = GestorColeccion(config)
     audio = request.files[ 'audio' ]
-    subir = gestor.subir_audio( archivo=audio )
+    subir = gestor.subir_audio( archivo=audio, ruta="TEMP", nombre=nombre )
     if subir:
         resultado = subir.get('resultado')
         mensaje = f"{subir.get('mensaje')}. "
