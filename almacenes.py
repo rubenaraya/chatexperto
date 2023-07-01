@@ -25,7 +25,7 @@ class Almacenes:
 ########################################################
 
     # Función para cargar documentos de una carpeta local y extraer sus textos
-    def cargar_documentos( self, metodo="Generico", archivo=None ):
+    def cargar_documentos( self, metodo, archivo=None ):
         try:
             # Configuración de rutas
             archivos = Archivos(self.config)
@@ -58,14 +58,14 @@ class Almacenes:
         return None
 
     # Función para pre-procesar los textos y metadatos de los documentos cargados
-    def procesar_documentos( self, documentos=None, metodo="Basico", que_procesar="metadatos" ):
+    def procesar_documentos( self, documentos, metodo, que_procesar ):
         if documentos and metodo == 'Basico':
             documentos = self._procesar_documentos_basico( documentos=documentos, que_procesar=que_procesar )
         
         return documentos
 
     # Función para dividir en trozos los textos procesados de los documentos
-    def dividir_documentos( self, documentos=None, metodo="Recursivo", trozo="500" ):
+    def dividir_documentos( self, documentos, metodo, trozo ):
         texto_trozado = None
         if documentos:
             
@@ -88,7 +88,7 @@ class Almacenes:
             raise e
 
     # Función para crear y almacenar un nuevo índice vectorial con los documentos divididos
-    def crear_indice( self, documentos=None, api_emb=None, id_doc=0 ):
+    def crear_indice( self, documentos, api_emb, id_doc=0 ):
 
         if self.CFG.get('_uid') == 'LOCAL' or self.CFG.get('_uid') == 'FAISS':
             return self._crear_indice_faiss( documentos=documentos, api_emb=api_emb, id_doc=id_doc )
@@ -114,7 +114,7 @@ class Almacenes:
         return False
 
     # Función para abrir un índice vectorial existente
-    def cargar_indice( self, api_emb=None, id_doc=0 ):
+    def cargar_indice( self, api_emb, id_doc=0 ):
         self.INDICE = None
 
         if self.CFG.get('_uid') == 'LOCAL':
@@ -209,7 +209,7 @@ class Almacenes:
         # Si hay más de una parte, devuelve la última parte, que corresponde a la extensión
         return partes[-1]
 
-    def _cargar_configuracion( self, almacen_indice: str="" ):
+    def _cargar_configuracion( self, almacen_indice ):
         import json, os
         try:
             ruta_archivo = f"{self.config.RUTA.get('CONFIG')}/almacenes.json"
@@ -228,7 +228,7 @@ class Almacenes:
 
         return {}
 
-    def _cargar_documentos_generico( self, ruta_archivos=None, archivo=None ):
+    def _cargar_documentos_generico( self, ruta_archivos, archivo ):
         from langchain.document_loaders import DirectoryLoader, UnstructuredFileLoader
 
         loader = None
@@ -248,7 +248,7 @@ class Almacenes:
 
         return loader
 
-    def _cargar_documentos_diferenciado( self, ruta_archivos=None, archivo=None ):
+    def _cargar_documentos_diferenciado( self, ruta_archivos, archivo ):
         from langchain.document_loaders import Docx2txtLoader
         from langchain.document_loaders.csv_loader import CSVLoader
         from langchain.document_loaders import UnstructuredPowerPointLoader
@@ -318,7 +318,7 @@ class Almacenes:
 
         return loader
 
-    def _convertir_cargar_excel( self, ruta_archivos=None, archivo=None ):
+    def _convertir_cargar_excel( self, ruta_archivos, archivo ):
         from langchain.document_loaders import CSVLoader
         import pandas
 
@@ -384,7 +384,7 @@ class Almacenes:
 
         return loader
 
-    def _procesar_documentos_basico( self, documentos=None, que_procesar=None ):
+    def _procesar_documentos_basico( self, documentos, que_procesar ):
         import re
 
         try:
@@ -423,14 +423,14 @@ class Almacenes:
 
         return documentos
 
-    def _dividir_documentos_simple( self, documentos=None, trozo="0" ):
+    def _dividir_documentos_simple( self, documentos, trozo ):
         from langchain.text_splitter import CharacterTextSplitter
         
         texto_trozado = None
         try:
             divisor_texto = CharacterTextSplitter(
                 chunk_size = int(trozo),
-                chunk_overlap = (int(trozo) / 10)
+                chunk_overlap = (int(trozo) / 20)
             )
             texto_trozado = divisor_texto.split_documents( documentos )
 
@@ -439,16 +439,15 @@ class Almacenes:
 
         return texto_trozado
 
-    def _dividir_documentos_recursivo( self, documentos=None, trozo="0" ):
+    def _dividir_documentos_recursivo( self, documentos, trozo ):
         from langchain.text_splitter import RecursiveCharacterTextSplitter
 
         texto_trozado = None
         try:
             divisor_texto = RecursiveCharacterTextSplitter(
                 chunk_size = int(trozo),
-                chunk_overlap = (int(trozo) / 10),
+                chunk_overlap = (int(trozo) / 20),
                 length_function = len
-                #separators = [ "\n\n", "\n", ".", "!", "?", ",", " ", "" ]
             )
             texto_trozado = divisor_texto.split_documents( documentos )
 
@@ -462,7 +461,7 @@ class Almacenes:
 ########################################################
 
     # FAISS
-    def _crear_indice_faiss( self, documentos=None, api_emb=None, id_doc=0 ):
+    def _crear_indice_faiss( self, documentos, api_emb, id_doc ):
         from langchain.vectorstores.faiss import FAISS
         try:
             # Configuración de rutas y nombres
@@ -485,7 +484,7 @@ class Almacenes:
 
         return False
 
-    def _cargar_indice_faiss( self, api_emb=None, id_doc=0 ):
+    def _cargar_indice_faiss( self, api_emb, id_doc ):
         from langchain.vectorstores.faiss import FAISS
         try:
             # Configuración de rutas y nombres
@@ -515,22 +514,23 @@ class Almacenes:
 
         return False
 
-    def _borrar_indice_faiss( self, id_doc=0 ):
+    def _borrar_indice_faiss( self, id_doc ):
         try:
             # Configuración de rutas y nombres
-            if int(id_doc) > 0:
-                self.CFG['id_indice'] = str( id_doc ).zfill( 4 )
-                archivos = Archivos(self.config)
+            if id_doc:
+                if int(id_doc) > 0:
+                    self.CFG['id_indice'] = str( id_doc ).zfill( 4 )
+                    archivos = Archivos(self.config)
 
-                if len( self.CFG.get('ruta_indice') ) == 0:
-                    self.CFG['ruta_indice'] = archivos.obtener_ruta( tipo_recurso="INDICES" )
-                
-                # Elimina el índice del disco
-                ruta_borrar = f"{self.CFG.get('ruta_indice')}/{self.CFG.get('id_indice')}.pkl"
-                archivos.borrar_archivo( ruta=ruta_borrar )
-                ruta_borrar = f"{self.CFG.get('ruta_indice')}/{self.CFG.get('id_indice')}.faiss"
-                archivos.borrar_archivo( ruta=ruta_borrar )
-                return True
+                    if len( self.CFG.get('ruta_indice') ) == 0:
+                        self.CFG['ruta_indice'] = archivos.obtener_ruta( tipo_recurso="INDICES" )
+                    
+                    # Elimina el índice del disco
+                    ruta_borrar = f"{self.CFG.get('ruta_indice')}/{self.CFG.get('id_indice')}.pkl"
+                    archivos.borrar_archivo( ruta=ruta_borrar )
+                    ruta_borrar = f"{self.CFG.get('ruta_indice')}/{self.CFG.get('id_indice')}.faiss"
+                    archivos.borrar_archivo( ruta=ruta_borrar )
+                    return True
 
         except Exception as e:
             self.almacenes_registrar.error( f"{e}" )
@@ -539,48 +539,48 @@ class Almacenes:
 
 
     # PINECONE: No implementado
-    def _crear_indice_pinecone( self, documentos=None, api_emb=None, id_doc=0 ):
+    def _crear_indice_pinecone( self, documentos, api_emb, id_doc ):
         return False
 
-    def _cargar_indice_pinecone( self, api_emb=None, id_doc=0 ):
+    def _cargar_indice_pinecone( self, api_emb, id_doc ):
         return False
 
 
     # MILVUS: No implementado
-    def _crear_indice_milvus( self, documentos=None, api_emb=None, id_doc=0 ):
+    def _crear_indice_milvus( self, documentos, api_emb, id_doc ):
         return False
 
-    def _cargar_indice_milvus( self, api_emb=None, id_doc=0 ):
+    def _cargar_indice_milvus( self, api_emb, id_doc ):
         return False
 
 
     # QDRANT: No implementado
-    def _crear_indice_qdrant( self, documentos=None, api_emb=None, id_doc=0 ):
+    def _crear_indice_qdrant( self, documentos, api_emb, id_doc ):
         return False
 
-    def _cargar_indice_qdrant( self, api_emb=None, id_doc=0 ):
+    def _cargar_indice_qdrant( self, api_emb, id_doc ):
         return False
 
 
     # REDIS: No implementado
-    def _crear_indice_redis( self, documentos=None, api_emb=None, id_doc=0 ):
+    def _crear_indice_redis( self, documentos, api_emb, id_doc ):
         return False
 
-    def _cargar_indice_redis( self, api_emb=None, id_doc=0 ):
+    def _cargar_indice_redis( self, api_emb, id_doc ):
         return False
 
 
     # WEAVIATE: No implementado
-    def _crear_indice_weaviate( self, documentos=None, api_emb=None, id_doc=0 ):
+    def _crear_indice_weaviate( self, documentos, api_emb, id_doc ):
         return False
 
-    def _cargar_indice_weaviate( self, api_emb=None, id_doc=0 ):
+    def _cargar_indice_weaviate( self, api_emb, id_doc ):
         return False
 
 
     # CHROMA: No implementado
-    def _crear_indice_chroma( self, documentos=None, api_emb=None, id_doc=0 ):
+    def _crear_indice_chroma( self, documentos, api_emb, id_doc ):
         return False
 
-    def _cargar_indice_chroma( self, api_emb=None, id_doc=0 ):
+    def _cargar_indice_chroma( self, api_emb, id_doc ):
         return False

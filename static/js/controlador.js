@@ -1,6 +1,6 @@
 /* controlador.js
 ******************************************************
-CHAT EXPERTO (Front-end) - Actualizado el: 26/06/2023
+CHAT EXPERTO (Front-end) - Actualizado el: 30/06/2023
 ******************************************************
 Clase: Controlador */
 
@@ -18,17 +18,30 @@ class Controlador {
         this.paginas = 0; // Nº páginas de resultados
         this.nav = 1; // Página de navegación actual
         this.max = 10; // Máximo de resultados por página
+        this.chunks = [];
+        this.mediaRecorder = null;
+        this.tiempo_mensajes = 7;
+        this.tiempo_grabacion = 180;
+        this.max_minutos = 3;
+        this.tiempo_restante = '03:00';
+        this.archivo_audio = 'audio-grabado';
+        this.max_mb_audio = 20;
+        this.grabando = false;
         this.t = {
             error: "Lo siento, ha ocurrido un error. Intenta de nuevo en un momento",
             error_imagen: "Error al subir la imagen",
-            error_excel: "Error al subir el archivo Excel",
+            error_audio: "Error al transcribir el audio",
+            error_excel: "Error al cargar el archivo Excel",
             error_conexion: "Error de conexión, vuelve a intentar luego",
             sin_archivo: "Debes elegir un archivo para cargar",
             sin_buscar: "Debes escribir una o más palabras para buscar",
-            excel_novalido: "Debe elegir un archivo Excel (.xlsx)",
-            imagen_novalida: "Debe elegir una imagen de tipo PNG",
+            excel_novalido: "Debes elegir un archivo Excel (.xlsx)",
+            imagen_novalida: "Debes elegir una imagen de tipo PNG",
+            audio_novalido: "Debes elegir un archivo de audio válido: MP3, WAV, M4A o WEBM",
             respuesta_novalida: "La respuesta recibida no es válida",
-            tamano_max: "El tamaño del archivo cargado supera el límite máximo (" + String(this.tamano_max) + " MB)"
+            tamano_max: "El tamaño del archivo cargado supera el límite máximo (" + String(this.tamano_max) + " MB)",
+            max_mb_audio: "El tamaño del archivo de audio supera el límite máximo (" + String(this.max_mb_audio) + " MB)",
+            sin_audio: "No se pudo acceder al dispositivo de audio"
         };
     }
 
@@ -57,6 +70,17 @@ class Controlador {
         }
         if (archivo.size > tamanoMaximo) {
             return { valido: false, mensaje: this.t['tamano_max'] };
+        }
+        return { valido: true };
+    }
+
+    validarAudio(archivo) {
+        const tamanoMaximo = this.max_mb_audio * 1024 * 1024;
+        if (archivo.name == '') {
+            return { valido: false, mensaje: this.t['sin_archivo'] };
+        }
+        if (archivo.size > tamanoMaximo) {
+            return { valido: false, mensaje: this.t['max_mb_audio'] };
         }
         return { valido: true };
     }
@@ -129,7 +153,7 @@ class Controlador {
         alerta.show();
         setTimeout(function () {
             alerta.fadeOut('slow');
-        }, 5000);
+        }, control.tiempo_mensajes * 1000);
     }
 
     cambiarVisible(selector, visible) {
@@ -950,7 +974,6 @@ class Controlador {
             jQuery("#form_imagen_espera").hide();
             control.cerrarVentana();
             control.verMensaje( this.t['error_imagen'], 'error' );
-            console.error(error);
         }
     }
 
@@ -1655,15 +1678,17 @@ class Controlador {
     }
 
     copiarTexto(zona) {
-        var texto = jQuery('#' + zona).text();
-        texto = texto.replace(/^\s+/gm, '')
-        .replace(/\s{2,}/g, ' ')
-        .replace(/\n\s*\n/g, '\n');
-        var tempElement = jQuery('<textarea>');
-        tempElement.val(texto).appendTo('body').select();
+        let texto = jQuery('#' + zona).text();
+        texto = texto.replace(/^\s+/gm, '').replace(/\s{2,}/g, ' ').replace(/\n\s*\n/g, '\n');
+        let auxiliar = jQuery('<textarea>');
+        auxiliar.val(texto).appendTo('body').select();
         document.execCommand('copy');
-        tempElement.remove();
-        jQuery('#texto_copiado').show();
+        auxiliar.remove();
+        if (jQuery('#texto_copiado').length) {
+            jQuery('#texto_copiado').show();
+        } else if (jQuery('#transcripcion_copiada').length) {
+            jQuery('#transcripcion_copiada').show();
+        }
     }
 
     resaltarPalabras() {
@@ -1860,7 +1885,6 @@ class Controlador {
             jQuery("#form_excel_espera").hide();
             control.cerrarVentana();
             control.verMensaje( this.t['error_excel'], 'error' );
-            console.error(error);
         }
     }
 
@@ -2120,7 +2144,196 @@ class Controlador {
         return false;
     }
 
-    subirAudio() {
+    cerrarTranscripcion() {
+        jQuery('#mostrar_transcripcion').fadeOut();
+        jQuery('#transcripcion_copiada').hide();
+        jQuery('#transcripcion').html('');
+    }
+
+    calcularTiempoRestante(hora_inicio) {
+        if (control.grabando == false) { return "0:0"; }
+        var total_minutos = control.max_minutos;
+        if (total_minutos > 0) { total_minutos = total_minutos - 1; }
+        var hora_actual = new Date().getTime();
+        var diferencia = hora_actual - hora_inicio;
+        var minutos = total_minutos - Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
+        var segundos = 59 - Math.floor((diferencia % (1000 * 60)) / 1000);
+        return minutos + ":" + segundos;
+    }
+    
+    actualizarTiempoRestante(hora_inicio) {
+        if (control.grabando == true) {
+            var tiempoRestante = control.calcularTiempoRestante(hora_inicio);
+            jQuery("#tiempo_restante").html(tiempoRestante);
+        }
+    }
+    
+    iniciarTemporizador(hora_inicio) {
+        control.actualizarTiempoRestante(hora_inicio);
+        var intervalo = setInterval(function() {
+            control.actualizarTiempoRestante(hora_inicio);
+            if (control.calcularTiempoRestante(hora_inicio) === "0:0") {
+                clearInterval(intervalo);
+            }
+        }, 500);
+    }
+    
+    ingresarAudio() {
+        const peticion = jQuery.ajax({
+            type: "GET",
+            url: control.ruta_base + "/audio",
+            beforeSend: function (xhr) {
+                var token = leerCookie('token');
+                var id_sesion = leerCookie('id_sesion');
+                xhr.setRequestHeader('id_sesion', id_sesion);
+                xhr.setRequestHeader('token', token);
+                xhr.setRequestHeader('app', control.app);
+            }
+        });
+        peticion.done((respuesta) => {
+            respuesta = respuesta.replace('((max_minutos))', String(control.max_minutos));
+            respuesta = respuesta.replace('((max_mb_audio))', String(control.max_mb_audio));
+            control.abrirModal(respuesta);
+        });
+        peticion.fail((jqXHR, estado, mensaje) => {
+            control.mostrarError( jqXHR, estado, mensaje );
+        });
+    }
+
+    grabarAudio() {
+        jQuery('#boton_grabar').hide();
+        jQuery('#form_audio').hide();
+        jQuery('#form_grabacion_botones').hide();
+        jQuery('#boton_detener').show();
+        control.chunks = [];
+        navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+        .then((stream) => {
+            const options = {mimeType: 'audio/webm'};
+            control.mediaRecorder = new MediaRecorder(stream, options);
+            control.mediaRecorder.start();
+            control.mediaRecorder.addEventListener('dataavailable', (e) => {
+                if (e.data.size > 0) {
+                    control.chunks.push(e.data);
+                }
+                if (control.mediaRecorder.state == "inactive") {
+                    let blob = new Blob(control.chunks, { type: "audio/webm" });
+                    let reproductor = document.getElementById("reproductor_audio");
+                    reproductor.src = URL.createObjectURL(blob);
+                    reproductor.controls = true;
+                    reproductor.autoplay = false;
+                }
+            });
+        })
+        .catch((err) => {
+            control.verMensaje(control.t['sin_audio'] + '\n' + err, 'error');
+            return;
+        });
+        control.grabando = true;
+        let hora_inicio = new Date().getTime();
+        control.iniciarTemporizador(hora_inicio);
+        setTimeout(() => {
+            control.detenerGrabacion();
+        }, (control.tiempo_grabacion + 1) * 1000);
+        jQuery('#tiempo_restante').html(control.tiempo_restante);
+        jQuery('#temporizador').show();
+    }
+
+    detenerGrabacion() {
+        if (control.grabando == true) {
+            control.mediaRecorder.stop();
+            jQuery('#boton_detener').hide();
+            jQuery('#temporizador').hide();
+            jQuery('#boton_grabar').hide();
+            jQuery('#form_grabacion_botones').show();
+            control.grabando = false;
+        }
+    }
+
+    enviarAudio() {
+        jQuery("#form_audio").hide();
+        jQuery("#form_grabacion").hide();
+        jQuery("#form_audio_espera").show();
+        let blob = new Blob(control.chunks, { type: 'audio/webm' });
+        const formData = new FormData();
+        formData.append('audio', blob, control.archivo_audio + '.webm');
+        const peticion = jQuery.ajax({
+            type: 'POST',
+            url: control.ruta_base + "/audio",
+            beforeSend: function (xhr) {
+                var token = leerCookie('token');
+                var id_sesion = leerCookie('id_sesion');
+                xhr.setRequestHeader('id_sesion', id_sesion);
+                xhr.setRequestHeader('token', token);
+                xhr.setRequestHeader('app', control.app);
+            },
+            data: formData,
+            processData: false,
+            contentType: false
+        });
+        peticion.done((respuesta) => {
+            jQuery("#form_audio_espera").hide();
+            control.cerrarModal();
+            jQuery('#transcripcion').text(respuesta.texto);
+            jQuery('#mostrar_transcripcion').fadeIn();
+            jQuery('#mostrar_transcripcion').fadeIn();
+        });
+        peticion.fail((jqXHR, estado, mensaje) => {
+            jQuery("#form_audio_espera").hide();
+            control.cerrarModal();
+            control.mostrarError( jqXHR, estado, mensaje );
+        });
+    }
+
+    async subirAudio(form) {
+        const formData = new FormData(form);
+        try {
+            const audio = formData.get('audio');
+            const tiposPermitidos = [
+                'audio/webm',
+                'audio/wav',
+                'audio/mpeg',
+                'audio/m4a'
+            ];
+            if (!tiposPermitidos.includes(audio.type)) {
+                jQuery("#audio_error").html( this.t['audio_novalido']).show();
+                return false;
+            }
+            const validacion = this.validarAudio(audio);
+            if (!validacion.valido) {
+                jQuery("#audio_error").html(validacion.mensaje).show();
+                return false;
+            }
+            jQuery("#form_audio").hide();
+            jQuery("#form_grabacion").hide();
+            jQuery("#form_audio_espera").show();
+            const response = await fetch(control.ruta_base + '/audio', {
+                method: 'POST',
+                beforeSend: function (xhr) {
+                    var token = leerCookie('token');
+                    var id_sesion = leerCookie('id_sesion');
+                    xhr.setRequestHeader('id_sesion', id_sesion);
+                    xhr.setRequestHeader('token', token);
+                    xhr.setRequestHeader('app', control.app);
+                },
+                body: formData
+            });
+            const jsonResponse = await response.json();
+            if ( jsonResponse.texto ) {
+                jQuery("#form_audio_espera").hide();
+                control.cerrarModal();
+                jQuery('#transcripcion').text(jsonResponse.texto);
+                jQuery('#mostrar_transcripcion').fadeIn();
+            }
+            if ( jsonResponse.error ) {
+                jQuery("#form_audio_espera").hide();
+                control.cerrarModal();
+                control.verMensaje( this.t['error_audio'], 'error' );
+            }
+        } catch (error) {
+            jQuery("#form_audio_espera").hide();
+            control.cerrarModal();
+            control.verMensaje( this.t['error_audio'], 'error' );
+        }
     }
 
 }

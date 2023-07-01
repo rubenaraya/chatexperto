@@ -1,6 +1,6 @@
 # app.py
 #######################################################
-# CHAT EXPERTO (Back-end) - Actualizado el: 26/06/2023
+# CHAT EXPERTO (Back-end) - Actualizado el: 30/06/2023
 #######################################################
 """
 Aplicación WEB-REST en Python para implementar un back-end para múltiples servicios de Chat inteligentes que responden preguntas sobre bases de conocimiento personalizadas.
@@ -73,12 +73,13 @@ def global_exception_handler( error ):
 ######################################################
 
 ######################################################
-# API REST PARA APLICACIONES EXTERNAS (5)
+# API REST PARA APLICACIONES EXTERNAS (6)
 # "/<coleccion>/chat_bot" (POST) [K]
 # "/<coleccion>/chat/<int:uid>" (POST) [K]
 # "/<coleccion>/mibiblioteca" (GET) [K]
 # "/<coleccion>/mibiblioteca" (POST) [K]
 # "/<coleccion>/misdestacados" (GET) [K]
+# "/<coleccion>/misprompts" (GET)
 ######################################################
 # APLICACION WEB GENERICA (5):
 # "/<coleccion>" (GET)
@@ -117,7 +118,7 @@ def global_exception_handler( error ):
 # "/<coleccion>/metadatos/<int:uid>" (GET) [T]
 # "/<coleccion>/metadatos/<int:uid>" (POST) [T]
 ######################################################
-# APLICACION WEB PARA USAR COLECCIONES (32):
+# APLICACION WEB PARA USAR COLECCIONES (33):
 # "/<coleccion>/cargar" (GET) [T]
 # "/<coleccion>/cargar" (POST) [T]
 # "/<coleccion>/miscarpetas" (GET) [T]
@@ -149,6 +150,7 @@ def global_exception_handler( error ):
 # "/<coleccion>/plantilla/<int:uid>" (GET)
 # "/<coleccion>/plantilla/<int:uid>" (PUT)
 # "/<coleccion>/plantilla/<int:uid>" (DELETE)
+# "/<coleccion>/audio" (GET)
 # "/<coleccion>/audio" (POST)
 
 ######################################################
@@ -856,7 +858,7 @@ def funcion_chat( coleccion ):
     # Configura y abre el ejecutor
     if parametros:
         gestor.configurar_ejecutor( parametros=parametros )
-    gestor.abrir_ejecutor()
+    gestor.abrir_ejecutor( id_doc=0, instruccion='' )
 
     try:
         # Envía la solicitud al LLM y recibe la respuesta
@@ -933,7 +935,7 @@ def funcion_chat_bot( coleccion ):
 
     try:
         # Envía la solicitud al LLM y recibe la respuesta
-        gestor.abrir_ejecutor()
+        gestor.abrir_ejecutor( id_doc=0, instruccion=''  )
         respuesta = gestor.ejecutar_instruccion( peticion=peticion, id_sesion=usuario )
         respuesta = re.sub( r"\n", "", respuesta )
         respuesta = respuesta.strip()
@@ -1781,7 +1783,7 @@ def funcion_chatdoc( coleccion ):
         # Envía la solicitud al LLM y recibe la respuesta
         ini_time = time.time()
         
-        if not gestor.abrir_ejecutor( id_doc=doc ):
+        if not gestor.abrir_ejecutor( id_doc=doc, instruccion='' ):
             return jsonify( {'error': config.MENSAJES.get('ERROR_INDICE_NOEXISTE'), "codigo": "10"} ), 400
 
         respuesta = gestor.ejecutar_instruccion( peticion=peticion, id_sesion=id_sesion )
@@ -2282,7 +2284,7 @@ def funcion_prompts( coleccion ):
         # Envía la solicitud a OpenAI y recibe la respuesta
         ini_time = time.time()
         gestor.CFG['clase_interaccion'] = "Peticion"
-        gestor.abrir_ejecutor()
+        gestor.abrir_ejecutor( id_doc=0, instruccion='' )
         respuesta = gestor.ejecutar_instruccion( peticion=mensaje, id_sesion=f"{config.USUARIO.get('email')}-0" )
         if not respuesta:
             return jsonify( {'error': config.MENSAJES.get('ERROR_RESPUESTA_LLM')} ), 500
@@ -2578,6 +2580,28 @@ def funcion_actualizar_plantilla( coleccion, uid ):
         return jsonify( {'error': config.MENSAJES.get('ERROR_GENERAL')} ), 500
 
 ######################################################
+# URL: "/<coleccion>/audio" (GET) [T]
+# Proporciona una interfaz HTML para guardar o subir un audio
+@app.route( '/<coleccion>/audio', methods=['GET'] )
+def interfaz_audio( coleccion ):
+    roles = ["Editor"]
+    config = Config(coleccion)
+
+    # Comprueba la colección
+    if not config.comprobar_coleccion( coleccion ):
+        return jsonify( {'error': config.MENSAJES.get('ERROR_COLECCION_NOEXISTE')} ), 404
+
+    # Valida sesión del usuario para autorizar
+    if not comprobar_sesion( app_key=False, config=config ):
+        return redirect( f"{request.script_root}/{coleccion}/login" )
+
+    if not config.USUARIO.get('roles') in roles:
+        return jsonify( {'error': config.MENSAJES.get('ERROR_ACCESO_DENEGADO')} ), 401
+
+    # Entrega la interfaz HTML
+    return render_template( 'audio.html', app=config.APP, dir_base=request.script_root, usuario=config.USUARIO )
+
+######################################################
 # URL: "/<coleccion>/audio" (POST) [T]
 # Recibe el audio cargado por el usuario y lo procesa
 @app.route( '/<coleccion>/audio', methods=['POST'] )
@@ -2599,20 +2623,28 @@ def funcion_audio( coleccion ):
     if 'audio' not in request.files:
         return jsonify( {'error': config.MENSAJES.get('ERROR_DATOS_INCOMPLETOS')} ), 400
 
-    mensaje = ''
-    nombre = config.USUARIO.get('id')
     gestor = GestorColeccion(config)
     audio = request.files[ 'audio' ]
-    subir = gestor.subir_audio( archivo=audio, ruta="TEMP", nombre=nombre )
-    if subir:
-        resultado = subir.get('resultado')
-        mensaje = f"{subir.get('mensaje')}. "
-        if resultado == 'ERROR':
-            return jsonify( {'error': mensaje} ), 400
+    respuesta = gestor.transcribir_audio( archivo=audio, idioma="es" )
+    if respuesta:
+        mensaje = respuesta.get('mensaje')
+        resultado = respuesta.get('resultado')
+        texto = respuesta.get('texto')
+        return jsonify( {'resultado': resultado, 'mensaje': mensaje, 'texto': texto } ), 200
     else:
         return jsonify( {'error': config.MENSAJES.get('ERROR_ARCHIVO_NOSUBIDO')} ), 400
 
-    return jsonify( {'respuesta': mensaje} ), 200
+######################################################
+# URL: "/<coleccion>/misprompts" (GET)
+# Devuelve la lista de prompts de la colección en formato JSON
+@app.route( '/<coleccion>/misprompts', methods=['GET'] )
+@cross_origin()
+def interfaz_misprompts( coleccion ):
+    config = Config(coleccion)
+
+    # Comprueba la colección
+    if not config.comprobar_coleccion( coleccion ):
+        return jsonify( {'error': config.MENSAJES.get('ERROR_COLECCION_NOEXISTE')} ), 404
 
 
 ######################################################
@@ -2677,7 +2709,6 @@ def traspasar_menu( uid, config ):
         if menu["_uid"] == uid:
             return menu
     return None
-
 
 
 ######################################################

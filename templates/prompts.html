@@ -152,8 +152,10 @@
     </div>
     <div class="row mb-4 mt-3">
         <div class="col-12 text-center form-prompt" id="generar_prompt" style="display: none;">
-            <button type="button" title="Generar el Prompt" class="btn btn-success mx-auto mb-2" onclick="prompts.generarPrompt()">Generar el Prompt</button><br>
-            <button type="button" title="Guardar Prompt como plantilla" class="btn btn-light btn-sm text-dark border mx-auto" onclick="prompts.guardarComo()">Guardar Prompt como plantilla</button>
+            <button type="button" title="Generar el Prompt" class="btn btn-success mx-auto mb-2" onclick="prompts.generarPrompt()">Generar el Prompt</button>
+            {% if usuario.roles == 'Editor' %}
+            <br><button type="button" title="Guardar Prompt como plantilla" class="btn btn-light btn-sm text-dark border mx-auto" onclick="prompts.guardarComo()">Guardar Prompt como plantilla</button>
+            {% endif %}
         </div>
     </div>
     <div class="card mt-2 mb-4">

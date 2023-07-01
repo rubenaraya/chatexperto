@@ -70,26 +70,54 @@
                     <img src="{{dir_base}}/{{app.coleccion}}/pwa/icon-128x128.png?v={{app.ahora}}" alt="{{nombre_app}}" class="rounded" style="width: 32px;">
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                        <span class="dropdown-header">
+                        <strong>{{app.coleccion}}</strong><br><small>{{app.app_nombre}}</small>
+                    </li>
                     <li><span class="dropdown-header">
-                        <strong>{{app.coleccion}}</strong><br><small>{{app.app_nombre}}</small></li>
-                        <li><span class="dropdown-header">
-                            {{usuario.alias}}<br><small>{{usuario.email}}</small></span></li>
-                        <li><hr class="dropdown-divider"></hr></li>
-                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="control.cerrarSesion()" title="Cerrar sesión"><i class="bi bi-power"></i> Cerrar sesión</a></li>
+                        {{usuario.alias}}<br><small>{{usuario.email}}</small></span>
+                    </li>
+                    {% if usuario.roles == 'Editor' %}
+                    <li><hr class="dropdown-divider"></hr></li>
+                    <li>
+                        <a class="dropdown-item" href="javascript:void(0)" onclick="control.ingresarAudio()" title="Transcribir Audio"><i class="bi bi-volume-up-fill"></i> Transcribir Audio</a>
+                    </li>
+                    {% endif %}
+                    <li><hr class="dropdown-divider"></hr></li>
+                    <li>
+                        <a class="dropdown-item" href="javascript:void(0)" onclick="control.cerrarSesion()" title="Cerrar sesión"><i class="bi bi-power"></i> Cerrar sesión</a>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
     <div class="container">
-        <div class="alert alert-success mt-2 mb-2 p-2 text-center" id="mensaje_exito" style="display: none;">
+        <div class="alert alert-success p-2 text-center" id="mensaje_exito" style="display: none; position: fixed; top: 20px; right: 10px; left: auto; z-index: 10001;">
         </div>
-        <div class="alert alert-info mt-2 mb-2 p-2 text-center" id="mensaje_aviso" style="display: none;">
+        <div class="alert alert-info p-2 text-center" id="mensaje_aviso" style="display: none; position: fixed; top: 20px; right: 10px; left: auto; z-index: 10001;">
         </div>
-        <div class="alert alert-danger mt-2 mb-2 p-2 text-center" id="mensaje_error" style="display: none;">
+        <div class="alert alert-danger p-2 text-center" id="mensaje_error" style="display: none; position: fixed; top: 20px; right: 10px; left: auto; z-index: 10001;">
         </div>
         <div class="alert alert-warning mt-2 mb-2 p-2 text-center" id="mensaje_solucion_10" style="display: none;">
             Se requiere <strong>Generar el Indice</strong> de esta Carpeta de conocimiento para consultarla<br>
             <button type="button" title="Generar Indice" class="btn btn-danger mt-3 mb-5" onclick="control.generarIndice()"><i class="bi bi-server"></i>Generar Indice</button>
+        </div>
+        <div class="card mt-3 mb-3" id="mostrar_transcripcion" style="display: none; position: fixed; top: 20px; left: 10px; right: auto; z-index: 10001;">
+            <div class="card-body">
+                <div  class="row">
+                    <div class="col-12">
+                        <div class="clearfix">
+                            <div class="float-start">Transcripción de audio:</div>
+                            <div class="float-end"><button type="button" class="btn-close" onclick="control.cerrarTranscripcion()"></button></div>
+                        </div>
+                        <div class="chat-respuesta w-100">
+                            <div id="transcripcion"></div>
+                            <a href="javascript:void(0)" onclick="control.copiarTexto('transcripcion')" class="text-dark float-end"><i class="bi bi-clipboard" title="Copiar texto"></i></a>
+                            <i class="bi bi-check float-end h5 text-success" id="transcripcion_copiada" style="display: none;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div id="zona_contenido">
             <div class="row">

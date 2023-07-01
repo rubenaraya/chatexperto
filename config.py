@@ -5,7 +5,7 @@ class Config:
     def __init__( self, coleccion='' ):
 
         # Propiedades
-        self.VERSION = '1.0.0'
+        self.VERSION = '1.0.1'
         self.CARPETA = ''
         self.APP = {}
         self.TIPOS_ARCHIVO = []
@@ -59,7 +59,7 @@ class Config:
 ######################################################
 
     # Función para cargar un conjunto de datos de configuración desde un archivo JSON
-    def cargar_valores( self, archivo=None ):
+    def cargar_valores( self, archivo ):
         import json
         data = []
         try:

@@ -26,7 +26,7 @@ class Modelos:
 ######################################################
 
     # Función para cargar la configuración desde diccionario JSON
-    def cargar_configuracion( self, id_modelo: str="" ):
+    def cargar_configuracion( self, id_modelo ):
         import os
         try:
             ruta_archivo = f"{self.config.RUTA.get('CONFIG')}/modelos.json"
@@ -116,7 +116,7 @@ class Modelos:
         return interfaz
 
     # Función para crear una interfaz para cadena y configurar sus componentes y atributos
-    def crear_cadena( self, indice=None, clase="Conversacion", plantilla=None, num_docs=4, chain_type="stuff" ):
+    def crear_cadena( self, indice, clase, plantilla=None, num_docs=4, chain_type="stuff" ):
         interfaz = None
         recuperador = None
 
@@ -184,11 +184,26 @@ class Modelos:
 
         return None
 
+    # Función para enviar audio a servicio de transcripción
+    def transcribir_audio( self, ruta, idioma ):
+        import openai
+        texto = ""
+        with open(ruta, "rb") as f:
+            texto = openai.Audio.transcribe(
+                file = f,
+                model = "whisper-1",
+                response_format = "text",
+                language = idioma,
+                api_key = self.config.APP.get('openai_api_key')
+            )
+        return texto
+
+
 ######################################################
 # FUNCIONES PRIVADAS
 ######################################################
 
-    def _crear_cadena_consulta( self, recuperador=None, plantilla=None, chain_type=None ):
+    def _crear_cadena_consulta( self, recuperador, plantilla, chain_type ):
         from langchain.chains import RetrievalQA
         from langchain.prompts import PromptTemplate
         from langchain.chains.question_answering import load_qa_chain
@@ -237,7 +252,7 @@ class Modelos:
 
         return interfaz
 
-    def _crear_cadena_conversacion( self, recuperador=None, plantilla=None ):
+    def _crear_cadena_conversacion( self, recuperador, plantilla ):
         from langchain.chains import ConversationalRetrievalChain
         from langchain.prompts import ( ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate )
         from langchain.memory import ConversationBufferMemory
@@ -321,7 +336,7 @@ class Modelos:
 
         return interfaz
 
-    def _crear_cadena_busqueda( self, recuperador=None, plantilla=None, chain_type=None ):
+    def _crear_cadena_busqueda( self, recuperador, plantilla, chain_type ):
         from langchain.chains import RetrievalQA
         from langchain.prompts import PromptTemplate
 

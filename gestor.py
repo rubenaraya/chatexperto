@@ -93,7 +93,7 @@ class GestorColeccion:
         return False
 
     # Función para almacenar documento en índice vectorial
-    def almacenar_documento( self, id_doc=0 ):
+    def almacenar_documento( self, id_doc ):
         try:
             # Obtener datos del documento de la BD
             bd = BaseDatos(self.config)
@@ -212,7 +212,7 @@ class GestorColeccion:
         return asignado
 
     # Función para configurar las APIS y recursos que usará el ejecutor
-    def abrir_ejecutor( self, id_doc=0, instruccion=None ):
+    def abrir_ejecutor( self, id_doc, instruccion ):
         try:
             # Carga el índice vectorial en almacen.INDICE
             if self.CFG.get('clase_interaccion') != "Peticion":
@@ -231,7 +231,7 @@ class GestorColeccion:
                 clase = self.CFG.get('clase_interaccion'),
                 chain_type = str(self.CFG.get('chain_type')),
                 num_docs = int( self.CFG.get('num_docs') ),
-                plantilla = self._construir_plantilla( nombre=instruccion )
+                plantilla = self._construir_plantilla( nombre=instruccion, peticion='' )
             )
             return self.EJECUTOR
 
@@ -241,7 +241,7 @@ class GestorColeccion:
         return None
 
     # Función para enviar una instruccion a LLM y recibir la respuesta
-    def ejecutar_instruccion( self, peticion=None, id_sesion=None ):
+    def ejecutar_instruccion( self, peticion, id_sesion ):
         respuesta = ''
         if self.EJECUTOR and peticion:
             try:
@@ -283,7 +283,7 @@ class GestorColeccion:
         return respuesta
 
     # Función para procesar la respuesta recibida
-    def procesar_respuesta( self, respuesta=None, peticion=None, coleccion=None, tiempo=0 ):
+    def procesar_respuesta( self, respuesta, peticion, coleccion, tiempo ):
         import string
         try:
             if peticion and respuesta:
@@ -318,7 +318,7 @@ class GestorColeccion:
         return False
 
     # Función para revisar las interacciones con usuarios en la BD
-    def revisar_interacciones( self, parametros={} ):
+    def revisar_interacciones( self, parametros ):
         resultados = None
         if parametros:
             try:
@@ -343,21 +343,21 @@ class GestorColeccion:
         return resultados
 
     # Función para recuperar interacciones de un usuario
-    def obtener_interacciones( self, id_doc=0 ):
+    def obtener_interacciones( self, id_doc ):
         bd = BaseDatos(self.config)
         filtro = f"{self.config.USUARIO.get('email')}-{id_doc}-{self.config.CARPETA}"
         resultados = bd.interacciones_usuario( filtro=filtro )
         return resultados
 
     # Función para borrar las interacciones de un usuario
-    def vaciar_interacciones( self, id_doc=0 ):
+    def vaciar_interacciones( self, id_doc ):
         bd = BaseDatos(self.config)
         uuid = f"{self.config.USUARIO.get('email')}-{id_doc}-{self.config.CARPETA}"
         resultado = bd.borrar_historiales( uuid )
         return resultado
 
     # Función para enviar busqueda a LLM y recibir la respuesta
-    def consultar_busqueda( self, texto=None ):
+    def consultar_busqueda( self, texto ):
         try:
             respuesta = ''
             # Carga valores de configuración
@@ -403,6 +403,34 @@ class GestorColeccion:
 
         return respuesta
 
+    # Función para subir un archivo de audio y guardarlo
+    def transcribir_audio( self, archivo, idioma ):
+        from archivos import Archivos
+        try:
+            if archivo:
+                archivos = Archivos(self.config)
+                resultado = "ERROR"
+                ruta = archivos.cargar_audio( archivo=archivo, recurso="TEMP", nombre=self.config.USUARIO.get('id') )
+                if len(ruta) > 1:
+                    mensaje = self.config.MENSAJES.get('EXITO_ARCHIVO_SUBIDO')
+                    resultado = "EXITO"
+                elif ruta == archivos.NOMBRE_NO_VALIDO:
+                    mensaje = self.config.MENSAJES.get('ERROR_NOMBRE_NOVALIDO')
+                elif ruta == archivos.TIPO_NO_PERMITIDO:
+                    mensaje = self.config.MENSAJES.get('ERROR_ARCHIVO_NOPERMITIDO')
+                else:
+                    mensaje = self.config.MENSAJES.get('ERROR_ARCHIVO_NOSUBIDO')
+                if archivos.comprobar_archivo( ruta ):
+                    texto = self.MODELO.transcribir_audio( ruta=ruta, idioma=idioma )
+                    archivos.borrar_archivo(ruta)
+                    respuesta = { "resultado": resultado, "mensaje": mensaje, "texto": texto }
+                    return respuesta
+
+        except Exception as e:
+            self.gestor_registrar.error( f"{e}" )
+
+        return None
+
 ######################################################
 # FUNCIONES PUBLICAS PARA COLECCIONES Y CARPETAS
 ######################################################
@@ -414,24 +442,16 @@ class GestorColeccion:
         archivos = Archivos(self.config)
         mensaje = f"{self.config.MENSAJES.get('ERROR_COLECCION_NOCREADA')}: {coleccion}"
 
-        coleccion = re.sub( r"  ", "", coleccion )
+        coleccion = re.sub( r'[\\/:"*?<>|°ºª~!#$%&=¿¡+{};@^_`….-(),\[\]\'\s]', "", coleccion )
         coleccion = coleccion.lower().strip()
         coleccion = unicodedata.normalize( 'NFD', coleccion ).encode( 'ascii', 'ignore' ).decode( 'utf-8' )
-        excluir = "!#$%&'()*+,-./:;<=>?@[\]^_`{|}~"
-        for c in excluir:
-            if c in coleccion:
-                coleccion = coleccion.replace(c, "")
-                coleccion = coleccion.replace(c, "")
-
         if self.config.comprobar_coleccion( nombre_coleccion=coleccion ):
             mensaje = f"{self.config.MENSAJES.get('ERROR_COLECCION_YAEXISTE')}: {coleccion}"
         else:
             nombre = unicodedata.normalize( 'NFD', nombre ).encode( 'ascii', 'ignore' ).decode( 'utf-8' )
             descripcion = unicodedata.normalize( 'NFD', descripcion ).encode( 'ascii', 'ignore' ).decode( 'utf-8' )
-
             if self.config.agregar_coleccion( nombre_coleccion=coleccion, etiqueta_coleccion=nombre ):
                 self.config.COLECCION = coleccion
-                
                 archivo_coleccion = f"{archivos.obtener_ruta( tipo_recurso='DATOS' )}/coleccion.zip"
                 if self.config.importar_coleccion( nombre_coleccion=coleccion, archivo_zip=archivo_coleccion ):
                     ruta_aux = f"{archivos.obtener_ruta( tipo_recurso='CONFIG' )}/config.json"
@@ -456,23 +476,16 @@ class GestorColeccion:
         return mensaje
 
     # Función para crear una nueva carpeta
-    def crear_carpeta( self, nombre_carpeta, etiqueta_carpeta, tipos_archivo=[], modulos=[] ):
+    def crear_carpeta( self, nombre_carpeta, etiqueta_carpeta, tipos_archivo, modulos ):
         import unicodedata, re
         from archivos import Archivos
 
         mensaje = f"{self.config.MENSAJES.get('ERROR_CARPETA_NOCREADA')}"
 
         if nombre_carpeta and etiqueta_carpeta and tipos_archivo:
-            nombre_carpeta = re.sub( r"  ", "", nombre_carpeta )
-            nombre_carpeta = re.sub( r" ", "", nombre_carpeta )
+            nombre_carpeta = re.sub( r'[\\/:"*?<>|°ºª~!#$%&=¿¡+{};@^_`….-(),\[\]\'\s]', "", nombre_carpeta )
             nombre_carpeta = nombre_carpeta.lower().strip()
             nombre_carpeta = unicodedata.normalize( 'NFD', nombre_carpeta ).encode( 'ascii', 'ignore' ).decode( 'utf-8' )
-            excluir = "!#$%&'()*+,-./:;<=>?@[\]^_`{|}~"
-            for c in excluir:
-                if c in nombre_carpeta:
-                    nombre_carpeta = nombre_carpeta.replace(c, "")
-                    nombre_carpeta = nombre_carpeta.replace(c, "")
-
             etiqueta_carpeta = unicodedata.normalize( 'NFD', etiqueta_carpeta ).encode( 'ascii', 'ignore' ).decode( 'utf-8' )
             self.config.CARPETA = nombre_carpeta
             archivos = Archivos(self.config)
@@ -562,7 +575,7 @@ class GestorColeccion:
         return False
 
     # Función para agregar una plantilla de prompt
-    def ingresar_plantilla( self, parametros={} ):
+    def ingresar_plantilla( self, parametros ):
         uid = 0
         bd = BaseDatos(self.config)
         if parametros:
@@ -581,7 +594,7 @@ class GestorColeccion:
         return resultados
 
     # Función para obtener una lista de las plantillas de prompt
-    def consultar_plantillas( self, parametros={} ):
+    def consultar_plantillas( self, parametros ):
         resultados = None
         nav = 1
         max = 100
@@ -610,7 +623,7 @@ class GestorColeccion:
         return resultados
 
     # Función para actualizar los datos de una plantilla de prompt
-    def actualizar_plantilla( self, uid, parametros={} ):
+    def actualizar_plantilla( self, uid, parametros ):
         resultado = False
         bd = BaseDatos(self.config)
         if parametros:
@@ -651,7 +664,7 @@ class GestorColeccion:
         return None
 
     # Función para ingresar un archivo cargado como un documento en la BD
-    def ingresar_documento( self, archivo="" ):
+    def ingresar_documento( self, archivo ):
         from archivos import Archivos
 
         id_doc = 0
@@ -690,7 +703,7 @@ class GestorColeccion:
         return id_doc
 
     # Función para crear metadatos de un documento mediante búsqueda semántica y APIs EMB+LLM
-    def catalogar_documento( self, id_doc=0, campos=[] ):
+    def catalogar_documento( self, id_doc, campos ):
         import string
         catalogado = False
         try:
@@ -764,7 +777,7 @@ class GestorColeccion:
         return catalogado
 
     # Función para consultar el registro de documentos en la BD
-    def consultar_documentos( self, parametros={} ):
+    def consultar_documentos( self, parametros ):
         resultados = None
         if parametros:
             try:
@@ -786,7 +799,7 @@ class GestorColeccion:
         return resultados
 
     # Función para recuperar los datos para descargar documento
-    def descargar_documento( self, codigo=None ):
+    def descargar_documento( self, codigo ):
         resultados = None
         if codigo:
             try:
@@ -802,7 +815,7 @@ class GestorColeccion:
         return resultados
 
     # Función para recuperar los datos de un documento de la BD
-    def abrir_documento( self, id_doc=None ):
+    def abrir_documento( self, id_doc ):
         resultados = None
         if id_doc:
             try:
@@ -818,7 +831,7 @@ class GestorColeccion:
         return resultados
 
     # Función para borrar un documento del disco y la BD
-    def borrar_documento( self, id_doc=None ):
+    def borrar_documento( self, id_doc ):
         from archivos import Archivos
         if id_doc:
             try:
@@ -844,7 +857,7 @@ class GestorColeccion:
         return False
 
     # Función para guardar los datos editados de un documento en la BD
-    def guardar_documento( self, id_doc=0, parametros={} ):
+    def guardar_documento( self, id_doc, parametros ):
         estado = 0
         bd = BaseDatos(self.config)
         if parametros:
@@ -881,7 +894,7 @@ class GestorColeccion:
         return resultados
 
     # Función para buscar documentos en índice vectorial
-    def buscar_textos_documentos( self, parametros={} ):
+    def buscar_textos_documentos( self, parametros ):
         import string, re
         try:
             buscar = parametros.get('buscar', None)
@@ -984,38 +997,13 @@ class GestorColeccion:
         return resultado
 
     # Función para obtener los documentos destacados
-    def consultar_destacados( self, total=10, modulo='' ):
+    def consultar_destacados( self, total, modulo ):
         if not total:
             total = 10
         bd = BaseDatos(self.config)
         carpetas = self._lista_carpetas( modulo=modulo )
         resultados = bd.documentos_destacados( total=int(total), carpetas=carpetas )
         return resultados
-
-    # Función para subir un archivo de audio y guardarlo
-    def subir_audio( self, archivo, ruta, nombre ):
-        from archivos import Archivos
-        try:
-            if archivo:
-                archivos = Archivos(self.config)
-                resultado = "ERROR"
-                cargar = archivos.cargar_audio( archivo=archivo, ruta=ruta, nombre=nombre )
-                if len(cargar) > 1:
-                    mensaje = self.config.MENSAJES.get('EXITO_ARCHIVO_SUBIDO')
-                    resultado = "EXITO"
-                elif cargar == archivos.NOMBRE_NO_VALIDO:
-                    mensaje = self.config.MENSAJES.get('ERROR_NOMBRE_NOVALIDO')
-                elif cargar == archivos.TIPO_NO_PERMITIDO:
-                    mensaje = self.config.MENSAJES.get('ERROR_ARCHIVO_NOPERMITIDO')
-                else:
-                    mensaje = self.config.MENSAJES.get('ERROR_ARCHIVO_NOSUBIDO')
-                respuesta = { "resultado": resultado, "mensaje": mensaje }
-                return respuesta
-
-        except Exception as e:
-            self.gestor_registrar.error( f"{e}" )
-
-        return None
 
 
 ######################################################
@@ -1050,7 +1038,7 @@ class GestorColeccion:
 
         return None
 
-    def _construir_plantilla( self, nombre="", peticion="" ):
+    def _construir_plantilla( self, nombre, peticion ):
         instruccion = peticion
         try:
             if nombre:
@@ -1116,7 +1104,7 @@ class GestorColeccion:
         return texto
 
     # Función para reemplazar dobles caracteres (repetidos) en un texto, en forma recursiva
-    def _limpiar_repetidos( self, texto="", caracteres=[] ):
+    def _limpiar_repetidos( self, texto, caracteres ):
         cadena_limpia = texto
         se_encontro_doble = False
 

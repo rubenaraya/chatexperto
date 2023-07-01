@@ -25,7 +25,7 @@ class Usuarios:
             resultado = True if datos_usuario is not None else False
             if resultado:
                 id_usuario, alias, email, roles = datos_usuario
-                token = self._crear_token( id_usuario )
+                token = self._crear_token( id_usuario, 8 )
                 if token:
                     archivo_usuario = f"{self.config.RUTA.get('SESIONES')}/{id_usuario}.json"
                     try:
@@ -65,7 +65,7 @@ class Usuarios:
         return False
 
     # Función para crear un nuevo usuario
-    def crear_usuario( self, parametros={} ):
+    def crear_usuario( self, parametros ):
         uid = 0
         bd = BaseDatos(self.config)
         if parametros:
@@ -79,7 +79,7 @@ class Usuarios:
         return uid
 
     # Función para consultar la nómina de usuarios en la BD
-    def consultar_usuarios( self, parametros={} ):
+    def consultar_usuarios( self, parametros ):
         resultados = None
         if parametros:
             try:
@@ -104,7 +104,7 @@ class Usuarios:
         return resultados
 
     # Función para obtener los datos de un usuario
-    def abrir_usuario( self, uid=0 ):
+    def abrir_usuario( self, uid ):
         resultados = None
         if uid:
             try:
@@ -120,7 +120,7 @@ class Usuarios:
         return resultados
 
     # Función para actualizar los datos de un usuario
-    def guardar_usuario( self, uid=0, parametros={} ):
+    def guardar_usuario( self, uid, parametros ):
         guardado = False
         bd = BaseDatos(self.config)
         if parametros:
@@ -135,7 +135,7 @@ class Usuarios:
         return guardado
 
     # Función para borrar un usuario
-    def borrar_usuario( self, uid=0 ):
+    def borrar_usuario( self, uid ):
         bd = BaseDatos(self.config)
         borrado = bd.borrar_usuario(
             uid = uid
@@ -143,7 +143,7 @@ class Usuarios:
         return borrado
 
     # Función para guardar variables en archivo de sesión
-    def guardar_variable( self, variable=None, valor=None ):
+    def guardar_variable( self, variable, valor ):
         if variable and valor:
             try:
                 archivo_usuario = f"{self.config.RUTA.get('SESIONES')}/{self.config.USUARIO.get('id')}.json"
@@ -164,7 +164,7 @@ class Usuarios:
 ######################################################
 
     # Función para crear un token de sesión
-    def _crear_token( self, usuario, duracion=8 ):
+    def _crear_token( self, usuario, duracion ):
         import datetime
         if usuario:
             try:
