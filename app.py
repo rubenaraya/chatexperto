@@ -2586,7 +2586,7 @@ def funcion_actualizar_plantilla( coleccion, uid ):
 # Proporciona una interfaz HTML para guardar o subir un audio
 @app.route( '/<coleccion>/audio', methods=['GET'] )
 def interfaz_audio( coleccion ):
-    roles = ["Editor"]
+    roles = ["Editor","Usuario","Admin"]
     config = Config(coleccion)
 
     # Comprueba la colección
@@ -2608,7 +2608,7 @@ def interfaz_audio( coleccion ):
 # Recibe el audio cargado por el usuario y lo procesa
 @app.route( '/<coleccion>/audio', methods=['POST'] )
 def funcion_audio( coleccion ):
-    roles = ["Editor"]
+    roles = ["Editor","Usuario","Admin"]
     config = Config(coleccion)
 
     # Comprueba la colección
