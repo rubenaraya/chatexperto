@@ -1,6 +1,6 @@
 /* controlador.js
 ******************************************************
-CHAT EXPERTO (Front-end) - Actualizado el: 30/06/2023
+CHAT EXPERTO (Front-end) - Actualizado el: 01/07/2023
 ******************************************************
 Clase: Controlador */
 
@@ -591,6 +591,8 @@ class Controlador {
             let respuesta = '';
             if (response && response.respuesta) {
                 respuesta = response.respuesta;
+            } else if (response && response.error) {
+                respuesta = response.error;
             } else {
                 respuesta = this.t['error'];
             }
@@ -630,6 +632,8 @@ class Controlador {
             let respuesta = '';
             if (response && response.respuesta) {
                 respuesta = response.respuesta;
+            } else if (response && response.error) {
+                respuesta = response.error;
             } else {
                 respuesta = this.t['error'];
             }
@@ -869,6 +873,8 @@ class Controlador {
             let respuesta = '';
             if (response && response.respuesta) {
                 respuesta = response.respuesta;
+            } else if (response && response.error) {
+                respuesta = response.error;
             } else {
                 respuesta = this.t['error'];
             }
@@ -1002,6 +1008,8 @@ class Controlador {
             let respuesta = '';
             if (response && response.respuesta) {
                 respuesta = response.respuesta;
+            } else if (response && response.error) {
+                respuesta = response.error;
             } else {
                 respuesta = this.t['error'];
             }
@@ -1591,10 +1599,12 @@ class Controlador {
             let respuesta = '';
             if (response && response.respuesta) {
                 respuesta = response.respuesta;
+            } else if (response && response.error) {
+                respuesta = response.error;
             } else {
                 respuesta = this.t['error'];
             }
-            control.verMensaje(respuesta, 'info' );
+            control.verMensaje(respuesta, 'aviso' );
             jQuery("#zona_espera").hide();
             jQuery("#zona_contenido").show();
             });
@@ -1621,7 +1631,7 @@ class Controlador {
             this.carpeta = con_carpeta.val();
         }
         if (con_buscar.val() == '') {
-            control.verMensaje( this.t['sin_buscar'], 'info');
+            control.verMensaje( this.t['sin_buscar'], 'aviso');
             control.activarBuscador('con_buscar');
             return false;
         }
@@ -1830,10 +1840,12 @@ class Controlador {
             let respuesta = '';
             if (response && response.respuesta) {
                 respuesta = response.respuesta;
+            } else if (response && response.error) {
+                respuesta = response.error;
             } else {
                 respuesta = this.t['error'];
             }
-            control.verMensaje(respuesta, 'info' );
+            control.verMensaje(respuesta, 'aviso' );
             jQuery("#zona_espera").hide();
             jQuery("#zona_contenido").show();
             });

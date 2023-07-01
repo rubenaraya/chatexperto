@@ -436,13 +436,14 @@ class GestorColeccion:
 ######################################################
 
     # Función para crear una nueva colección / aplicación
-    def crear_coleccion( self, coleccion, nombre, descripcion, api_key, carpetas, chatgpt ):
+    def crear_coleccion( self, coleccion, nombre, descripcion, api_key, carpetas, chatgpt, whisper ):
         import unicodedata, re
         from archivos import Archivos
         archivos = Archivos(self.config)
         mensaje = f"{self.config.MENSAJES.get('ERROR_COLECCION_NOCREADA')}: {coleccion}"
 
-        coleccion = re.sub( r'[\\/:"*?<>|°ºª~!#$%&=¿¡+{};@^_`….-(),\[\]\'\s]', "", coleccion )
+        coleccion = re.sub( r'[\\/:"*?<>|°ºª~!#$%&=¿¡+{};@^_`…\-(),\[\]\'\s]', "", coleccion )
+        coleccion = re.sub( r'\.', "", coleccion )
         coleccion = coleccion.lower().strip()
         coleccion = unicodedata.normalize( 'NFD', coleccion ).encode( 'ascii', 'ignore' ).decode( 'utf-8' )
         if self.config.comprobar_coleccion( nombre_coleccion=coleccion ):
@@ -465,6 +466,7 @@ class GestorColeccion:
                         datos['carpeta'] = ''
                         datos['carpetas'] = carpetas
                         datos['chatgpt'] = chatgpt
+                        datos['whisper'] = whisper
                         datos['openai_api_key'] = api_key
                         with open( ruta_aux, "w", encoding='utf-8' ) as f:
                             json.dump( datos, f, indent=4 )
@@ -483,7 +485,8 @@ class GestorColeccion:
         mensaje = f"{self.config.MENSAJES.get('ERROR_CARPETA_NOCREADA')}"
 
         if nombre_carpeta and etiqueta_carpeta and tipos_archivo:
-            nombre_carpeta = re.sub( r'[\\/:"*?<>|°ºª~!#$%&=¿¡+{};@^_`….-(),\[\]\'\s]', "", nombre_carpeta )
+            nombre_carpeta = re.sub( r'[\\/:"*?<>|°ºª~!#$%&=¿¡+{};@^_`…\-(),\[\]\'\s]', "", nombre_carpeta )
+            nombre_carpeta = re.sub( r'\.', "", nombre_carpeta )
             nombre_carpeta = nombre_carpeta.lower().strip()
             nombre_carpeta = unicodedata.normalize( 'NFD', nombre_carpeta ).encode( 'ascii', 'ignore' ).decode( 'utf-8' )
             etiqueta_carpeta = unicodedata.normalize( 'NFD', etiqueta_carpeta ).encode( 'ascii', 'ignore' ).decode( 'utf-8' )

@@ -1,6 +1,6 @@
 # app.py
 #######################################################
-# CHAT EXPERTO (Back-end) - Actualizado el: 30/06/2023
+# CHAT EXPERTO (Back-end) - Actualizado el: 01/07/2023
 #######################################################
 """
 Aplicación WEB-REST en Python para implementar un back-end para múltiples servicios de Chat inteligentes que responden preguntas sobre bases de conocimiento personalizadas.
@@ -1176,6 +1176,7 @@ def funcion_admin( coleccion ):
     api_key = obtener_parametro( 'openai_api_key' )
     carpetas = obtener_parametro( 'carpetas' )
     chatgpt = obtener_parametro( 'chatgpt' )
+    whisper = obtener_parametro( 'whisper' )
 
     # Crea instancia del Gestor de la Colección
     gestor = GestorColeccion(config)
@@ -1185,7 +1186,8 @@ def funcion_admin( coleccion ):
         descripcion = descripcion,
         api_key = api_key,
         carpetas = carpetas,
-        chatgpt=chatgpt
+        chatgpt=chatgpt,
+        whisper=whisper
     )
 
     return jsonify( {'respuesta': resultado} ), 200
