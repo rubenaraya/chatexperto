@@ -102,18 +102,21 @@
             Se requiere <strong>Generar el Indice</strong> de esta Carpeta de conocimiento para consultarla<br>
             <button type="button" title="Generar Indice" class="btn btn-danger mt-3 mb-5" onclick="control.generarIndice()"><i class="bi bi-server"></i>Generar Indice</button>
         </div>
-        <div class="card mt-3 mb-3" id="mostrar_transcripcion" style="display: none; position: fixed; top: 20px; left: 20px; right: 20px; z-index: 10002;">
+        <div class="card mt-3 mb-3" id="mostrar_transcripcion" style="position: fixed; top: 20px; left: 20px; right: 20px; z-index: 10002; display: none;">
             <div class="card-body">
                 <div  class="row">
                     <div class="col-12">
                         <div class="clearfix">
                             <div class="float-start">Transcripción de audio:</div>
-                            <div class="float-end"><button type="button" class="btn-close" onclick="control.cerrarTranscripcion()"></button></div>
+                            <div class="float-end">
+                                <i class="bi bi-check h5 text-success" id="transcripcion_copiada" style="display: none;"></i>
+                                <a href="javascript:void(0)" onclick="control.copiarTexto('transcripcion')" class="text-dark"><i class="bi bi-clipboard h6" title="Copiar texto"></i></a>
+                                <button type="button" class="btn-close ms-1" onclick="control.cerrarTranscripcion()"></button>
+                            </div>
                         </div>
                         <div class="chat-respuesta w-100">
-                            <div id="transcripcion"></div>
-                            <a href="javascript:void(0)" onclick="control.copiarTexto('transcripcion')" class="text-dark float-end"><i class="bi bi-clipboard" title="Copiar texto"></i></a>
-                            <i class="bi bi-check float-end h5 text-success" id="transcripcion_copiada" style="display: none;"></i>
+                            <div id="transcripcion">
+                            </div>
                         </div>
                     </div>
                 </div>
