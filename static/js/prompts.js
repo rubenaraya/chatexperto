@@ -8,7 +8,7 @@ class Prompts {
 
     constructor() {
         this.misprompts = [];
-        this.misprompts['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto:|"""|((texto))|"""';
+        this.misprompts['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto, mejorando la redacción para hacerlo más claro:|"""|((texto))|"""';
     }
 
     iniciarFormularios() {

@@ -22,8 +22,8 @@ class Controlador {
         this.mediaRecorder = null;
         this.tiempo_mensajes = 7;
         this.tiempo_grabacion = 180;
-        this.max_minutos = 3;
-        this.tiempo_restante = '03:00';
+        this.max_minutos = 5;
+        this.tiempo_restante = '05:00';
         this.archivo_audio = 'audio-grabado';
         this.max_mb_audio = 20;
         this.grabando = false;
