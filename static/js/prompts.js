@@ -1,6 +1,6 @@
 /* prompts.js
 ******************************************************
-CHAT EXPERTO (Front-end) - Actualizado el: 28/06/2023
+CHAT EXPERTO (Front-end) - Actualizado el: 01/07/2023
 ******************************************************
 Clase: Prompts */
 
@@ -8,7 +8,7 @@ class Prompts {
 
     constructor() {
         this.misprompts = [];
-        this.misprompts['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto, mejorando la redacción para hacerlo más claro:|"""|((texto))|"""';
+        this.misprompts['prompt'] = '((intro))|((peticion))|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).|Usa como base el siguiente texto y mejóralo para hacerlo más claro:|"""|((texto))|"""';
     }
 
     iniciarFormularios() {

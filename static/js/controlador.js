@@ -13,19 +13,18 @@ class Controlador {
         this.url = '';
         this.carpeta = '';
         this.ruta_base = ''
-        this.tamano_max = 10; // Tamaño máximo archivos en MB
+        this.tamano_max = 20; // Tamaño máximo archivos en MB
         this.total = 0; // Total de resultados de consulta
         this.paginas = 0; // Nº páginas de resultados
         this.nav = 1; // Página de navegación actual
         this.max = 10; // Máximo de resultados por página
         this.chunks = [];
         this.mediaRecorder = null;
-        this.tiempo_mensajes = 7;
-        this.tiempo_grabacion = 180;
-        this.max_minutos = 5;
-        this.tiempo_restante = '05:00';
+        this.tiempo_mensajes = 7; //Nº segundos que permanece un mensaje de alerta
+        this.tiempo_restante = '10:00'; //Tiempo máximo de grabación para mostrar en formato MM:SS
+        this.max_minutos = 10; //Tiempo máximo de grabación en número de minutos
+        this.max_mb_audio = 24; //Tamaño máximo archivos de audio en MB
         this.archivo_audio = 'audio-grabado';
-        this.max_mb_audio = 20;
         this.grabando = false;
         this.t = {
             error: "Lo siento, ha ocurrido un error. Intenta de nuevo en un momento",
@@ -387,11 +386,6 @@ class Controlador {
             jQuery("#zona_contenido").html(response);
             jQuery("#zona_contenido").fadeIn();
             jQuery('.navbar-collapse').collapse('hide');
-            switch (pagina) {
-                case 'chat': control.activarChat(); break;
-                case 'revisar': control.activarBuscador('interacciones'); break;
-                default: break;
-            }
         });
         peticion.fail((jqXHR, estado, mensaje) => {
             control.mostrarError( jqXHR, estado, mensaje );
@@ -2245,7 +2239,7 @@ class Controlador {
         control.iniciarTemporizador(hora_inicio);
         setTimeout(() => {
             control.detenerGrabacion();
-        }, (control.tiempo_grabacion + 1) * 1000);
+        }, ((control.max_minutos * 60) + 1) * 1000);
         jQuery('#tiempo_restante').html(control.tiempo_restante);
         jQuery('#temporizador').show();
     }
