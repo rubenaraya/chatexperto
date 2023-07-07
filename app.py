@@ -2265,9 +2265,9 @@ def funcion_prompts( coleccion ):
     mensaje = obtener_parametro( 'mensaje' )
     if not mensaje:
         return jsonify( {'respuesta': config.MENSAJES.get('CHAT_PREGUNTA_VACIA'), 'peticion': mensaje} ), 200
-    if len( mensaje ) < 20:
+    if len( mensaje ) < 5:
         return jsonify( {'respuesta': config.MENSAJES.get('CHAT_PREGUNTA_MUYCORTA'), 'peticion': mensaje} ), 200
-    if len( mensaje ) > 10000:
+    if len( mensaje ) > 15000:
         return jsonify( {'respuesta': config.MENSAJES.get('CHAT_PREGUNTA_MUYLARGA'), 'peticion': mensaje} ), 200
 
     # Recupera parametros
