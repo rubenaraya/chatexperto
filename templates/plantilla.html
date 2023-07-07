@@ -78,8 +78,8 @@
                         </div>
                         <div class="col-12 mt-1">
                             <div class="form-floating">
-                                <textarea id="intro" name="intro" placeholder="Instrucción de encuadre" maxlength="1000" class="form-control auto-resize">{{pla_intro}}</textarea>
-                                <label for="intro">Instrucción de encuadre (max: 1.000 caracteres)</label>
+                                <textarea id="intro" name="intro" placeholder="Instrucción de encuadre" maxlength="2000" class="form-control auto-resize">{{pla_intro}}</textarea>
+                                <label for="intro">Instrucción de encuadre (max: 2.000 caracteres)</label>
                             </div>
                         </div>
                         <div class="col-12 mt-2 mb-1 text-center small text-secondary"><hr>Puedes colocar marcas de reemplazo entre paréntesis dobles (()) en Petición y Texto base. En las marcas debes usar sólo MINUSCULAS y guiones en vez de espacios.</div>
@@ -98,13 +98,13 @@
                         <div class="col-12 text-secondary mt-2">
                             <div class="input-group">
                                 Texto base: &nbsp;
-                                <span data-bs-toggle="tooltip" title="Lluvia de ideas, datos o instrucciones para crear el contenido" class="ms-1"><i class="bi bi-question-circle h5"></i></span>
+                                <span data-bs-toggle="tooltip" title="Lluvia de ideas y/o datos para crear el contenido" class="ms-1"><i class="bi bi-question-circle h5"></i></span>
                             </div>
                         </div>
                         <div class="col-12 mt-1 mb-1">
                             <div class="form-floating">
-                                <textarea id="texto" name="texto" placeholder="Texto base con datos" maxlength="7000" class="form-control auto-resize">{{pla_texto}}</textarea>
-                                <label for="texto">Texto base con datos (max: 7.000 caracteres)</label>
+                                <textarea id="texto" name="texto" placeholder="Texto base con datos e ideas" maxlength="7000" class="form-control auto-resize">{{pla_texto}}</textarea>
+                                <label for="texto">Texto base con datos e ideas (max: 7.000 caracteres)</label>
                             </div>
                         </div>
                         <div class="col-12 mt-1 mb-2 text-center small text-secondary">NOTA: No coloques datos personales ni información sensible en los detalles de los prompts. Puedes usar marcas de reemplazo manual entre corchetes "[" y "]" en su lugar.</div>

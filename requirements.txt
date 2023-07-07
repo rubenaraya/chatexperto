@@ -14,3 +14,8 @@ Pillow
 pdfminer.six
 docx2txt
 tiktoken
+pydub
+ffmpeg
+ffprobe
+python-docx
+pytube

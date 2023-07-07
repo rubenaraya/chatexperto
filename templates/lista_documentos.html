@@ -25,7 +25,10 @@
         {% for estado in diccionario.estado_documento %}{% if estado.valor|string == archivo.estado|string %}
         <span class="badge bg-{{estado.color}}">{{estado.etiqueta}}</span>
         {% endif %}{% endfor %} 
-        <span class="text-secondary">{{archivo.peso}} kb ({{archivo.carpeta}}) {% if archivo.zona == 'C' %}<a class="text-dark text-decoration-none" href="javascript:void(0)" onclick="control.consultarChatdoc('{{archivo.carpeta}}','{{archivo.id}}')" title="Consultar"><i class="bi bi-chat text-dark h6"></i></a>{% endif %}</span>
+        <span class="text-secondary">{{archivo.peso}} kb ({{archivo.carpeta}}) 
+            
+            <!-- {% if archivo.zona == 'C' %}<a class="text-dark text-decoration-none" href="javascript:void(0)" onclick="control.consultarChatdoc('{{archivo.carpeta}}','{{archivo.id}}')" title="Consultar"><i class="bi bi-chat text-dark h6"></i></a>{% endif %} -->
+        </span>
         </small>
     </div>
     <div class="col-2 text-end">
@@ -33,9 +36,11 @@
             <button type="button" class="btn btn-light btn-sm border dropdown-toggle" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button>
             <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="javascript:void(0)" onclick="control.descargarArchivo('{{archivo.codigo}}')" title="Descargar"><i class="bi bi-download"></i> Descargar</a></li>
+                <!--
                 {% if archivo.zona == 'C' %}
                 <li><a class="dropdown-item" href="javascript:void(0)" onclick="control.consultarChatdoc('{{archivo.carpeta}}','{{archivo.id}}')" title="Consultar"><i class="bi bi-chat"></i> Consultar</a></li>
                 {% endif %}
+                -->
                 {% if usuario.roles == 'Editor' %}
                 <li><hr class="dropdown-divider"></hr></li>
                 <li><a class="dropdown-item" href="javascript:void(0)" onclick="control.editarDocumento('{{archivo.id}}')" title="Editar ficha"><i class="bi bi-pencil-square"></i> Editar ficha</a></li>
@@ -47,6 +52,7 @@
                 <li><a class="dropdown-item" href="javascript:void(0)" onclick="control.confirmarAccion('documento','{{archivo.id}}')" title="Borrar"><i class="bi bi-trash"></i> Borrar</a></li>
                 {% endif %}
             </ul>
+            <button type="button" title="Consultar" class="btn btn-sm btn-light border" onclick="control.consultarChatdoc('{{archivo.carpeta}}','{{archivo.id}}')"><i class="bi bi-chat"></i></button>
         </div>
     </div>
     {% if archivo.resumen is not none and archivo.resumen != '' and archivo.resumen|length > 5 %}
