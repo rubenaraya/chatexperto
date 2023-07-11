@@ -117,6 +117,7 @@
                         <div class="col-9">
                             <div class="input-group">
                                 <select name="lenguaje" id="lenguaje" class="form-select w-auto">
+                                    <option value=""></option>
                                     {% for opcion in diccionario.lenguajes %}
                                     <option value="{{ opcion.valor }}" {% if pla_lenguaje == opcion.valor %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
                                     {% endfor %}
@@ -130,6 +131,7 @@
                         <div class="col-9">
                             <div class="input-group">
                                 <select name="estilo" id="estilo" class="form-select w-auto">
+                                    <option value=""></option>
                                     {% for opcion in diccionario.estilos %}
                                     <option value="{{ opcion.valor }}" {% if pla_estilo == opcion.valor %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
                                     {% endfor %}
@@ -143,6 +145,7 @@
                         <div class="col-9">
                             <div class="input-group">
                                 <select name="tono" id="tono" class="form-select w-auto">
+                                    <option value=""></option>
                                     {% for opcion in diccionario.tonos %}
                                     <option value="{{ opcion.valor }}" {% if pla_tono == opcion.valor %}selected{% endif %} class="bg-{{opcion.color}} {% if opcion.color != 'warning' %}text-white{% endif %}">{{ opcion.etiqueta }}</option>
                                     {% endfor %}

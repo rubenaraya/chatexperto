@@ -1,6 +1,6 @@
 /* prompts.js
 ******************************************************
-CHAT EXPERTO (Front-end) - Actualizado el: 01/07/2023
+CHAT EXPERTO (Front-end) - Actualizado el: 10/07/2023
 ******************************************************
 Clase: Prompts */
 
@@ -8,7 +8,7 @@ class Prompts {
 
     constructor() {
         this.misprompts = [];
-        this.misprompts['prompt'] = '((intro))|((peticion))|Texto base:|"""|((texto))|"""|Responde en ((idioma)) usando un LENGUAJE ((lenguaje)), con un ESTILO ((estilo)) y en un TONO ((tono))((palabras)).';
+        this.misprompts['prompt'] = '((intro))((peticion))((texto))|Responde en ((idioma))((lenguaje))((estilo))((tono))((palabras)).';
     }
 
     iniciarFormularios() {
@@ -216,13 +216,28 @@ class Prompts {
         var lenguaje = jQuery('#lenguaje').val();
         var idioma = jQuery('#idioma').val();
         var palabras = jQuery('#palabras').val();
-        if (palabras.length >0) {
-            palabras = ', en un máximo de ' + palabras + ' palabras o menos';
-        }
         var prompt = this.misprompts['prompt'];
         let intro = jQuery('#' + tarea + '-intro').val();
         let peticion = jQuery('#' + tarea + '-peticion').val();
         let texto = jQuery('#' + tarea + '-texto').val();
+        if (intro.length >5) {
+            intro = intro + '\n';
+        }
+        if (palabras.length >0) {
+            palabras = ', en un máximo de ' + palabras + ' palabras o menos';
+        }
+        if (lenguaje.length >0) {
+            lenguaje = ', usando un lenguaje ' + lenguaje;
+        }
+        if (estilo.length >0) {
+            estilo = ', con un estilo ' + estilo;
+        }
+        if (tono.length >0) {
+            tono = ', en un tono ' + tono;
+        }
+        if (texto.length >5) {
+            texto = '\n"""\n' + texto + '\n"""';
+        }
         prompt = prompt.replace(/\|/g, "\n");
         prompt = prompt.replace('((intro))', intro);
         prompt = prompt.replace('((peticion))', peticion);
