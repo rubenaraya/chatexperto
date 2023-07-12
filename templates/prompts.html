@@ -298,9 +298,9 @@
                     <div class="col-12">
                         <div class="row mt-1 mb-1" id="prompt-advertencia" style="display: none;">
                             <div class="col-12 text-danger text-center">
-                                ¡ Revisa el Prompt antes de enviarlo !
+                                <strong>¡ Revisa el Prompt antes de enviarlo a ChatGPT !</strong>
                             </div>
-                            <div class="col-12 mt-1 mb-2 text-center small text-secondary">NOTA: No expongas datos personales ni información sensible en los prompts. Puedes usar marcas de reemplazo manual entre corchetes "[" y "]" en su lugar.</div>
+                            <div class="col-12 mt-1 mb-2 text-center small text-secondary">NOTA: No expongas datos personales ni información sensible en los prompts. Puedes usar marcas de reemplazo manual con nombres genéricos entre corchetes "[" y "]" en su lugar. Recuerda BORRAR todos los textos marcados entre ((paréntesis dobles)) que no vayas a usar.</div>
                         </div>
                         <div class="chat-enviar-mensaje" id="chat-enviar-mensaje">
                             <div class="form-floating w-100">
@@ -317,9 +317,9 @@
                                 {% if app.chatgpt == '1' %}
                                 <button data-bs-toggle="collapse" data-bs-target="#div_opciones" type="button" title="Configurar respuesta" class="btn btn-light text-dark border ps-2 pe-1"><i class="bi bi-gear h5"></i></button>
                                 {% endif %}
-                                <button type="button" title="Copiar prompt" class="btn btn-light text-dark border ps-2 pe-1" onclick="prompts.copiarCampo('input-mensaje-usuario')"><i class="bi bi-clipboard h5"></i></button>
-                                <button type="button" title="Limpiar prompt" class="btn btn-light btn-sm text-dark border pe-1" onclick="prompts.limpiarPrompt()"><i class="bi bi-x-square h5"></i></button>
-                                <button type="button" title="Volver arriba" class="btn btn-light text-dark border ps-2 pe-1" onclick="control.desplazarPosicion('+')"><i class="bi bi-arrow-up-circle h5"></i></button>
+                                <button type="button" title="Copiar prompt" class="btn btn-light text-dark border ps-2 pe-2" onclick="prompts.copiarCampo('input-mensaje-usuario')"><i class="bi bi-clipboard h5"></i></button>
+                                <button type="button" title="Limpiar prompt" class="btn btn-light text-dark border pe-2" onclick="prompts.limpiarPrompt()"><i class="bi bi-x-square h5"></i></button>
+                                <button type="button" title="Volver arriba" class="btn btn-light text-dark border ps-2 pe-2" onclick="control.desplazarPosicion('+')"><i class="bi bi-arrow-up-circle h5"></i></button>
                             </div>
                         </div>
                         <div id="chat-imagen-espera" style="display: none;">

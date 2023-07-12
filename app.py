@@ -1,6 +1,6 @@
 # app.py
 #######################################################
-# CHAT EXPERTO (Back-end) - Actualizado el: 01/07/2023
+# CHAT EXPERTO (Back-end) - Actualizado el: 12/07/2023
 #######################################################
 """
 Aplicación WEB-REST en Python para implementar un back-end para múltiples servicios de Chat inteligentes que responden preguntas sobre bases de conocimiento personalizadas.
@@ -2638,7 +2638,7 @@ def funcion_audio( coleccion ):
 
 ######################################################
 # URL: "/<coleccion>/misprompts" (GET)
-# Devuelve la lista de prompts de la colección en formato JSON
+# Devuelve la lista de prompts de la colección en formato Javascript
 @app.route( '/<coleccion>/misprompts', methods=['GET'] )
 @cross_origin()
 def interfaz_misprompts( coleccion ):
@@ -2647,6 +2647,15 @@ def interfaz_misprompts( coleccion ):
     # Comprueba la colección
     if not config.comprobar_coleccion( coleccion ):
         return jsonify( {'error': config.MENSAJES.get('ERROR_COLECCION_NOEXISTE')} ), 404
+
+    gestor = GestorColeccion(config)
+    datos = gestor.consultar_prompts()
+    js = render_template( 'prompts.js', app=config.APP, dir_base=request.script_root, 
+            datos = datos
+        )
+    response = make_response( js )
+    response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
+    return response
 
 
 ######################################################
