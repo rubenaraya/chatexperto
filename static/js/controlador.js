@@ -13,7 +13,7 @@ class Controlador {
         this.url = '';
         this.carpeta = '';
         this.ruta_base = ''
-        this.tamano_max = 20; // Tamaño máximo archivos en MB
+        this.tamano_max = 24; // Tamaño máximo archivos en MB
         this.total = 0; // Total de resultados de consulta
         this.paginas = 0; // Nº páginas de resultados
         this.nav = 1; // Página de navegación actual
